@@ -1,4 +1,4 @@
-# Edu Partner — landing site
+# Edu License LLC — landing site
 
 Static marketing site for a Tashkent-based consultancy supporting schools in Uzbekistan with international licensing, institutional setup, and operational readiness.
 

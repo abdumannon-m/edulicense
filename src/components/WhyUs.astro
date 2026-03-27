@@ -8,11 +8,9 @@ interface Props {
 const { messages } = Astro.props;
 ---
 
-<section class="section section--surface" id="why" aria-labelledby="why-heading">
-	<div class="wrap">
+<section class="section section--tight section--surface" id="why" aria-labelledby="why-heading">
+	<div class="wrap wrap--narrow">
 		<h2 id="why-heading" class="heading-lg">{messages.why.heading}</h2>
-		<div style="display: grid; gap: 1rem; margin-top: 1rem; max-width: 40rem;">
-			{messages.why.paragraphs.map((p) => <p class="muted" style="margin: 0;">{p}</p>)}
-		</div>
+		<p class="lead">{messages.why.body}</p>
 	</div>
 </section>

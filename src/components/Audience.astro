@@ -8,10 +8,10 @@ interface Props {
 const { messages } = Astro.props;
 ---
 
-<section class="section" id="audience" aria-labelledby="audience-heading">
-	<div class="wrap">
+<section class="section section--tight" id="audience" aria-labelledby="audience-heading">
+	<div class="wrap wrap--narrow">
 		<h2 id="audience-heading" class="heading-lg">{messages.audience.heading}</h2>
-		<ul class="audience-list" style="margin-top: 1.25rem;">
+		<ul class="audience-minimal">
 			{messages.audience.items.map((item) => <li>{item}</li>)}
 		</ul>
 	</div>

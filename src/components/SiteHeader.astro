@@ -14,22 +14,62 @@ const homePath = messages.lang === 'uz' ? '/uz' : '/';
 const otherHome = messages.lang === 'uz' ? '/' : '/uz';
 const otherLabel =
 	messages.lang === 'uz' ? messages.nav.switchToEn : messages.nav.switchToUz;
+
+const navLabel = messages.lang === 'uz' ? 'Sahifa bo‘limlari' : 'Page sections';
 ---
 
 <header class="site-header">
 	<div class="wrap site-header__inner">
 		<a class="site-header__brand" href={homePath}>{messages.brandShort}</a>
-		<nav class="site-header__nav" aria-label={messages.lang === 'uz' ? 'Asosiy' : 'Primary'}>
-			<a href={`${homePath}#services`}>{messages.nav.services}</a>
-			<a href={`${homePath}#audience`}>{messages.nav.audience}</a>
-			<a href={`${homePath}#why`}>{messages.nav.why}</a>
-			<a href={`${homePath}#process`}>{messages.nav.process}</a>
-			<a href={`${homePath}#faq`}>{messages.nav.faq}</a>
-			<a href={wa} rel="noopener noreferrer" target="_blank">{messages.nav.contact}</a>
-		</nav>
-		<p class="site-header__lang">
-			<span class="sr-only">{messages.nav.language}: </span>
-			<a href={otherHome} hreflang={messages.lang === 'uz' ? 'en' : 'uz'} lang={messages.lang === 'uz' ? 'en' : 'uz'}>{otherLabel}</a>
-		</p>
+		<div class="site-header__actions">
+			<a
+				class="site-header__lang"
+				href={otherHome}
+				hreflang={messages.lang === 'uz' ? 'en' : 'uz'}
+				lang={messages.lang === 'uz' ? 'en' : 'uz'}
+			>
+				{otherLabel}
+			</a>
+			<details class="site-header__menu" id="site-nav-menu">
+				<summary
+					class="site-header__menu-btn"
+					aria-label={messages.nav.menuOpen}
+					aria-expanded="false"
+				>
+					<span class="site-header__burger" aria-hidden="true">
+						<span></span>
+						<span></span>
+						<span></span>
+					</span>
+					<span class="site-header__menu-label">{messages.nav.menu}</span>
+				</summary>
+				<div class="site-header__drawer">
+					<nav aria-label={navLabel}>
+						<a href={`${homePath}#services`}>{messages.nav.services}</a>
+						<a href={`${homePath}#audience`}>{messages.nav.audience}</a>
+						<a href={`${homePath}#why`}>{messages.nav.why}</a>
+						<a href={`${homePath}#process`}>{messages.nav.process}</a>
+						<a href={`${homePath}#faq`}>{messages.nav.faq}</a>
+					</nav>
+				</div>
+			</details>
+			<a class="btn btn--primary site-header__cta" href={wa} rel="noopener noreferrer" target="_blank">
+				{messages.nav.contact}
+			</a>
+		</div>
 	</div>
 </header>
+<script>
+	const menuEl = document.getElementById('site-nav-menu');
+	const summary = menuEl?.querySelector('summary');
+	if (menuEl instanceof HTMLDetailsElement && summary) {
+		menuEl.addEventListener('toggle', () => {
+			summary.setAttribute('aria-expanded', menuEl.open ? 'true' : 'false');
+		});
+		menuEl.querySelectorAll('.site-header__drawer a').forEach((link) => {
+			link.addEventListener('click', () => {
+				menuEl.open = false;
+			});
+		});
+	}
+</script>

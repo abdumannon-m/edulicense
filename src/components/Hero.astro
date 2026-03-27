@@ -9,26 +9,35 @@ interface Props {
 const { messages } = Astro.props;
 const wa = whatsappUrl(messages.hero.whatsappPrefill);
 const home = messages.lang === 'uz' ? '/uz' : '/';
+
+const heroSrc =
+	'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=960&q=80';
 ---
 
-<section class="hero wrap" aria-labelledby="hero-title">
-	<div class="hero__grid">
-		<div>
+<section class="hero" aria-labelledby="hero-title">
+	<div class="wrap hero__grid">
+		<div class="hero__copy">
 			<h1 id="hero-title" class="heading-xl">{messages.hero.title}</h1>
-			<p class="muted" style="max-width: 38rem; margin: 0;">{messages.hero.subtitle}</p>
+			<p class="hero__subtitle">{messages.hero.subtitle}</p>
 			<div class="hero__actions">
-				<a class="btn btn--whatsapp" href={wa} rel="noopener noreferrer" target="_blank">
+				<a class="btn btn--primary btn--hero" href={wa} rel="noopener noreferrer" target="_blank">
 					{messages.hero.cta}
 				</a>
-				<a class="btn btn--ghost" href={`${home}#services`}>{messages.hero.scrollHint}</a>
+				<a class="hero__link" href={`${home}#services`}>{messages.hero.scrollHint}</a>
 			</div>
 		</div>
-		<div class="hero__art" role="img" aria-hidden="true">
-			<div class="hero__art-placeholder">
-				{messages.lang === 'uz'
-					? 'Maktab va hamkorlik uchun rasm joyi — o‘zingizning fotosurat yoki illustatsiyangiz bilan almashtiring.'
-					: 'Placeholder for your school or partnership photography or illustration.'}
-			</div>
-		</div>
+		<figure class="hero__figure">
+			<img
+				class="hero__img"
+				src={heroSrc}
+				alt={messages.hero.imageAlt}
+				width="960"
+				height="720"
+				loading="eager"
+				decoding="async"
+				fetchpriority="high"
+			/>
+			<figcaption class="hero__credit">{messages.footer.creditPhoto}</figcaption>
+		</figure>
 	</div>
 </section>

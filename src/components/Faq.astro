@@ -8,13 +8,13 @@ interface Props {
 const { messages } = Astro.props;
 ---
 
-<section class="section section--surface" id="faq" aria-labelledby="faq-heading">
-	<div class="wrap">
+<section class="section section--tight" id="faq" aria-labelledby="faq-heading">
+	<div class="wrap wrap--narrow">
 		<h2 id="faq-heading" class="heading-lg">{messages.faq.heading}</h2>
-		<div class="faq" style="margin-top: 1.25rem;">
+		<div class="faq faq--minimal">
 			{
 				messages.faq.items.map((item) => (
-					<details>
+					<details class="faq__item">
 						<summary>{item.question}</summary>
 						<p>{item.answer}</p>
 					</details>

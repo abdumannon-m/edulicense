@@ -8,20 +8,23 @@ interface Props {
 const { messages } = Astro.props;
 ---
 
-<section class="section" id="process" aria-labelledby="process-heading">
+<section class="section section--tight section--surface" id="process" aria-labelledby="process-heading">
 	<div class="wrap">
-		<h2 id="process-heading" class="heading-lg">{messages.process.heading}</h2>
-		<div class="process" style="margin-top: 1.5rem;">
+		<h2 id="process-heading" class="heading-lg heading-lg--center">{messages.process.heading}</h2>
+		<ol class="process-track">
 			{
-				messages.process.steps.map((step) => (
-					<div class="process__step">
-						<strong>{step.title}</strong>
-						<span class="muted" style="font-size: 0.98rem;">
-							{step.body}
+				messages.process.steps.map((step, i) => (
+					<li class="process-track__item">
+						<span class="process-track__num" aria-hidden="true">
+							{i + 1}
 						</span>
-					</div>
+						<div>
+							<strong class="process-track__title">{step.title}</strong>
+							<p class="process-track__body">{step.body}</p>
+						</div>
+					</li>
 				))
 			}
-		</div>
+		</ol>
 	</div>
 </section>

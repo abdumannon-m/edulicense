@@ -3,147 +3,131 @@ import type { Messages } from './types';
 export const en: Messages = {
 	lang: 'en',
 	ogLocale: 'en_GB',
-	metaTitle: 'Edu Partner · International licensing & school readiness · Tashkent',
+	metaTitle: 'Edu License LLC · International school licensing · Tashkent',
 	metaDescription:
-		'Tashkent-based team helping schools across Uzbekistan with international licensing, institutional setup, and day-one operational readiness.',
-	brandShort: 'Edu Partner',
-	brandLegal: 'Edu Partner Consultancy LLC',
+		'From zero to launch: international programme licensing, institutional setup, and operational readiness for schools across Uzbekistan.',
+	brandShort: 'Edu License',
+	brandLegal: 'Edu License LLC',
 	nav: {
 		services: 'Services',
 		audience: 'Who we help',
 		why: 'Why us',
 		process: 'Process',
 		faq: 'FAQ',
-		contact: 'Contact',
+		contact: 'Contact us',
 		language: 'Language',
 		switchToEn: 'English',
 		switchToUz: "O'zbekcha",
+		menu: 'Menu',
+		menuOpen: 'Open menu',
+		menuClose: 'Close menu',
 	},
 	hero: {
-		title: 'International standards for schools in Uzbekistan — from licensing to opening day',
+		title: 'Get your school internationally licensed — from zero to launch',
 		subtitle:
-			'We align your institution with recognised frameworks, build governance and academic structures, and prepare teams so you can operate with confidence.',
-		cta: 'Message us on WhatsApp',
-		scrollHint: 'Explore services',
+			'Tashkent-based team helping Uzbekistan schools align with global programmes, stand up strong institutions, and open with confidence.',
+		cta: 'Contact us',
+		scrollHint: 'See how we help',
 		whatsappPrefill:
-			'Hello — I would like to discuss international licensing and school setup support for our institution in Uzbekistan.',
+			'Hello — I would like to discuss international licensing and school setup for our institution in Uzbekistan.',
+		imageAlt: 'Students learning together in a bright classroom',
 	},
 	pillars: {
-		heading: 'What we support',
-		intro:
-			'Three integrated workstreams for leadership teams opening, converting, or upgrading a school.',
+		heading: 'Three ways we help',
+		intro: '',
 		items: [
 			{
-				title: 'International licensing & programme alignment',
-				bullets: [
-					'Gap analysis against your target framework (e.g. Cambridge, IB, dual diploma pathways).',
-					'Documentation, policies, and evidence packs aligned to authorisation timelines.',
-					'Coordination with exam boards and programme partners where applicable.',
-				],
+				title: 'Licensing',
+				tagline:
+					'Map your path to authorisation with the frameworks that fit your school — fewer gaps, clearer evidence.',
+				icon: 'license',
 			},
 			{
 				title: 'Institutional setup',
-				bullets: [
-					'Governance, leadership roles, and decision-making structures.',
-					'Handbooks, assessment calendars, reporting, and academic integrity.',
-					'Safeguarding, admissions, and parent communications that match programme expectations.',
-				],
+				tagline:
+					'Governance, handbooks, and academic systems that match what inspectors and partners expect.',
+				icon: 'institution',
 			},
 			{
 				title: 'Operational readiness',
-				bullets: [
-					'Timetabling, staffing plans, induction, and role clarity before launch.',
-					'Finance, procurement, and facilities checklists tied to regulatory context.',
-					'Launch playbook: first weeks of school, quality assurance, and continuous improvement.',
-				],
+				tagline:
+					'Roles, timetables, and launch rhythms so your team is ready for day one — not just paperwork.',
+				icon: 'operations',
 			},
 		],
 	},
 	audience: {
-		heading: 'Who we help',
+		heading: 'Who we work with',
 		items: [
-			'New schools seeking an international licence and a credible academic model.',
-			'Existing schools adding or switching an international programme.',
-			'Leadership groups that need a neutral, experienced partner for structure and pace.',
+			'New schools pursuing an international licence.',
+			'Established schools adding or changing a global programme.',
 		],
 	},
 	why: {
-		heading: 'Why work with us',
-		paragraphs: [
-			'We are based in Tashkent and work across Uzbekistan — available locally for site visits, stakeholder workshops, and ongoing support.',
-			'Our approach combines international programme expectations with practical delivery: fewer surprises at inspection or authorisation, clearer roles for your team, and a realistic path to sustainable operations.',
-		],
+		heading: 'Why Edu License',
+		body: 'We are in Tashkent and work across Uzbekistan — local presence, international standards, and a single thread from licensing through opening day.',
 	},
 	process: {
-		heading: 'How we work',
+		heading: 'How it works',
 		steps: [
 			{
 				title: 'Discovery',
-				body: 'We clarify goals, constraints, chosen framework, and your target opening or authorisation date.',
+				body: 'Goals, your programme, constraints, and timeline — aligned in one session.',
 			},
 			{
 				title: 'Roadmap',
-				body: 'You receive a sequenced plan: documentation, recruitment, training, facilities, and governance milestones.',
+				body: 'A sequenced plan you can execute: people, documents, facilities.',
 			},
 			{
-				title: 'Implementation',
-				body: 'We work alongside your leadership — workshops, templates, reviews, and dry runs.',
+				title: 'Build',
+				body: 'We work beside your leadership until the model is real — not theoretical.',
 			},
 			{
-				title: 'Handoff',
-				body: 'Operational playbooks, monitoring rhythms, and optional follow-on advisory as you scale.',
+				title: 'Launch',
+				body: 'Handoff with playbooks and optional follow-on as you grow.',
 			},
 		],
 	},
 	faq: {
-		heading: 'Frequently asked questions',
+		heading: 'Questions',
 		items: [
 			{
-				question: 'Do you guarantee a licence or authorisation?',
+				question: 'Do you guarantee a licence?',
 				answer:
-					'No ethical partner can guarantee outcomes decided by exam boards or programme organisations. We align your school with requirements, improve documentation quality, and prepare your team so you present a strong, coherent case.',
+					'No — exam boards and programme bodies make final decisions. We align you with requirements and prepare a strong, coherent submission.',
 			},
 			{
-				question: 'Which international programmes do you support?',
+				question: 'Which programmes?',
 				answer:
-					'We typically support schools targeting major British-style and IB pathways and dual-diploma models. Scope depends on the programme and your stage — we confirm fit in discovery.',
+					'Typically British-style pathways, IB-oriented models, and dual-diploma setups. We confirm fit early.',
 			},
 			{
-				question: 'How long does setup usually take?',
+				question: 'Timeline?',
 				answer:
-					'Timelines vary by framework, starting maturity, and recruitment. A structured roadmap usually spans many months; we prioritise realistic sequencing over rushed paperwork.',
-			},
-			{
-				question: 'Do you work outside Tashkent?',
-				answer:
-					'Yes. We support schools across Uzbekistan and can combine on-site visits with remote working sessions as appropriate.',
-			},
-			{
-				question: 'What do you need from us to start?',
-				answer:
-					'Leadership availability, basic school facts (phase, capacity, target programme), and clarity on ownership of academic decisions. We will outline a short document list after the first call.',
+					'Expect months, not weeks — structured around your maturity, recruitment, and target authorisation date.',
 			},
 		],
 	},
 	ctaBand: {
-		heading: 'Ready to map your next step?',
-		sub: 'Tell us briefly about your school and goals — we will respond on WhatsApp.',
-		button: 'Chat on WhatsApp',
+		heading: 'Ready when you are',
+		sub: 'One message starts the conversation — we reply on WhatsApp.',
+		button: 'Contact us',
 		whatsappPrefill:
-			'Hello — we are exploring international licensing / programme setup. Please advise next steps.',
+			'Hello — we want to explore international licensing. What are the next steps?',
 	},
 	footer: {
-		tagline: 'International licensing · Institutional setup · Operational readiness',
+		tagline: 'Licensing · Setup · Readiness',
 		whatsapp: 'WhatsApp',
 		telegram: 'Telegram',
-		privacy: 'Privacy (stub)',
+		privacy: 'Privacy',
 		rights: 'All rights reserved.',
 		addressLine: 'Tashkent, Uzbekistan',
+		creditPhoto: 'Classroom photo: Unsplash',
 	},
 	privacy: {
 		title: 'Privacy notice (stub)',
 		body:
-			'This page is a placeholder. Replace with your real privacy policy before collecting personal data beyond basic WhatsApp messages. Describe what data you process, lawful basis, retention, and contact details for data requests.',
+			'Placeholder only. Add your real policy before collecting personal data beyond WhatsApp messages.',
 		back: 'Back to home',
 	},
 };

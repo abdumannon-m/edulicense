@@ -1,0 +1,39 @@
+---
+import type { PillarIcon as IconName } from '../i18n/types';
+
+interface Props {
+	name: IconName;
+}
+
+const { name } = Astro.props;
+const cls = 'pillar-icon-svg';
+---
+
+{
+	name === 'license' && (
+		<svg class={cls} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+			<rect x="11" y="10" width="26" height="30" rx="3" stroke="currentColor" stroke-width="1.75" />
+			<path stroke="currentColor" stroke-width="1.75" stroke-linecap="round" d="M16 18h16M16 24h11M16 30h16" />
+		</svg>
+	)
+}
+{
+	name === 'institution' && (
+		<svg class={cls} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+			<path
+				stroke="currentColor"
+				stroke-width="1.75"
+				stroke-linejoin="round"
+				d="M12 36V19.5L24 12l12 7.5V36H12Zm8-16v16m8-12v12"
+			/>
+		</svg>
+	)
+}
+{
+	name === 'operations' && (
+		<svg class={cls} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+			<rect x="11" y="13" width="26" height="22" rx="3" stroke="currentColor" stroke-width="1.75" />
+			<path stroke="currentColor" stroke-width="1.75" stroke-linecap="round" d="M17 20h6M25 26h6M17 32h14" />
+		</svg>
+	)
+}

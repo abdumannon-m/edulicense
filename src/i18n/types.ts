@@ -1,5 +1,7 @@
 export type Locale = 'en' | 'uz';
 
+export type PillarIcon = 'license' | 'institution' | 'operations';
+
 export interface Messages {
 	lang: Locale;
 	ogLocale: string;
@@ -17,6 +19,9 @@ export interface Messages {
 		language: string;
 		switchToEn: string;
 		switchToUz: string;
+		menu: string;
+		menuOpen: string;
+		menuClose: string;
 	};
 	hero: {
 		title: string;
@@ -24,11 +29,12 @@ export interface Messages {
 		cta: string;
 		scrollHint: string;
 		whatsappPrefill: string;
+		imageAlt: string;
 	};
 	pillars: {
 		heading: string;
 		intro: string;
-		items: Array<{ title: string; bullets: string[] }>;
+		items: Array<{ title: string; tagline: string; icon: PillarIcon }>;
 	};
 	audience: {
 		heading: string;
@@ -36,7 +42,7 @@ export interface Messages {
 	};
 	why: {
 		heading: string;
-		paragraphs: string[];
+		body: string;
 	};
 	process: {
 		heading: string;
@@ -59,6 +65,7 @@ export interface Messages {
 		privacy: string;
 		rights: string;
 		addressLine: string;
+		creditPhoto: string;
 	};
 	privacy: {
 		title: string;
