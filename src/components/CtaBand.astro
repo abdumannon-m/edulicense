@@ -1,0 +1,21 @@
+---
+import type { Messages } from '../i18n/types';
+import { whatsappUrl } from '../i18n/contact';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+const wa = whatsappUrl(messages.ctaBand.whatsappPrefill);
+---
+
+<section class="wrap" aria-labelledby="cta-heading">
+	<div class="cta-band">
+		<h2 id="cta-heading" class="heading-lg">{messages.ctaBand.heading}</h2>
+		<p class="muted" style="margin: 0 auto 1.25rem; max-width: 32rem;">{messages.ctaBand.sub}</p>
+		<a class="btn btn--whatsapp" href={wa} rel="noopener noreferrer" target="_blank">
+			{messages.ctaBand.button}
+		</a>
+	</div>
+</section>

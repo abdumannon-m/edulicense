@@ -1,0 +1,34 @@
+---
+import type { Messages } from '../i18n/types';
+import { whatsappUrl } from '../i18n/contact';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+const wa = whatsappUrl(messages.hero.whatsappPrefill);
+const home = messages.lang === 'uz' ? '/uz' : '/';
+---
+
+<section class="hero wrap" aria-labelledby="hero-title">
+	<div class="hero__grid">
+		<div>
+			<h1 id="hero-title" class="heading-xl">{messages.hero.title}</h1>
+			<p class="muted" style="max-width: 38rem; margin: 0;">{messages.hero.subtitle}</p>
+			<div class="hero__actions">
+				<a class="btn btn--whatsapp" href={wa} rel="noopener noreferrer" target="_blank">
+					{messages.hero.cta}
+				</a>
+				<a class="btn btn--ghost" href={`${home}#services`}>{messages.hero.scrollHint}</a>
+			</div>
+		</div>
+		<div class="hero__art" role="img" aria-hidden="true">
+			<div class="hero__art-placeholder">
+				{messages.lang === 'uz'
+					? 'Maktab va hamkorlik uchun rasm joyi — o‘zingizning fotosurat yoki illustatsiyangiz bilan almashtiring.'
+					: 'Placeholder for your school or partnership photography or illustration.'}
+			</div>
+		</div>
+	</div>
+</section>

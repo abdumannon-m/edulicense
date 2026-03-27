@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import Hero from '../../components/Hero.astro';
+import Pillars from '../../components/Pillars.astro';
+import Audience from '../../components/Audience.astro';
+import WhyUs from '../../components/WhyUs.astro';
+import Process from '../../components/Process.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import WhatsAppFab from '../../components/WhatsAppFab.astro';
+import { uz } from '../../i18n/uz';
+---
+
+<BaseLayout messages={uz}>
+	<SiteHeader messages={uz} whatsappPrefill={uz.hero.whatsappPrefill} />
+	<main id="main">
+		<Hero messages={uz} />
+		<Pillars messages={uz} />
+		<Audience messages={uz} />
+		<WhyUs messages={uz} />
+		<Process messages={uz} />
+		<Faq messages={uz} />
+		<CtaBand messages={uz} />
+	</main>
+	<SiteFooter messages={uz} heroPrefill={uz.hero.whatsappPrefill} />
+	<WhatsAppFab label={uz.footer.whatsapp} prefill={uz.hero.whatsappPrefill} />
+</BaseLayout>

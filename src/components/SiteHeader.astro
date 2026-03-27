@@ -1,0 +1,35 @@
+---
+import type { Messages } from '../i18n/types';
+import { whatsappUrl } from '../i18n/contact';
+
+interface Props {
+	messages: Messages;
+	whatsappPrefill: string;
+}
+
+const { messages, whatsappPrefill } = Astro.props;
+const wa = whatsappUrl(whatsappPrefill);
+
+const homePath = messages.lang === 'uz' ? '/uz' : '/';
+const otherHome = messages.lang === 'uz' ? '/' : '/uz';
+const otherLabel =
+	messages.lang === 'uz' ? messages.nav.switchToEn : messages.nav.switchToUz;
+---
+
+<header class="site-header">
+	<div class="wrap site-header__inner">
+		<a class="site-header__brand" href={homePath}>{messages.brandShort}</a>
+		<nav class="site-header__nav" aria-label={messages.lang === 'uz' ? 'Asosiy' : 'Primary'}>
+			<a href={`${homePath}#services`}>{messages.nav.services}</a>
+			<a href={`${homePath}#audience`}>{messages.nav.audience}</a>
+			<a href={`${homePath}#why`}>{messages.nav.why}</a>
+			<a href={`${homePath}#process`}>{messages.nav.process}</a>
+			<a href={`${homePath}#faq`}>{messages.nav.faq}</a>
+			<a href={wa} rel="noopener noreferrer" target="_blank">{messages.nav.contact}</a>
+		</nav>
+		<p class="site-header__lang">
+			<span class="sr-only">{messages.nav.language}: </span>
+			<a href={otherHome} hreflang={messages.lang === 'uz' ? 'en' : 'uz'} lang={messages.lang === 'uz' ? 'en' : 'uz'}>{otherLabel}</a>
+		</p>
+	</div>
+</header>

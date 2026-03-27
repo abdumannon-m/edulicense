@@ -1,0 +1,18 @@
+---
+import type { Messages } from '../i18n/types';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+---
+
+<section class="section section--surface" id="why" aria-labelledby="why-heading">
+	<div class="wrap">
+		<h2 id="why-heading" class="heading-lg">{messages.why.heading}</h2>
+		<div style="display: grid; gap: 1rem; margin-top: 1rem; max-width: 40rem;">
+			{messages.why.paragraphs.map((p) => <p class="muted" style="margin: 0;">{p}</p>)}
+		</div>
+	</div>
+</section>

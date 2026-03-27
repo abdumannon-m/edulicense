@@ -1,0 +1,30 @@
+---
+import type { Messages } from '../i18n/types';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+---
+
+<section class="section section--surface" id="services" aria-labelledby="pillars-heading">
+	<div class="wrap">
+		<h2 id="pillars-heading" class="heading-lg">{messages.pillars.heading}</h2>
+		<p class="muted" style="max-width: 40rem; margin-top: 0;">{messages.pillars.intro}</p>
+		<div class="card-grid card-grid--3" style="margin-top: 2rem;">
+			{
+				messages.pillars.items.map((item) => (
+					<article class="card">
+						<h3 class="heading-sm">{item.title}</h3>
+						<ul>
+							{item.bullets.map((b) => (
+								<li>{b}</li>
+							))}
+						</ul>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>

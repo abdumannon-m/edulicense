@@ -1,0 +1,40 @@
+---
+import type { Messages } from '../i18n/types';
+import { telegramEnabled, telegramUrl, whatsappUrl } from '../i18n/contact';
+
+interface Props {
+	messages: Messages;
+	heroPrefill: string;
+}
+
+const { messages, heroPrefill } = Astro.props;
+const wa = whatsappUrl(heroPrefill);
+const tg = telegramUrl();
+const showTg = telegramEnabled();
+const homePath = messages.lang === 'uz' ? '/uz' : '/';
+const privacyPath = messages.lang === 'uz' ? '/uz/privacy' : '/privacy';
+---
+
+<footer class="site-footer">
+	<div class="wrap site-footer__grid">
+		<div>
+			<div class="site-footer__brand">{messages.brandShort}</div>
+			<p style="margin: 0.5rem 0 0; max-width: 28rem;">{messages.footer.tagline}</p>
+			<p class="muted" style="margin: 0.75rem 0 0;">{messages.footer.addressLine}</p>
+			<p class="muted" style="margin: 0.35rem 0 0; font-size: 0.85rem;">{messages.brandLegal}</p>
+		</div>
+		<div class="site-footer__links">
+			<a href={wa} rel="noopener noreferrer" target="_blank">{messages.footer.whatsapp}</a>
+			{showTg && (
+				<a href={tg} rel="noopener noreferrer" target="_blank">
+					{messages.footer.telegram}
+				</a>
+			)}
+			<a href={privacyPath}>{messages.footer.privacy}</a>
+			<a href={`${homePath}#main`}>{messages.lang === 'uz' ? 'Yuqoriga' : 'Top'}</a>
+		</div>
+	</div>
+	<div class="wrap site-footer__bottom">
+		© {new Date().getFullYear()} {messages.brandShort}. {messages.footer.rights}
+	</div>
+</footer>

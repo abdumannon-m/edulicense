@@ -1,0 +1,56 @@
+---
+import type { Messages } from '../i18n/types';
+import { localePairUrls } from '../i18n/paths';
+import '../styles/global.css';
+
+interface Props {
+	messages: Messages;
+	title?: string;
+	description?: string;
+}
+
+const {
+	messages,
+	title = messages.metaTitle,
+	description = messages.metaDescription,
+} = Astro.props;
+
+const site = Astro.site!;
+const canonicalUrl = new URL(Astro.url.pathname, site).href;
+const { en: urlEn, uz: urlUz } = localePairUrls(site, Astro.url.pathname);
+const defaultLocaleUrl = new URL('/', site).href;
+---
+
+<!doctype html>
+<html lang={messages.lang === 'uz' ? 'uz' : 'en'}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+		<link rel="alternate" hreflang="en" href={urlEn} />
+		<link rel="alternate" hreflang="uz" href={urlUz} />
+		<link rel="alternate" hreflang="x-default" href={defaultLocaleUrl} />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content={messages.ogLocale} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<a class="skip-link" href="#main">{messages.lang === 'uz' ? 'Asosiy tarkibga' : 'Skip to content'}</a>
+		<slot />
+	</body>
+</html>

@@ -1,0 +1,18 @@
+---
+import type { Messages } from '../i18n/types';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+---
+
+<section class="section" id="audience" aria-labelledby="audience-heading">
+	<div class="wrap">
+		<h2 id="audience-heading" class="heading-lg">{messages.audience.heading}</h2>
+		<ul class="audience-list" style="margin-top: 1.25rem;">
+			{messages.audience.items.map((item) => <li>{item}</li>)}
+		</ul>
+	</div>
+</section>

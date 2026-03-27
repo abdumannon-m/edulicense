@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { uz } from '../../i18n/uz';
+---
+
+<BaseLayout
+	messages={uz}
+	title={`${uz.privacy.title} · ${uz.brandShort}`}
+	description={uz.metaDescription}
+>
+	<main id="main" class="wrap privacy-page">
+		<h1 class="heading-lg">{uz.privacy.title}</h1>
+		<p>{uz.privacy.body}</p>
+		<p><a href="/uz">{uz.privacy.back}</a></p>
+	</main>
+</BaseLayout>

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Update the host to match PUBLIC_SITE_URL / astro.config site when you deploy.
+Sitemap: https://edu-license.vercel.app/sitemap-index.xml
