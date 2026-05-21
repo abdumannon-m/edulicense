@@ -24,6 +24,7 @@ export const uz: Messages = {
 		menuClose: 'Menyuni yopish',
 	},
 	hero: {
+		eyebrow: "Xalqaro maktab litsenziyasi · Toshkent",
 		title: "Maktabingizni xalqaro litsenziyaga — noldan ishga tushguncha",
 		subtitle:
 			"Toshkentdagi jamoamiz O‘zbekiston maktablarini global dasturlarga moslash, mustahkam tuzilma qurish va ishonch bilan ochishda qo‘llab-quvvatlaydi.",

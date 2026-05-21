@@ -23,6 +23,7 @@ export const en: Messages = {
 		menuClose: 'Close menu',
 	},
 	hero: {
+		eyebrow: 'International school licensing · Tashkent',
 		title: 'Get your school internationally licensed — from zero to launch',
 		subtitle:
 			'Tashkent-based team helping Uzbekistan schools align with global programmes, stand up strong institutions, and open with confidence.',

@@ -24,6 +24,7 @@ export interface Messages {
 		menuClose: string;
 	};
 	hero: {
+		eyebrow: string;
 		title: string;
 		subtitle: string;
 		cta: string;
