@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CertificateCard from '../../../components/CertificateCard.astro';
+import { certificates, type Certificate } from '../../../data/certificates';
+import { uz } from '../../../i18n/uz';
+
+export function getStaticPaths() {
+	return certificates.map((certificate) => ({
+		params: { slug: certificate.slug },
+		props: { certificate },
+	}));
+}
+
+interface Props {
+	certificate: Certificate;
+}
+
+const { certificate } = Astro.props;
+const title = `${uz.verify.metaTitle} · ${certificate.institution} · ${uz.brandShort}`;
+---
+
+<BaseLayout messages={uz} title={title} description={uz.verify.intro}>
+	<CertificateCard messages={uz} certificate={certificate} />
+</BaseLayout>

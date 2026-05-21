@@ -131,4 +131,23 @@ export const en: Messages = {
 			'Placeholder only. Add your real policy before collecting personal data beyond WhatsApp messages.',
 		back: 'Back to home',
 	},
+	verify: {
+		metaTitle: 'Certificate verification',
+		badge: 'Verified',
+		heading: 'This certificate is authentic',
+		intro:
+			'The credential below was issued and verified by Edu License LLC. Details match our records.',
+		satDate: 'SAT administration date',
+		verificationId: 'Verification ID',
+		issueDate: 'Issue date',
+		screenshotHeading: 'College Board record',
+		screenshotCaption:
+			'Screenshot from the official College Board test centre search.',
+		sealTop: 'EDU LICENSE LLC',
+		sealBottom: 'VERIFIED CREDENTIAL',
+		signatureLabel: 'Authorised signature',
+		footerNote:
+			'If any detail does not match the printed certificate, contact Edu License LLC before relying on this document.',
+		backHome: 'Back to Edu License',
+	},
 };

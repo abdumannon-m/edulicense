@@ -132,4 +132,23 @@ export const uz: Messages = {
 			"Vaqtinchina. WhatsAppdan tashqari ma'lumot yig‘ishdan oldin haqiqiy siyosatni joylashtiring.",
 		back: 'Bosh sahifa',
 	},
+	verify: {
+		metaTitle: 'Sertifikatni tekshirish',
+		badge: 'Tasdiqlangan',
+		heading: 'Ushbu sertifikat haqiqiy',
+		intro:
+			"Quyidagi hujjat Edu License LLC tomonidan berilgan va tasdiqlangan. Maʼlumotlar bizning yozuvlarimizga mos keladi.",
+		satDate: 'SAT imtihon sanasi',
+		verificationId: 'Tekshiruv IDsi',
+		issueDate: 'Berilgan sana',
+		screenshotHeading: 'College Board yozuvi',
+		screenshotCaption:
+			"College Boardning rasmiy test markazlari qidiruvidan olingan skrinshot.",
+		sealTop: 'EDU LICENSE LLC',
+		sealBottom: 'TASDIQLANGAN HUJJAT',
+		signatureLabel: 'Vakolatli imzo',
+		footerNote:
+			"Agar biron maʼlumot bosma sertifikatga mos kelmasa, ushbu hujjatga ishonishdan oldin Edu License LLC bilan bogʻlaning.",
+		backHome: 'Edu License sahifasiga',
+	},
 };
