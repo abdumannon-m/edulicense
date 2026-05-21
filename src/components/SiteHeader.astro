@@ -16,11 +16,24 @@ const otherLabel =
 	messages.lang === 'uz' ? messages.nav.switchToEn : messages.nav.switchToUz;
 
 const navLabel = messages.lang === 'uz' ? 'Sahifa bo‘limlari' : 'Page sections';
+
+const links = [
+	{ href: `${homePath}#services`, label: messages.nav.services },
+	{ href: `${homePath}#audience`, label: messages.nav.audience },
+	{ href: `${homePath}#why`, label: messages.nav.why },
+	{ href: `${homePath}#process`, label: messages.nav.process },
+	{ href: `${homePath}#faq`, label: messages.nav.faq },
+];
 ---
 
 <header class="site-header">
 	<div class="wrap site-header__inner">
 		<a class="site-header__brand" href={homePath}>{messages.brandShort}</a>
+
+		<nav class="site-header__nav" aria-label={navLabel}>
+			{links.map((link) => <a href={link.href}>{link.label}</a>)}
+		</nav>
+
 		<div class="site-header__actions">
 			<a
 				class="site-header__lang"
@@ -29,6 +42,9 @@ const navLabel = messages.lang === 'uz' ? 'Sahifa bo‘limlari' : 'Page sections
 				lang={messages.lang === 'uz' ? 'en' : 'uz'}
 			>
 				{otherLabel}
+			</a>
+			<a class="btn btn--primary site-header__cta" href={wa} rel="noopener noreferrer" target="_blank">
+				{messages.nav.contact}
 			</a>
 			<details class="site-header__menu" id="site-nav-menu">
 				<summary
@@ -39,23 +55,22 @@ const navLabel = messages.lang === 'uz' ? 'Sahifa bo‘limlari' : 'Page sections
 					<span class="site-header__burger" aria-hidden="true">
 						<span></span>
 						<span></span>
-						<span></span>
 					</span>
-					<span class="site-header__menu-label">{messages.nav.menu}</span>
 				</summary>
 				<div class="site-header__drawer">
 					<nav aria-label={navLabel}>
-						<a href={`${homePath}#services`}>{messages.nav.services}</a>
-						<a href={`${homePath}#audience`}>{messages.nav.audience}</a>
-						<a href={`${homePath}#why`}>{messages.nav.why}</a>
-						<a href={`${homePath}#process`}>{messages.nav.process}</a>
-						<a href={`${homePath}#faq`}>{messages.nav.faq}</a>
+						{links.map((link) => <a href={link.href}>{link.label}</a>)}
+						<a
+							class="site-header__drawer-lang"
+							href={otherHome}
+							hreflang={messages.lang === 'uz' ? 'en' : 'uz'}
+							lang={messages.lang === 'uz' ? 'en' : 'uz'}
+						>
+							{otherLabel}
+						</a>
 					</nav>
 				</div>
 			</details>
-			<a class="btn btn--primary site-header__cta" href={wa} rel="noopener noreferrer" target="_blank">
-				{messages.nav.contact}
-			</a>
 		</div>
 	</div>
 </header>
