@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"edu-license/internal/app"
-	"edu-license/internal/auth"
+	"edu-license/pkg/app"
+	"edu-license/pkg/auth"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )

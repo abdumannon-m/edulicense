@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"time"
 
-	"edu-license/internal/app"
-	"edu-license/internal/auth"
-	"edu-license/internal/config"
-	"edu-license/internal/httpx"
-	"edu-license/internal/notify"
-	"edu-license/internal/storage"
+	"edu-license/pkg/app"
+	"edu-license/pkg/auth"
+	"edu-license/pkg/config"
+	"edu-license/pkg/httpx"
+	"edu-license/pkg/notify"
+	"edu-license/pkg/storage"
 	"github.com/go-chi/chi/v5"
 )
 

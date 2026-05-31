@@ -13,7 +13,7 @@ RUN adduser -D -h /app appuser
 WORKDIR /app
 
 COPY --from=build /out/edu-license /app/edu-license
-COPY internal/templates /app/internal/templates
+COPY pkg/templates /app/pkg/templates
 COPY web/static /app/web/static
 COPY migrations /app/migrations
 

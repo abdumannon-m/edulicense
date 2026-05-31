@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"edu-license/internal/app"
+	"edu-license/pkg/app"
 	"golang.org/x/crypto/bcrypt"
 )
 

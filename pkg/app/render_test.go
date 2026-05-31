@@ -3,7 +3,7 @@ package app
 import (
 	"testing"
 
-	apptemplates "edu-license/internal/templates"
+	apptemplates "edu-license/pkg/templates"
 )
 
 func TestTemplatesParse(t *testing.T) {

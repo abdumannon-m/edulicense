@@ -10,13 +10,13 @@ import (
 	"strings"
 	"time"
 
-	"edu-license/internal/app"
-	"edu-license/internal/auth"
-	"edu-license/internal/config"
-	"edu-license/internal/notify"
-	"edu-license/internal/storage"
-	"edu-license/internal/store"
-	"edu-license/internal/web"
+	"edu-license/pkg/app"
+	"edu-license/pkg/auth"
+	"edu-license/pkg/config"
+	"edu-license/pkg/notify"
+	"edu-license/pkg/storage"
+	"edu-license/pkg/store"
+	"edu-license/pkg/web"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
 )
@@ -71,7 +71,7 @@ func mustServer(ctx context.Context, cfg config.Config) (*web.Server, func()) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	renderer, err := app.NewRenderer("internal/templates/*.html")
+	renderer, err := app.NewRenderer("pkg/templates/*.html")
 	if err != nil {
 		st.Close()
 		log.Fatal(err)

@@ -6,14 +6,14 @@ import (
 	"strings"
 	"sync"
 
-	"edu-license/internal/app"
-	"edu-license/internal/auth"
-	"edu-license/internal/config"
-	"edu-license/internal/notify"
-	"edu-license/internal/storage"
-	"edu-license/internal/store"
-	apptemplates "edu-license/internal/templates"
-	"edu-license/internal/web"
+	"edu-license/pkg/app"
+	"edu-license/pkg/auth"
+	"edu-license/pkg/config"
+	"edu-license/pkg/notify"
+	"edu-license/pkg/storage"
+	"edu-license/pkg/store"
+	apptemplates "edu-license/pkg/templates"
+	"edu-license/pkg/web"
 )
 
 var (

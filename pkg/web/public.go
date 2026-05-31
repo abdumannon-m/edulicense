@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"edu-license/internal/app"
+	"edu-license/pkg/app"
 	"github.com/go-chi/chi/v5"
 )
 

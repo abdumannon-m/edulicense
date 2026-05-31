@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"edu-license/internal/app"
-	"edu-license/internal/auth"
+	"edu-license/pkg/app"
+	"edu-license/pkg/auth"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
 )

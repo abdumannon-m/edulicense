@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"edu-license/internal/app"
+	"edu-license/pkg/app"
 )
 
 type contextKey string

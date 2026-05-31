@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"edu-license/internal/app"
+	"edu-license/pkg/app"
 )
 
 type Telegram struct {
