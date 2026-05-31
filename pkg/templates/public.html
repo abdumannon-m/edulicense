@@ -140,7 +140,7 @@
 					</figure>
 				</div>
 			</section>
-			<section class="section section--spacious" id="services" aria-labelledby="pillars-heading">
+			<section class="section section--spacious services-section" id="services" aria-labelledby="pillars-heading">
 				<div class="wrap">
 					<h2 id="pillars-heading" class="heading-lg heading-lg--center">{{.Messages.Pillars.Heading}}</h2>
 					<div class="pillar-grid">
@@ -178,7 +178,7 @@
 					</div>
 				</div>
 			</section>
-			<section class="section section--tight section--surface" id="why" aria-labelledby="why-heading">
+			<section class="section section--tight why-section" id="why" aria-labelledby="why-heading">
 				<div class="wrap wrap--narrow">
 					<h2 id="why-heading" class="heading-lg">{{.Messages.Why.Heading}}</h2>
 					<p class="lead">{{.Messages.Why.Body}}</p>
@@ -187,7 +187,7 @@
 					{{range .Messages.Why.Items}}<article class="why-card"><h3>{{.Title}}</h3><p>{{.Body}}</p></article>{{end}}
 				</div>
 			</section>
-			<section class="section section--tight section--surface" id="process" aria-labelledby="process-heading">
+			<section class="section section--tight process-section" id="process" aria-labelledby="process-heading">
 				<div class="wrap">
 					<h2 id="process-heading" class="heading-lg heading-lg--center">{{.Messages.Process.Heading}}</h2>
 					<ol class="process-track">
@@ -200,7 +200,7 @@
 					</ol>
 				</div>
 			</section>
-			<section class="section section--tight" id="team" aria-labelledby="team-heading">
+			<section class="section section--tight team-section" id="team" aria-labelledby="team-heading">
 				<div class="wrap">
 					<div class="section-head">
 						<p class="eyebrow">{{.Messages.Nav.Team}}</p>
@@ -212,7 +212,7 @@
 					</div>
 				</div>
 			</section>
-			<section class="section section--tight section--surface" id="engagement" aria-labelledby="engagement-heading">
+			<section class="section section--tight engagement-section" id="engagement" aria-labelledby="engagement-heading">
 				<div class="wrap">
 					<div class="section-head">
 						<p class="eyebrow">{{.Messages.Nav.Engagement}}</p>
@@ -224,63 +224,12 @@
 					</div>
 				</div>
 			</section>
-			<section class="section section--tight contact-section" id="contact" aria-labelledby="contact-heading">
-				<div class="wrap contact-grid">
-					<div class="contact-copy">
-						<p class="eyebrow">{{.Messages.Nav.Contact}}</p>
-						<h2 id="contact-heading" class="heading-lg">{{.Messages.CTABand.Heading}}</h2>
-						<p class="lead">{{.Messages.CTABand.Sub}}</p>
-					</div>
-					<form class="contact-form" data-contact-email="info@edulicense.uz">
-						<div class="contact-form__row">
-							<label>{{if eq .Messages.Lang "uz"}}Muassasa nomi{{else}}Institution name{{end}}<input name="institution" required></label>
-							<label>{{if eq .Messages.Lang "uz"}}Shahar{{else}}City{{end}}<input name="city" required></label>
-						</div>
-						<label>
-							{{if eq .Messages.Lang "uz"}}Maqsad{{else}}Goal{{end}}
-							<select name="goal" required>
-								<option value="International licensing">{{if eq .Messages.Lang "uz"}}Xalqaro litsenziya{{else}}International licensing{{end}}</option>
-								<option value="SAT test centre">{{if eq .Messages.Lang "uz"}}SAT test markazi{{else}}SAT test centre{{end}}</option>
-								<option value="Operational readiness">{{if eq .Messages.Lang "uz"}}Operatsion tayyorgarlik{{else}}Operational readiness{{end}}</option>
-							</select>
-						</label>
-						<div class="contact-form__row">
-							<label>{{if eq .Messages.Lang "uz"}}Maqsadli muddat{{else}}Target timeline{{end}}<input name="timeline"></label>
-							<label>{{if eq .Messages.Lang "uz"}}Aloqa{{else}}Contact{{end}}<input name="contact" required></label>
-						</div>
-						<label>{{if eq .Messages.Lang "uz"}}Qisqa izoh{{else}}Brief context{{end}}<textarea name="context"></textarea></label>
-						<button class="btn btn--primary btn--lg" type="submit">{{.Messages.CTABand.Button}}</button>
-					</form>
-				</div>
-			</section>
-			<script>
-				document.querySelectorAll('.contact-form').forEach((form) => {
-					form.addEventListener('submit', (event) => {
-						event.preventDefault();
-						if (!(form instanceof HTMLFormElement)) return;
-						const email = form.dataset.contactEmail;
-						if (!email) return;
-						const data = new FormData(form);
-						const subject = 'Institution assessment request';
-						const body = [
-							`Institution name: ${data.get('institution') ?? ''}`,
-							`City: ${data.get('city') ?? ''}`,
-							`Goal: ${data.get('goal') ?? ''}`,
-							`Target timeline: ${data.get('timeline') ?? ''}`,
-							`Contact: ${data.get('contact') ?? ''}`,
-							'',
-							`${data.get('context') ?? ''}`,
-						].join('\n');
-						window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-					});
-				});
-			</script>
-			<section class="section section--tight" id="faq" aria-labelledby="faq-heading">
+			<section class="section section--tight faq-section" id="faq" aria-labelledby="faq-heading">
 				<div class="wrap wrap--narrow">
 					<h2 id="faq-heading" class="heading-lg">{{.Messages.FAQ.Heading}}</h2>
 					<p class="muted intro-copy">{{.Messages.FAQ.Intro}}</p>
-					<div class="faq faq--open">
-						{{range .Messages.FAQ.Items}}<article class="faq__item"><h3>{{.Question}}</h3><p>{{.Answer}}</p></article>{{end}}
+					<div class="faq faq--minimal">
+						{{range .Messages.FAQ.Items}}<details class="faq__item"><summary>{{.Question}}</summary><p>{{.Answer}}</p></details>{{end}}
 					</div>
 				</div>
 			</section>
@@ -308,38 +257,4 @@
 			<p><a href="{{if eq .Messages.Lang "uz"}}/uz{{else}}/{{end}}">{{.Messages.Privacy.Back}}</a></p>
 		</main>
 {{template "public_footer" .}}
-{{end}}
-
-{{define "public_verify"}}
-{{template "public_head" .}}
-		<main id="main" class="verify-page">
-			<div class="wrap wrap--narrow">
-				<article class="cert">
-					<header class="cert__top">
-						<span class="cert__brand">{{.Messages.BrandShort}}</span>
-						<span class="cert__badge">{{.Messages.Verify.Badge}}</span>
-					</header>
-					<h1 class="cert__heading">{{.Messages.Verify.Heading}}</h1>
-					<p class="cert__intro">{{.Messages.Verify.Intro}}</p>
-					<div class="cert__institution">
-						<p class="cert__inst-name">{{.Certificate.Institution}}</p>
-						<p class="cert__inst-role">{{.Certificate.Designation}}</p>
-					</div>
-					<dl class="cert__details">
-						<div class="cert__detail"><dt>{{.Messages.Verify.SATDate}}</dt><dd>{{.Certificate.SATAdministrationDate}}</dd></div>
-						<div class="cert__detail"><dt>{{.Messages.Verify.VerificationID}}</dt><dd class="cert__detail-mono">{{.Certificate.VerificationID}}</dd></div>
-						<div class="cert__detail"><dt>{{.Messages.Verify.IssueDate}}</dt><dd>{{.Certificate.IssueDate}}</dd></div>
-					</dl>
-					<figure class="cert__shot">
-						<figcaption class="cert__shot-head">{{.Messages.Verify.ScreenshotHeading}}</figcaption>
-						<img src="{{.Certificate.CollegeBoardScreenshot}}" alt="{{.Messages.Verify.ScreenshotHeading}} - {{.Certificate.Institution}}" width="880" height="540">
-						<figcaption class="cert__shot-cap">{{.Messages.Verify.ScreenshotCaption}}</figcaption>
-					</figure>
-					<p class="cert__note">{{.Messages.Verify.FooterNote}}</p>
-				</article>
-				<p class="verify-back"><a href="{{if eq .Messages.Lang "uz"}}/uz{{else}}/{{end}}">← {{.Messages.Verify.BackHome}}</a></p>
-			</div>
-		</main>
-	</body>
-</html>
 {{end}}

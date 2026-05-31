@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /verify
+Disallow: /uz/verify
 
 Sitemap: https://edulicense.uz/sitemap.xml

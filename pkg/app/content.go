@@ -20,7 +20,6 @@ type Messages struct {
 	CTABand         CTABandMessages
 	Footer          FooterMessages
 	Privacy         PrivacyMessages
-	Verify          VerifyMessages
 }
 
 type NavMessages struct {
@@ -173,23 +172,6 @@ type PrivacyMessages struct {
 	Back  string
 }
 
-type VerifyMessages struct {
-	MetaTitle         string
-	Badge             string
-	Heading           string
-	Intro             string
-	SATDate           string
-	VerificationID    string
-	IssueDate         string
-	ScreenshotHeading string
-	ScreenshotCaption string
-	SealTop           string
-	SealBottom        string
-	SignatureLabel    string
-	FooterNote        string
-	BackHome          string
-}
-
 var EnglishMessages = Messages{
 	Lang:            "en",
 	OGLocale:        "en_GB",
@@ -222,7 +204,7 @@ var EnglishMessages = Messages{
 		ScrollHint:      "See how we help",
 		WhatsAppPrefill: "Hello — I would like to discuss international licensing and school setup for our institution in Uzbekistan.",
 		EmailSubject:    "Institution readiness assessment",
-		EmailBody:       "Hello Edu License,\n\nWe would like to discuss licensing or SAT test center readiness for our institution.\n\nInstitution name:\nCity:\nCurrent programme:\nTarget timeline:\n",
+		EmailBody:       "Hello Edu License,\n\nWe would like to discuss international licensing and school readiness for our institution.\n\nInstitution name:\nCity:\nCurrent programme:\nTarget timeline:\n",
 		ImageAlt:        "Students learning together in a bright classroom",
 	},
 	Pillars: PillarMessages{
@@ -238,22 +220,22 @@ var EnglishMessages = Messages{
 		Intro:   "We are most useful when a school or university needs a practical path from ambition to an evidence-ready application.",
 		Items: []string{
 			"Private schools preparing for international programme authorisation.",
-			"Universities and schools applying to become SAT test centres.",
+			"Universities and education groups preparing institutional evidence for international partnerships.",
 			"Established institutions adding Cambridge, IB-oriented, American, or dual-diploma pathways.",
 			"Leadership teams that need Uzbek context translated into international evidence standards.",
 		},
 	},
 	Proof: ProofMessages{
 		Heading: "Evidence, not vague promises",
-		Intro:   "Licensing work is high-stakes, so we show the parts that can be verified publicly and keep the rest confidential for each institution.",
+		Intro:   "Licensing work is high-stakes, so we focus on visible readiness signals without exposing confidential client work.",
 		Stats: []ProofStat{
-			{Value: "2-step", Label: "SAT centre path: CEEB code, then test centre approval"},
 			{Value: "9-point", Label: "website and document readiness checklist before submission"},
-			{Value: "Public", Label: "certificate verification record for completed work"},
+			{Value: "Local", Label: "Uzbek licence, address, and public evidence reviewed together"},
+			{Value: "Clear", Label: "single project owner, timeline, and responsibility map"},
 		},
 		Items: []ProofItem{
-			{Title: "Oriental University SAT test centre certificate", Body: "The public verification page shows the issued credential and College Board record we can disclose.", Href: "/verify/oriental-university-sat-center", LinkLabel: "View verification"},
-			{Title: "Document-first workflow", Body: "We collect the English licence, domain email, English website evidence, responsible staff details, and application ownership before submission."},
+			{Title: "Document-first workflow", Body: "We check licence details, domain email, English website evidence, responsible staff details, and application ownership before submission."},
+			{Title: "Public evidence review", Body: "Founder or director details, timetable, address, phone, and email are checked so the website supports the institutional story."},
 			{Title: "Confidential client work", Body: "Many licensing and school-readiness projects cannot be named publicly. References can be discussed during a qualified discovery call."},
 		},
 	},
@@ -262,7 +244,7 @@ var EnglishMessages = Messages{
 		Body:    "We combine local execution in Uzbekistan with the paperwork discipline international bodies expect.",
 		Items: []WhyItem{
 			{Title: "Local evidence control", Body: "We check licence details, website content, addresses, contacts, and operational documents before an application leaves your team."},
-			{Title: "Application ownership", Body: "One responsible person tracks the timeline, missing documents, CEEB steps, College Board submission, and follow-up."},
+			{Title: "Application ownership", Body: "One responsible person tracks the timeline, missing documents, submission steps, and follow-up."},
 			{Title: "Operational readiness", Body: "The work does not stop at forms. We help align people, schedules, website proof, and communications so the institution can actually operate."},
 		},
 	},
@@ -280,10 +262,9 @@ var EnglishMessages = Messages{
 		Intro:   "Short answers to the issues school founders and university teams usually raise before starting.",
 		Items: []FAQItem{
 			{Question: "Do you guarantee a licence?", Answer: "No — exam boards and programme bodies make final decisions. We align you with requirements and prepare a strong, coherent submission."},
-			{Question: "Which programmes?", Answer: "Typically British-style pathways, IB-oriented models, American or dual-diploma setups, and SAT test centre applications. We confirm fit early."},
+			{Question: "Which programmes?", Answer: "Typically British-style pathways, IB-oriented models, American or dual-diploma setups. We confirm fit early."},
 			{Question: "Timeline?", Answer: "Expect months, not weeks — structured around your maturity, recruitment, and target authorisation date."},
-			{Question: "What documents do SAT test centre applicants need first?", Answer: "We start with the English licence, domain email, English website, one responsible staff member, and website proof for leadership, timetable, address, phone, and email."},
-			{Question: "How does the SAT test centre process work?", Answer: "It is handled in two main steps: first the institution receives a CEEB code, then the test centre application is submitted and tracked until it appears in the official list."},
+			{Question: "What documents do we need first?", Answer: "We start with the licence, domain email, English website, one responsible staff member, and website proof for leadership, timetable, address, phone, and email."},
 			{Question: "How do we start?", Answer: "Send the institution name, city, current licence status, target programme, and desired timeline. We reply with the right next step instead of a generic package."},
 		},
 	},
@@ -291,8 +272,8 @@ var EnglishMessages = Messages{
 		Heading: "A practical team around the application",
 		Intro:   "Consulting is delivered by people, not templates. The operating model below shows who is accountable during a project.",
 		Items: []TeamItem{
-			{Title: "Founder-led advisory", Role: "Strategy and institution fit", Body: "Senior guidance on whether the target licence, programme, or SAT centre path fits the institution before work begins."},
-			{Title: "Application operations", Role: "Documents, CEEB, College Board follow-up", Body: "Day-to-day tracking of missing documents, submission steps, responsible staff, reminders, and external communication."},
+			{Title: "Founder-led advisory", Role: "Strategy and institution fit", Body: "Senior guidance on whether the target licence or programme path fits the institution before work begins."},
+			{Title: "Application operations", Role: "Documents and submission follow-up", Body: "Day-to-day tracking of missing documents, submission steps, responsible staff, reminders, and external communication."},
 			{Title: "School readiness coordination", Role: "Website, timetable, contacts, evidence", Body: "Practical support to make public-facing evidence match the licence, address, staff structure, and operational reality."},
 		},
 	},
@@ -301,7 +282,7 @@ var EnglishMessages = Messages{
 		Intro:   "Exact pricing depends on the institution, but we make the commercial model clear before work starts.",
 		Items: []EngagementItem{
 			{Title: "Readiness review", Price: "Fixed diagnostic", Body: "A short review of licence, website, documents, gaps, and target timeline. Best when you need a decision before committing to a full project."},
-			{Title: "Application project", Price: "Fixed project scope", Body: "End-to-end support for a defined licensing or SAT test centre application, including document tracking and submission follow-up."},
+			{Title: "Application project", Price: "Fixed project scope", Body: "End-to-end support for a defined licensing application, including document tracking and submission follow-up."},
 			{Title: "Advisory retainer", Price: "Monthly support", Body: "Ongoing support for schools building multiple pathways, preparing operations, or coordinating several approval tracks at once."},
 		},
 	},
@@ -311,7 +292,7 @@ var EnglishMessages = Messages{
 		Button:          "Email the brief",
 		SecondaryButton: "WhatsApp quick message",
 		EmailSubject:    "Institution assessment request",
-		EmailBody:       "Hello Edu License,\n\nInstitution name:\nCity:\nCurrent licence status:\nTarget programme or SAT centre goal:\nDesired timeline:\nMain contact:\n",
+		EmailBody:       "Hello Edu License,\n\nInstitution name:\nCity:\nCurrent licence status:\nTarget programme:\nDesired timeline:\nMain contact:\n",
 		WhatsAppPrefill: "Hello — we want to request an institution assessment. I can share our school name, city, licence status, and target timeline.",
 	},
 	Footer: FooterMessages{
@@ -328,22 +309,6 @@ var EnglishMessages = Messages{
 		Title: "Privacy notice (stub)",
 		Body:  "Placeholder only. Add your real policy before collecting personal data beyond WhatsApp messages.",
 		Back:  "Back to home",
-	},
-	Verify: VerifyMessages{
-		MetaTitle:         "Certificate verification",
-		Badge:             "Verified",
-		Heading:           "This certificate is authentic",
-		Intro:             "The credential below was issued and verified by Edu License LLC. Details match our records.",
-		SATDate:           "SAT administration date",
-		VerificationID:    "Verification ID",
-		IssueDate:         "Issue date",
-		ScreenshotHeading: "College Board record",
-		ScreenshotCaption: "Screenshot from the official College Board test centre search.",
-		SealTop:           "EDU LICENSE LLC",
-		SealBottom:        "VERIFIED CREDENTIAL",
-		SignatureLabel:    "Authorised signature",
-		FooterNote:        "If any detail does not match the printed certificate, contact Edu License LLC before relying on this document.",
-		BackHome:          "Back to Edu License",
 	},
 }
 
@@ -379,7 +344,7 @@ var UzbekMessages = Messages{
 		ScrollHint:      "Qanday yordam berishimiz",
 		WhatsAppPrefill: "Assalomu alaykum — O'zbekistondagi maktabimiz uchun xalqaro litsenza va tashkil etish bo'yicha maslahat kerak.",
 		EmailSubject:    "Muassasa tayyorgarligini baholash",
-		EmailBody:       "Assalomu alaykum Edu License,\n\nMuassasamiz uchun litsenziya yoki SAT test markazi tayyorgarligini muhokama qilmoqchimiz.\n\nMuassasa nomi:\nShahar:\nHozirgi dastur:\nMaqsadli muddat:\n",
+		EmailBody:       "Assalomu alaykum Edu License,\n\nMuassasamiz uchun xalqaro litsenziya va maktab tayyorgarligini muhokama qilmoqchimiz.\n\nMuassasa nomi:\nShahar:\nHozirgi dastur:\nMaqsadli muddat:\n",
 		ImageAlt:        "Yorqin sinfda birga o'qiyotgan o'quvchilar",
 	},
 	Pillars: PillarMessages{
@@ -395,22 +360,22 @@ var UzbekMessages = Messages{
 		Intro:   "Maktab yoki universitet g'oyadan dalillarga tayyor arizagacha aniq yo'lga muhtoj bo'lsa, biz eng foydali bo'lamiz.",
 		Items: []string{
 			"Xalqaro dastur vakolatini olishga tayyorlanayotgan xususiy maktablar.",
-			"SAT test markazi bo'lish uchun ariza topshirayotgan maktab va universitetlar.",
+			"Xalqaro hamkorlik uchun institutsional dalillarini tayyorlayotgan universitetlar va ta'lim guruhlari.",
 			"Cambridge, IBga yaqin, American yoki dual-diploma yo'nalishlarini qo'shayotgan muassasalar.",
 			"O'zbekiston kontekstini xalqaro dalil standartlariga moslashtirishi kerak bo'lgan rahbariyat jamoalari.",
 		},
 	},
 	Proof: ProofMessages{
 		Heading: "Umumiy va'dalar emas, dalillar",
-		Intro:   "Litsenziya ishlari mas'uliyatli. Shuning uchun oshkor qilish mumkin bo'lgan natijalarni ko'rsatamiz, qolgan mijoz ishlari esa maxfiy qoladi.",
+		Intro:   "Litsenziya ishlari mas'uliyatli. Shuning uchun maxfiy mijoz ishlarini oshkor qilmasdan, tayyorgarlik dalillariga e'tibor beramiz.",
 		Stats: []ProofStat{
-			{Value: "2 bosqich", Label: "SAT markazi yo'li: avval CEEB kodi, keyin test markazi tasdig'i"},
 			{Value: "9 band", Label: "arizadan oldingi website va hujjat tayyorgarligi tekshiruvi"},
-			{Value: "Ochiq", Label: "yakunlangan ish uchun sertifikat tekshiruv sahifasi"},
+			{Value: "Mahalliy", Label: "litsenziya, manzil va ochiq dalillar birga tekshiriladi"},
+			{Value: "Aniq", Label: "bitta loyiha egasi, timeline va mas'uliyat xaritasi"},
 		},
 		Items: []ProofItem{
-			{Title: "Oriental University SAT test markazi sertifikati", Body: "Ochiq tekshiruv sahifasida berilgan hujjat va ko'rsatish mumkin bo'lgan College Board yozuvi bor.", Href: "/uz/verify/oriental-university-sat-center", LinkLabel: "Tekshiruvni ko'rish"},
-			{Title: "Hujjatdan boshlanadigan jarayon", Body: "Arizadan oldin ingliz tilidagi litsenziya, domen email, inglizcha website, mas'ul xodim va website dalillarini yig'amiz."},
+			{Title: "Hujjatdan boshlanadigan jarayon", Body: "Arizadan oldin litsenziya ma'lumotlari, domen email, inglizcha website, mas'ul xodim va ariza egaligini tekshiramiz."},
+			{Title: "Ochiq dalillar tekshiruvi", Body: "Rahbar ma'lumotlari, dars jadvali, manzil, telefon va email websiteda muassasa hikoyasini qo'llashi kerak."},
 			{Title: "Maxfiy mijoz ishlari", Body: "Ko'p litsenziya va tayyorgarlik loyihalarini ochiq nomlash mumkin emas. Tavsiyalar malakali suhbatda muhokama qilinadi."},
 		},
 	},
@@ -419,7 +384,7 @@ var UzbekMessages = Messages{
 		Body:    "Biz O'zbekistondagi mahalliy ijroni xalqaro tashkilotlar kutadigan hujjat intizomi bilan birlashtiramiz.",
 		Items: []WhyItem{
 			{Title: "Mahalliy dalil nazorati", Body: "Ariza yuborilishidan oldin litsenziya ma'lumotlari, website, manzil, kontaktlar va operatsion hujjatlarni tekshiramiz."},
-			{Title: "Ariza egasi aniq", Body: "Bitta mas'ul shaxs timeline, yetishmayotgan hujjatlar, CEEB bosqichlari, College Board arizasi va follow-upni kuzatadi."},
+			{Title: "Ariza egasi aniq", Body: "Bitta mas'ul shaxs timeline, yetishmayotgan hujjatlar, ariza bosqichlari va follow-upni kuzatadi."},
 			{Title: "Operatsion tayyorgarlik", Body: "Ish faqat forma to'ldirish bilan tugamaydi. Jamoa, jadval, website dalillari va kommunikatsiyalarni ham moslaymiz."},
 		},
 	},
@@ -437,10 +402,9 @@ var UzbekMessages = Messages{
 		Intro:   "Maktab asoschilari va universitet jamoalari boshlashdan oldin ko'p so'raydigan savollar.",
 		Items: []FAQItem{
 			{Question: "Litsenziya kafolati bormi?", Answer: "Yo'q — yakuniy qarorni imtihon markazi yoki tashkilot qiladi. Biz talablarga moslashtiramiz va kuchli, izchil topshiriq uchun tayyorlaymiz."},
-			{Question: "Qaysi dasturlar?", Answer: "Odatda Britaniya uslubidagi yo'llar, IBga yaqin modellar, American yoki dual-diploma yo'nalishlari va SAT test markazi arizalari. Mosligini boshida aniqlaymiz."},
+			{Question: "Qaysi dasturlar?", Answer: "Odatda Britaniya uslubidagi yo'llar, IBga yaqin modellar, American yoki dual-diploma yo'nalishlari. Mosligini boshida aniqlaymiz."},
 			{Question: "Qancha vaqt?", Answer: "Bir necha oy — boshlang'ich holat, kadrlar va maqsadli vakolatlash sanasiga bog'liq."},
-			{Question: "SAT test markazi arizasi uchun avval nimalar kerak?", Answer: "Ingliz tilidagi litsenziya, domen email, inglizcha website, bitta mas'ul xodim va websiteda rahbar, jadval, manzil, telefon hamda email dalillari kerak."},
-			{Question: "SAT test markazi jarayoni qanday ishlaydi?", Answer: "Jarayon ikki asosiy bosqichdan iborat: avval muassasa CEEB kodi oladi, keyin test markazi arizasi topshirilib, rasmiy ro'yxatga chiqquncha kuzatiladi."},
+			{Question: "Avval qanday hujjatlar kerak?", Answer: "Ingliz tilidagi litsenziya, domen email, inglizcha website, bitta mas'ul xodim va websiteda rahbar, jadval, manzil, telefon hamda email dalillari kerak."},
 			{Question: "Qanday boshlaymiz?", Answer: "Muassasa nomi, shahar, hozirgi litsenziya holati, maqsadli dastur va muddatni yuboring. Biz umumiy paket emas, to'g'ri keyingi qadamni aytamiz."},
 		},
 	},
@@ -448,8 +412,8 @@ var UzbekMessages = Messages{
 		Heading: "Ariza atrofidagi amaliy jamoa",
 		Intro:   "Konsalting shablonlar bilan emas, odamlar bilan bajariladi. Quyidagi model loyiha davomida kim mas'ul ekanini ko'rsatadi.",
 		Items: []TeamItem{
-			{Title: "Founder-led advisory", Role: "Strategiya va muassasa mosligi", Body: "Ish boshlanishidan oldin maqsadli litsenziya, dastur yoki SAT markazi yo'li muassasaga mosligini baholash."},
-			{Title: "Application operations", Role: "Hujjatlar, CEEB, College Board follow-up", Body: "Yetishmayotgan hujjatlar, ariza bosqichlari, mas'ul xodimlar, eslatmalar va tashqi kommunikatsiyani kundalik kuzatish."},
+			{Title: "Founder-led advisory", Role: "Strategiya va muassasa mosligi", Body: "Ish boshlanishidan oldin maqsadli litsenziya yoki dastur yo'li muassasaga mosligini baholash."},
+			{Title: "Application operations", Role: "Hujjatlar va ariza follow-up", Body: "Yetishmayotgan hujjatlar, ariza bosqichlari, mas'ul xodimlar, eslatmalar va tashqi kommunikatsiyani kundalik kuzatish."},
 			{Title: "School readiness coordination", Role: "Website, jadval, kontaktlar, dalillar", Body: "Ochiq dalillar litsenziya, manzil, xodimlar tuzilmasi va haqiqiy operatsiyaga mos bo'lishini ta'minlash."},
 		},
 	},
@@ -458,7 +422,7 @@ var UzbekMessages = Messages{
 		Intro:   "Aniq narx muassasaga bog'liq, lekin tijoriy model ish boshlanishidan oldin kelishiladi.",
 		Items: []EngagementItem{
 			{Title: "Tayyorlik tekshiruvi", Price: "Fixed diagnostic", Body: "Litsenziya, website, hujjatlar, bo'shliqlar va timeline bo'yicha qisqa ko'rib chiqish. To'liq loyihadan oldin qaror kerak bo'lsa mos."},
-			{Title: "Ariza loyihasi", Price: "Fixed project scope", Body: "Belgilangan litsenziya yoki SAT test markazi arizasi uchun hujjat kuzatuvi va submission follow-up bilan end-to-end yordam."},
+			{Title: "Ariza loyihasi", Price: "Fixed project scope", Body: "Belgilangan litsenziya arizasi uchun hujjat kuzatuvi va submission follow-up bilan end-to-end yordam."},
 			{Title: "Advisory retainer", Price: "Monthly support", Body: "Bir nechta yo'nalish, operatsion tayyorgarlik yoki parallel approval tracklarni yuritayotgan maktablar uchun davomiy yordam."},
 		},
 	},
@@ -468,7 +432,7 @@ var UzbekMessages = Messages{
 		Button:          "Email orqali brief",
 		SecondaryButton: "WhatsApp tez xabar",
 		EmailSubject:    "Muassasa baholashi so'rovi",
-		EmailBody:       "Assalomu alaykum Edu License,\n\nMuassasa nomi:\nShahar:\nHozirgi litsenziya holati:\nMaqsadli dastur yoki SAT markazi:\nKerakli muddat:\nAsosiy kontakt:\n",
+		EmailBody:       "Assalomu alaykum Edu License,\n\nMuassasa nomi:\nShahar:\nHozirgi litsenziya holati:\nMaqsadli dastur:\nKerakli muddat:\nAsosiy kontakt:\n",
 		WhatsAppPrefill: "Assalomu alaykum — muassasa baholashini so'ramoqchimiz. Maktab nomi, shahar, litsenziya holati va timeline yubora olaman.",
 	},
 	Footer: FooterMessages{
@@ -485,22 +449,6 @@ var UzbekMessages = Messages{
 		Title: "Maxfiylik (stub)",
 		Body:  "Vaqtinchina. WhatsAppdan tashqari ma'lumot yig'ishdan oldin haqiqiy siyosatni joylashtiring.",
 		Back:  "Bosh sahifa",
-	},
-	Verify: VerifyMessages{
-		MetaTitle:         "Sertifikatni tekshirish",
-		Badge:             "Tasdiqlangan",
-		Heading:           "Ushbu sertifikat haqiqiy",
-		Intro:             "Quyidagi hujjat Edu License LLC tomonidan berilgan va tasdiqlangan. Ma'lumotlar bizning yozuvlarimizga mos keladi.",
-		SATDate:           "SAT imtihon sanasi",
-		VerificationID:    "Tekshiruv IDsi",
-		IssueDate:         "Berilgan sana",
-		ScreenshotHeading: "College Board yozuvi",
-		ScreenshotCaption: "College Boardning rasmiy test markazlari qidiruvidan olingan skrinshot.",
-		SealTop:           "EDU LICENSE LLC",
-		SealBottom:        "TASDIQLANGAN HUJJAT",
-		SignatureLabel:    "Vakolatli imzo",
-		FooterNote:        "Agar biron ma'lumot bosma sertifikatga mos kelmasa, ushbu hujjatga ishonishdan oldin Edu License LLC bilan bog'laning.",
-		BackHome:          "Edu License sahifasiga",
 	},
 }
 

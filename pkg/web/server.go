@@ -18,7 +18,6 @@ import (
 type Store interface {
 	ListUsers(ctx context.Context) ([]app.User, error)
 	ListUsersByRoles(ctx context.Context, roles ...app.Role) ([]app.User, error)
-	CertificateBySlug(ctx context.Context, slug string) (app.Certificate, error)
 	ListApplications(ctx context.Context, stage, adminID, location string) ([]app.TestCenterApplication, error)
 	ApplicationByID(ctx context.Context, id string) (app.TestCenterApplication, error)
 	CreateApplication(ctx context.Context, input app.ApplicationInput, actorID string) (app.TestCenterApplication, error)
@@ -67,8 +66,6 @@ func (s *Server) Routes() http.Handler {
 	r.Get("/uz", s.home("uz"))
 	r.Get("/privacy", s.privacy("en"))
 	r.Get("/uz/privacy", s.privacy("uz"))
-	r.Get("/verify/{slug}", s.verify("en"))
-	r.Get("/uz/verify/{slug}", s.verify("uz"))
 	r.Get("/robots.txt", s.robots)
 	r.Get("/sitemap.xml", s.sitemap)
 

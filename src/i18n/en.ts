@@ -37,7 +37,7 @@ export const en: Messages = {
 			'Hello — I would like to discuss international licensing and school setup for our institution in Uzbekistan.',
 		emailSubject: 'Institution readiness assessment',
 		emailBody:
-			'Hello Edu License,\n\nWe would like to discuss licensing or SAT test center readiness for our institution.\n\nInstitution name:\nCity:\nCurrent programme:\nTarget timeline:\n',
+			'Hello Edu License,\n\nWe would like to discuss international licensing and school readiness for our institution.\n\nInstitution name:\nCity:\nCurrent programme:\nTarget timeline:\n',
 		imageAlt: 'Students learning together in a bright classroom',
 	},
 	pillars: {
@@ -70,7 +70,7 @@ export const en: Messages = {
 			'We are most useful when a school or university needs a practical path from ambition to an evidence-ready application.',
 		items: [
 			'Private schools preparing for international programme authorisation.',
-			'Universities and schools applying to become SAT test centres.',
+			'Universities and education groups preparing institutional evidence for international partnerships.',
 			'Established institutions adding Cambridge, IB-oriented, American, or dual-diploma pathways.',
 			'Leadership teams that need Uzbek context translated into international evidence standards.',
 		],
@@ -78,24 +78,22 @@ export const en: Messages = {
 	proof: {
 		heading: 'Evidence, not vague promises',
 		intro:
-			'Licensing work is high-stakes, so we show the parts that can be verified publicly and keep the rest confidential for each institution.',
+			'Licensing work is high-stakes, so we focus on visible readiness signals without exposing confidential client work.',
 		stats: [
-			{ value: '2-step', label: 'SAT centre path: CEEB code, then test centre approval' },
 			{ value: '9-point', label: 'website and document readiness checklist before submission' },
-			{ value: 'Public', label: 'certificate verification record for completed work' },
+			{ value: 'Local', label: 'Uzbek licence, address, and public evidence reviewed together' },
+			{ value: 'Clear', label: 'single project owner, timeline, and responsibility map' },
 		],
 		items: [
 			{
-				title: 'Oriental University SAT test centre certificate',
-				body:
-					'The public verification page shows the issued credential and College Board record we can disclose.',
-				href: '/verify/oriental-university-sat-center',
-				linkLabel: 'View verification',
-			},
-			{
 				title: 'Document-first workflow',
 				body:
-					'We collect the English licence, domain email, English website evidence, responsible staff details, and application ownership before submission.',
+					'We check licence details, domain email, English website evidence, responsible staff details, and application ownership before submission.',
+			},
+			{
+				title: 'Public evidence review',
+				body:
+					'Founder or director details, timetable, address, phone, and email are checked so the website supports the institutional story.',
 			},
 			{
 				title: 'Confidential client work',
@@ -117,7 +115,7 @@ export const en: Messages = {
 			{
 				title: 'Application ownership',
 				body:
-					'One responsible person tracks the timeline, missing documents, CEEB steps, College Board submission, and follow-up.',
+					'One responsible person tracks the timeline, missing documents, submission steps, and follow-up.',
 			},
 			{
 				title: 'Operational readiness',
@@ -160,7 +158,7 @@ export const en: Messages = {
 			{
 				question: 'Which programmes?',
 				answer:
-					'Typically British-style pathways, IB-oriented models, American or dual-diploma setups, and SAT test centre applications. We confirm fit early.',
+					'Typically British-style pathways, IB-oriented models, American or dual-diploma setups. We confirm fit early.',
 			},
 			{
 				question: 'Timeline?',
@@ -168,14 +166,9 @@ export const en: Messages = {
 					'Expect months, not weeks — structured around your maturity, recruitment, and target authorisation date.',
 			},
 			{
-				question: 'What documents do SAT test centre applicants need first?',
+				question: 'What documents do we need first?',
 				answer:
-					'We start with the English licence, domain email, English website, one responsible staff member, and website proof for leadership, timetable, address, phone, and email.',
-			},
-			{
-				question: 'How does the SAT test centre process work?',
-				answer:
-					'It is handled in two main steps: first the institution receives a CEEB code, then the test centre application is submitted and tracked until it appears in the official list.',
+					'We start with the licence, domain email, English website, one responsible staff member, and website proof for leadership, timetable, address, phone, and email.',
 			},
 			{
 				question: 'How do we start?',
@@ -193,11 +186,11 @@ export const en: Messages = {
 				title: 'Founder-led advisory',
 				role: 'Strategy and institution fit',
 				body:
-					'Senior guidance on whether the target licence, programme, or SAT centre path fits the institution before work begins.',
+					'Senior guidance on whether the target licence or programme path fits the institution before work begins.',
 			},
 			{
 				title: 'Application operations',
-				role: 'Documents, CEEB, College Board follow-up',
+				role: 'Documents and submission follow-up',
 				body:
 					'Day-to-day tracking of missing documents, submission steps, responsible staff, reminders, and external communication.',
 			},
@@ -224,7 +217,7 @@ export const en: Messages = {
 				title: 'Application project',
 				price: 'Fixed project scope',
 				body:
-					'End-to-end support for a defined licensing or SAT test centre application, including document tracking and submission follow-up.',
+					'End-to-end support for a defined licensing application, including document tracking and submission follow-up.',
 			},
 			{
 				title: 'Advisory retainer',
@@ -241,7 +234,7 @@ export const en: Messages = {
 		secondaryButton: 'WhatsApp quick message',
 		emailSubject: 'Institution assessment request',
 		emailBody:
-			'Hello Edu License,\n\nInstitution name:\nCity:\nCurrent licence status:\nTarget programme or SAT centre goal:\nDesired timeline:\nMain contact:\n',
+			'Hello Edu License,\n\nInstitution name:\nCity:\nCurrent licence status:\nTarget programme:\nDesired timeline:\nMain contact:\n',
 		whatsappPrefill:
 			'Hello — we want to request an institution assessment. I can share our school name, city, licence status, and target timeline.',
 	},
@@ -260,24 +253,5 @@ export const en: Messages = {
 		body:
 			'Placeholder only. Add your real policy before collecting personal data beyond WhatsApp messages.',
 		back: 'Back to home',
-	},
-	verify: {
-		metaTitle: 'Certificate verification',
-		badge: 'Verified',
-		heading: 'This certificate is authentic',
-		intro:
-			'The credential below was issued and verified by Edu License LLC. Details match our records.',
-		satDate: 'SAT administration date',
-		verificationId: 'Verification ID',
-		issueDate: 'Issue date',
-		screenshotHeading: 'College Board record',
-		screenshotCaption:
-			'Screenshot from the official College Board test centre search.',
-		sealTop: 'EDU LICENSE LLC',
-		sealBottom: 'VERIFIED CREDENTIAL',
-		signatureLabel: 'Authorised signature',
-		footerNote:
-			'If any detail does not match the printed certificate, contact Edu License LLC before relying on this document.',
-		backHome: 'Back to Edu License',
 	},
 };

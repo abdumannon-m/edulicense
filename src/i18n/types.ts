@@ -102,20 +102,4 @@ export interface Messages {
 		body: string;
 		back: string;
 	};
-	verify: {
-		metaTitle: string;
-		badge: string;
-		heading: string;
-		intro: string;
-		satDate: string;
-		verificationId: string;
-		issueDate: string;
-		screenshotHeading: string;
-		screenshotCaption: string;
-		sealTop: string;
-		sealBottom: string;
-		signatureLabel: string;
-		footerNote: string;
-		backHome: string;
-	};
 }

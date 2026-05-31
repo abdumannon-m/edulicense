@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"edu-license/pkg/app"
-	"github.com/go-chi/chi/v5"
 )
 
 func (s *Server) home(locale string) http.HandlerFunc {
@@ -47,35 +46,9 @@ func (s *Server) privacy(locale string) http.HandlerFunc {
 	}
 }
 
-func (s *Server) verify(locale string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		slug := chi.URLParam(r, "slug")
-		cert, err := s.store.CertificateBySlug(r.Context(), slug)
-		if err != nil {
-			s.notFound(w, r)
-			return
-		}
-		messages := app.MessagesForLocale(locale)
-		path := "/verify/" + slug
-		if locale == "uz" {
-			path = "/uz" + path
-		}
-		data := app.PublicPageData{
-			BaseURL:      s.cfg.AppBaseURL,
-			Path:         path,
-			CanonicalURL: canonical(s.cfg.AppBaseURL, path),
-			Messages:     messages,
-			Title:        messages.Verify.MetaTitle + " · " + cert.Institution + " · " + messages.BrandShort,
-			Description:  messages.Verify.Intro,
-			Certificate:  cert,
-		}
-		s.renderer.Render(w, http.StatusOK, "public_verify", data)
-	}
-}
-
 func (s *Server) robots(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	fmt.Fprintf(w, "User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: %s/sitemap.xml\n", strings.TrimRight(s.cfg.AppBaseURL, "/"))
+	fmt.Fprintf(w, "User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /verify\nDisallow: /uz/verify\n\nSitemap: %s/sitemap.xml\n", strings.TrimRight(s.cfg.AppBaseURL, "/"))
 }
 
 func (s *Server) sitemap(w http.ResponseWriter, r *http.Request) {
