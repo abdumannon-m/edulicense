@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"html/template"
+	"io/fs"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -15,6 +16,18 @@ type Renderer struct {
 }
 
 func NewRenderer(pattern string) (*Renderer, error) {
+	return newRenderer(func(t *template.Template) (*template.Template, error) {
+		return t.ParseGlob(pattern)
+	}, filepath.Base(pattern))
+}
+
+func NewRendererFS(fsys fs.FS, pattern string) (*Renderer, error) {
+	return newRenderer(func(t *template.Template) (*template.Template, error) {
+		return t.ParseFS(fsys, pattern)
+	}, pattern)
+}
+
+func newRenderer(parse func(*template.Template) (*template.Template, error), name string) (*Renderer, error) {
 	funcs := template.FuncMap{
 		"year":         func() int { return time.Now().Year() },
 		"stageLabel":   StageLabel,
@@ -70,8 +83,8 @@ func NewRenderer(pattern string) (*Renderer, error) {
 		},
 	}
 
-	t := template.New(filepath.Base(pattern)).Funcs(funcs)
-	parsed, err := t.ParseGlob(pattern)
+	t := template.New(filepath.Base(name)).Funcs(funcs)
+	parsed, err := parse(t)
 	if err != nil {
 		return nil, err
 	}

@@ -62,6 +62,19 @@ Use the included `Dockerfile` on a managed PaaS with a managed Postgres database
 
 Set `COOKIE_SECURE=true` in production. `/robots.txt` disallows `/admin`, but security depends on session auth and role checks.
 
+### Vercel
+
+The repository also includes `api/app.go` and `vercel.json` so Vercel can route `/admin` and `/admin/*` into a Go Function while the existing public Astro pages continue to serve normally. Configure these Vercel environment variables before redeploying:
+
+- `DATABASE_URL`
+- `SESSION_SECRET`
+- `APP_BASE_URL=https://edulicense.uz`
+- `COOKIE_SECURE=true`
+- S3/R2 variables for uploads
+- Telegram variables for reminders
+
+If those variables are missing, `/admin/login` will stop returning 404 but will show a runtime configuration error until the environment is completed and migrations are run.
+
 ## Checks
 
 ```sh
