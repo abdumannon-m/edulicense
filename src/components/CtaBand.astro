@@ -11,17 +11,137 @@ const wa = whatsappUrl(messages.ctaBand.whatsappPrefill);
 const email = emailUrl(messages.ctaBand.emailSubject, messages.ctaBand.emailBody);
 ---
 
-<section class="wrap section-cta" aria-labelledby="cta-heading">
+<section class="wrap section-cta" aria-labelledby="cta-heading" data-cta-flicker>
 	<div class="cta-panel">
-		<h2 id="cta-heading" class="cta-panel__title">{messages.ctaBand.heading}</h2>
-		<p class="cta-panel__sub">{messages.ctaBand.sub}</p>
-		<div class="cta-panel__actions">
-		<a class="btn btn--primary btn--lg" href={email}>
-			{messages.ctaBand.button}
-		</a>
-		<a class="btn btn--ghost btn--lg cta-panel__secondary" href={wa} rel="noopener noreferrer" target="_blank">
-			{messages.ctaBand.secondaryButton}
-		</a>
+		<canvas
+			class="cta-panel__grid"
+			data-flicker-grid
+			data-max-opacity="0.12"
+			data-flicker-chance="0.08"
+			aria-hidden="true"
+		></canvas>
+		<div class="cta-panel__content">
+			<div class="cta-panel__mark" aria-hidden="true">
+				<canvas
+					class="cta-panel__logo-grid"
+					data-flicker-grid
+					data-max-opacity="0.82"
+					data-flicker-chance="0.55"
+				></canvas>
+			</div>
+			<h2 id="cta-heading" class="cta-panel__title">{messages.ctaBand.heading}</h2>
+			<p class="cta-panel__sub">{messages.ctaBand.sub}</p>
+			<div class="cta-panel__actions">
+				<a class="btn btn--primary btn--lg" href={email}>
+					{messages.ctaBand.button}
+				</a>
+				<a class="btn btn--ghost btn--lg cta-panel__secondary" href={wa} rel="noopener noreferrer" target="_blank">
+					{messages.ctaBand.secondaryButton}
+				</a>
+			</div>
 		</div>
 	</div>
 </section>
+
+<script>
+	(() => {
+		const sections = document.querySelectorAll('[data-cta-flicker]');
+		if (!sections.length) return;
+
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const color = [235, 190, 56];
+		const squareSize = 3.5;
+		const gridGap = 4;
+		const stride = squareSize + gridGap;
+
+		const drawGrid = (
+			ctx: CanvasRenderingContext2D,
+			width: number,
+			height: number,
+			maxOpacity: number,
+			flickerChance: number,
+		) => {
+			ctx.clearRect(0, 0, width, height);
+			for (let y = 0; y < height; y += stride) {
+				for (let x = 0; x < width; x += stride) {
+					const shouldDraw = prefersReducedMotion || Math.random() < flickerChance;
+					if (!shouldDraw) continue;
+					const alpha = prefersReducedMotion ? maxOpacity * 0.42 : Math.random() * maxOpacity;
+					ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha.toFixed(3)})`;
+					ctx.fillRect(x, y, squareSize, squareSize);
+				}
+			}
+		};
+
+		const setupCanvas = (canvas: HTMLCanvasElement) => {
+			const ctx = canvas.getContext('2d');
+			if (!ctx) return;
+
+			let width = 0;
+			let height = 0;
+			let frame = 0;
+			const maxOpacity = Number(canvas.dataset.maxOpacity || 0.12);
+			const flickerChance = Number(canvas.dataset.flickerChance || 0.08);
+
+			const resize = () => {
+				const rect = canvas.getBoundingClientRect();
+				const ratio = Math.min(window.devicePixelRatio || 1, 2);
+				width = Math.max(1, Math.floor(rect.width));
+				height = Math.max(1, Math.floor(rect.height));
+				canvas.width = Math.floor(width * ratio);
+				canvas.height = Math.floor(height * ratio);
+				ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+				drawGrid(ctx, width, height, maxOpacity, flickerChance);
+			};
+
+			const animate = () => {
+				drawGrid(ctx, width, height, maxOpacity, flickerChance);
+				if (!prefersReducedMotion) frame = window.requestAnimationFrame(animate);
+			};
+
+			resize();
+			if (!prefersReducedMotion) frame = window.requestAnimationFrame(animate);
+
+			const observer = new ResizeObserver(resize);
+			observer.observe(canvas);
+
+			return () => {
+				if (frame) window.cancelAnimationFrame(frame);
+				observer.disconnect();
+			};
+		};
+
+		sections.forEach((section) => {
+			section.classList.add('is-reveal-ready');
+			section.querySelectorAll('canvas[data-flicker-grid]').forEach((canvas) => {
+				if (canvas instanceof HTMLCanvasElement) setupCanvas(canvas);
+			});
+		});
+
+		const revealSection = (section: Element) => {
+			section.classList.add('is-visible');
+			revealObserver.unobserve(section);
+		};
+
+		const revealIfInView = (section: Element) => {
+			const rect = section.getBoundingClientRect();
+			if (rect.top < window.innerHeight - 80 && rect.bottom > 80) revealSection(section);
+		};
+
+		const revealObserver = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					revealSection(entry.target);
+				});
+			},
+			{ threshold: 0.2, rootMargin: '0px 0px -80px' },
+		);
+
+		sections.forEach((section) => {
+			revealObserver.observe(section);
+			window.setTimeout(() => revealIfInView(section), 120);
+			window.addEventListener('scroll', () => revealIfInView(section), { passive: true });
+		});
+	})();
+</script>
