@@ -1,0 +1,30 @@
+---
+import type { Messages } from '../i18n/types';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+---
+
+<section class="section section--tight section--surface" id="engagement" aria-labelledby="engagement-heading">
+	<div class="wrap">
+		<div class="section-head">
+			<p class="eyebrow">{messages.nav.engagement}</p>
+			<h2 id="engagement-heading" class="heading-lg">{messages.engagement.heading}</h2>
+			<p class="muted intro-copy">{messages.engagement.intro}</p>
+		</div>
+		<div class="engagement-grid">
+			{
+				messages.engagement.items.map((item) => (
+					<article class="engagement-card">
+						<span>{item.price}</span>
+						<h3>{item.title}</h3>
+						<p>{item.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>

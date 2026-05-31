@@ -1,6 +1,6 @@
 ---
 import type { Messages } from '../i18n/types';
-import { whatsappUrl } from '../i18n/contact';
+import { emailUrl, whatsappUrl } from '../i18n/contact';
 
 interface Props {
 	messages: Messages;
@@ -8,6 +8,7 @@ interface Props {
 
 const { messages } = Astro.props;
 const wa = whatsappUrl(messages.hero.whatsappPrefill);
+const email = emailUrl(messages.hero.emailSubject, messages.hero.emailBody);
 const home = messages.lang === 'uz' ? '/uz' : '/';
 
 const heroSrc =
@@ -21,10 +22,13 @@ const heroSrc =
 			<h1 id="hero-title" class="heading-xl">{messages.hero.title}</h1>
 			<p class="hero__subtitle">{messages.hero.subtitle}</p>
 			<div class="hero__actions">
-				<a class="btn btn--primary btn--hero" href={wa} rel="noopener noreferrer" target="_blank">
+				<a class="btn btn--primary btn--hero" href={email}>
 					{messages.hero.cta}
 				</a>
-				<a class="hero__link" href={`${home}#services`}>{messages.hero.scrollHint}</a>
+				<a class="btn btn--ghost btn--hero" href={wa} rel="noopener noreferrer" target="_blank">
+					{messages.hero.secondaryCta}
+				</a>
+				<a class="hero__link" href={`${home}#proof`}>{messages.hero.scrollHint}</a>
 			</div>
 		</div>
 		<figure class="hero__figure">
@@ -38,7 +42,7 @@ const heroSrc =
 				decoding="async"
 				fetchpriority="high"
 			/>
-			<figcaption class="hero__credit">{messages.footer.creditPhoto}</figcaption>
+			<figcaption class="sr-only">{messages.footer.creditPhoto}</figcaption>
 		</figure>
 	</div>
 </section>

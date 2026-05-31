@@ -20,8 +20,10 @@ const navLabel = messages.lang === 'uz' ? 'Sahifa bo‘limlari' : 'Page sections
 const links = [
 	{ href: `${homePath}#services`, label: messages.nav.services },
 	{ href: `${homePath}#audience`, label: messages.nav.audience },
+	{ href: `${homePath}#proof`, label: messages.nav.proof },
 	{ href: `${homePath}#why`, label: messages.nav.why },
 	{ href: `${homePath}#process`, label: messages.nav.process },
+	{ href: `${homePath}#engagement`, label: messages.nav.engagement },
 	{ href: `${homePath}#faq`, label: messages.nav.faq },
 ];
 ---
@@ -56,6 +58,7 @@ const links = [
 						<span></span>
 						<span></span>
 					</span>
+					<span class="site-header__menu-label">{messages.nav.menu}</span>
 				</summary>
 				<div class="site-header__drawer">
 					<nav aria-label={navLabel}>

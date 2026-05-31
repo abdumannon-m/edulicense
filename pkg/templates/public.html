@@ -35,8 +35,10 @@
 				<nav class="site-header__nav" aria-label="Page sections">
 					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#services">{{.Messages.Nav.Services}}</a>
 					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#audience">{{.Messages.Nav.Audience}}</a>
+					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#proof">{{.Messages.Nav.Proof}}</a>
 					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#why">{{.Messages.Nav.Why}}</a>
 					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#process">{{.Messages.Nav.Process}}</a>
+					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#engagement">{{.Messages.Nav.Engagement}}</a>
 					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#faq">{{.Messages.Nav.FAQ}}</a>
 				</nav>
 				<div class="site-header__actions">
@@ -44,9 +46,43 @@
 						{{if eq .Messages.Lang "uz"}}{{.Messages.Nav.SwitchToEn}}{{else}}{{.Messages.Nav.SwitchToUz}}{{end}}
 					</a>
 					<a class="btn btn--primary site-header__cta" href="{{whatsapp .Messages.Hero.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.Nav.Contact}}</a>
+					<details class="site-header__menu" id="site-nav-menu">
+						<summary class="site-header__menu-btn" aria-label="{{.Messages.Nav.MenuOpen}}" aria-expanded="false">
+							<span class="site-header__burger" aria-hidden="true"><span></span><span></span></span>
+							<span class="site-header__menu-label">{{.Messages.Nav.Menu}}</span>
+						</summary>
+						<div class="site-header__drawer">
+							<nav aria-label="Page sections">
+								<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#services">{{.Messages.Nav.Services}}</a>
+								<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#audience">{{.Messages.Nav.Audience}}</a>
+								<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#proof">{{.Messages.Nav.Proof}}</a>
+								<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#why">{{.Messages.Nav.Why}}</a>
+								<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#process">{{.Messages.Nav.Process}}</a>
+								<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#engagement">{{.Messages.Nav.Engagement}}</a>
+								<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#faq">{{.Messages.Nav.FAQ}}</a>
+								<a class="site-header__drawer-lang" href="{{if eq .Messages.Lang "uz"}}/{{else}}/uz{{end}}">
+									{{if eq .Messages.Lang "uz"}}{{.Messages.Nav.SwitchToEn}}{{else}}{{.Messages.Nav.SwitchToUz}}{{end}}
+								</a>
+							</nav>
+						</div>
+					</details>
 				</div>
 			</div>
 		</header>
+		<script>
+			const menuEl = document.getElementById('site-nav-menu');
+			const summary = menuEl?.querySelector('summary');
+			if (menuEl instanceof HTMLDetailsElement && summary) {
+				menuEl.addEventListener('toggle', () => {
+					summary.setAttribute('aria-expanded', menuEl.open ? 'true' : 'false');
+				});
+				menuEl.querySelectorAll('.site-header__drawer a').forEach((link) => {
+					link.addEventListener('click', () => {
+						menuEl.open = false;
+					});
+				});
+			}
+		</script>
 {{end}}
 
 {{define "public_footer"}}
@@ -56,10 +92,12 @@
 					<div class="site-footer__brand">{{.Messages.BrandShort}}</div>
 					<p style="margin: 0.5rem 0 0; max-width: 28rem;">{{.Messages.Footer.Tagline}}</p>
 					<p class="muted" style="margin: 0.75rem 0 0;">{{.Messages.Footer.AddressLine}}</p>
+					<p class="muted" style="margin: 0.35rem 0 0;">info@edulicense.uz</p>
 					<p class="muted" style="margin: 0.35rem 0 0; font-size: 0.85rem;">{{.Messages.BrandLegal}}</p>
 				</div>
 				<div class="site-footer__links">
 					<a href="{{whatsapp .Messages.Hero.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.Footer.WhatsApp}}</a>
+					<a href="mailto:info@edulicense.uz">{{.Messages.Footer.Email}}</a>
 					<a href="{{if eq .Messages.Lang "uz"}}/uz/privacy{{else}}/privacy{{end}}">{{.Messages.Footer.Privacy}}</a>
 					<a href="#main">{{if eq .Messages.Lang "uz"}}Yuqoriga{{else}}Top{{end}}</a>
 				</div>
@@ -91,13 +129,14 @@
 						<h1 id="hero-title" class="heading-xl">{{.Messages.Hero.Title}}</h1>
 						<p class="hero__subtitle">{{.Messages.Hero.Subtitle}}</p>
 						<div class="hero__actions">
-							<a class="btn btn--primary btn--hero" href="{{whatsapp .Messages.Hero.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.Hero.CTA}}</a>
-							<a class="hero__link" href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#services">{{.Messages.Hero.ScrollHint}}</a>
+							<a class="btn btn--primary btn--hero" href="{{emailURL .Messages.Hero.EmailSubject .Messages.Hero.EmailBody}}">{{.Messages.Hero.CTA}}</a>
+							<a class="btn btn--ghost btn--hero" href="{{whatsapp .Messages.Hero.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.Hero.SecondaryCTA}}</a>
+							<a class="hero__link" href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#proof">{{.Messages.Hero.ScrollHint}}</a>
 						</div>
 					</div>
 					<figure class="hero__figure">
 						<img class="hero__img" src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=960&q=80" alt="{{.Messages.Hero.ImageAlt}}" width="960" height="720">
-						<figcaption class="hero__credit">{{.Messages.Footer.CreditPhoto}}</figcaption>
+						<figcaption class="sr-only">{{.Messages.Footer.CreditPhoto}}</figcaption>
 					</figure>
 				</div>
 			</section>
@@ -118,13 +157,34 @@
 			<section class="section section--tight" id="audience" aria-labelledby="audience-heading">
 				<div class="wrap wrap--narrow">
 					<h2 id="audience-heading" class="heading-lg">{{.Messages.Audience.Heading}}</h2>
+					<p class="muted intro-copy">{{.Messages.Audience.Intro}}</p>
 					<ul class="audience-minimal">{{range .Messages.Audience.Items}}<li>{{.}}</li>{{end}}</ul>
+				</div>
+			</section>
+			<section class="section section--tight proof-section" id="proof" aria-labelledby="proof-heading">
+				<div class="wrap">
+					<div class="section-head">
+						<p class="eyebrow">{{.Messages.Nav.Proof}}</p>
+						<h2 id="proof-heading" class="heading-lg">{{.Messages.Proof.Heading}}</h2>
+						<p class="muted intro-copy">{{.Messages.Proof.Intro}}</p>
+					</div>
+					<div class="proof-stats">
+						{{range .Messages.Proof.Stats}}<div class="proof-stat"><strong>{{.Value}}</strong><span>{{.Label}}</span></div>{{end}}
+					</div>
+					<div class="proof-grid">
+						{{range .Messages.Proof.Items}}
+							<article class="proof-card"><h3>{{.Title}}</h3><p>{{.Body}}</p>{{if .Href}}<a href="{{.Href}}">{{.LinkLabel}}</a>{{end}}</article>
+						{{end}}
+					</div>
 				</div>
 			</section>
 			<section class="section section--tight section--surface" id="why" aria-labelledby="why-heading">
 				<div class="wrap wrap--narrow">
 					<h2 id="why-heading" class="heading-lg">{{.Messages.Why.Heading}}</h2>
 					<p class="lead">{{.Messages.Why.Body}}</p>
+				</div>
+				<div class="wrap why-grid">
+					{{range .Messages.Why.Items}}<article class="why-card"><h3>{{.Title}}</h3><p>{{.Body}}</p></article>{{end}}
 				</div>
 			</section>
 			<section class="section section--tight section--surface" id="process" aria-labelledby="process-heading">
@@ -140,11 +200,87 @@
 					</ol>
 				</div>
 			</section>
+			<section class="section section--tight" id="team" aria-labelledby="team-heading">
+				<div class="wrap">
+					<div class="section-head">
+						<p class="eyebrow">{{.Messages.Nav.Team}}</p>
+						<h2 id="team-heading" class="heading-lg">{{.Messages.Team.Heading}}</h2>
+						<p class="muted intro-copy">{{.Messages.Team.Intro}}</p>
+					</div>
+					<div class="team-grid">
+						{{range .Messages.Team.Items}}<article class="team-card"><div class="team-card__avatar" aria-hidden="true">{{initial .Title}}</div><p class="team-card__role">{{.Role}}</p><h3>{{.Title}}</h3><p>{{.Body}}</p></article>{{end}}
+					</div>
+				</div>
+			</section>
+			<section class="section section--tight section--surface" id="engagement" aria-labelledby="engagement-heading">
+				<div class="wrap">
+					<div class="section-head">
+						<p class="eyebrow">{{.Messages.Nav.Engagement}}</p>
+						<h2 id="engagement-heading" class="heading-lg">{{.Messages.Engagement.Heading}}</h2>
+						<p class="muted intro-copy">{{.Messages.Engagement.Intro}}</p>
+					</div>
+					<div class="engagement-grid">
+						{{range .Messages.Engagement.Items}}<article class="engagement-card"><span>{{.Price}}</span><h3>{{.Title}}</h3><p>{{.Body}}</p></article>{{end}}
+					</div>
+				</div>
+			</section>
+			<section class="section section--tight contact-section" id="contact" aria-labelledby="contact-heading">
+				<div class="wrap contact-grid">
+					<div class="contact-copy">
+						<p class="eyebrow">{{.Messages.Nav.Contact}}</p>
+						<h2 id="contact-heading" class="heading-lg">{{.Messages.CTABand.Heading}}</h2>
+						<p class="lead">{{.Messages.CTABand.Sub}}</p>
+					</div>
+					<form class="contact-form" data-contact-email="info@edulicense.uz">
+						<div class="contact-form__row">
+							<label>{{if eq .Messages.Lang "uz"}}Muassasa nomi{{else}}Institution name{{end}}<input name="institution" required></label>
+							<label>{{if eq .Messages.Lang "uz"}}Shahar{{else}}City{{end}}<input name="city" required></label>
+						</div>
+						<label>
+							{{if eq .Messages.Lang "uz"}}Maqsad{{else}}Goal{{end}}
+							<select name="goal" required>
+								<option value="International licensing">{{if eq .Messages.Lang "uz"}}Xalqaro litsenziya{{else}}International licensing{{end}}</option>
+								<option value="SAT test centre">{{if eq .Messages.Lang "uz"}}SAT test markazi{{else}}SAT test centre{{end}}</option>
+								<option value="Operational readiness">{{if eq .Messages.Lang "uz"}}Operatsion tayyorgarlik{{else}}Operational readiness{{end}}</option>
+							</select>
+						</label>
+						<div class="contact-form__row">
+							<label>{{if eq .Messages.Lang "uz"}}Maqsadli muddat{{else}}Target timeline{{end}}<input name="timeline"></label>
+							<label>{{if eq .Messages.Lang "uz"}}Aloqa{{else}}Contact{{end}}<input name="contact" required></label>
+						</div>
+						<label>{{if eq .Messages.Lang "uz"}}Qisqa izoh{{else}}Brief context{{end}}<textarea name="context"></textarea></label>
+						<button class="btn btn--primary btn--lg" type="submit">{{.Messages.CTABand.Button}}</button>
+					</form>
+				</div>
+			</section>
+			<script>
+				document.querySelectorAll('.contact-form').forEach((form) => {
+					form.addEventListener('submit', (event) => {
+						event.preventDefault();
+						if (!(form instanceof HTMLFormElement)) return;
+						const email = form.dataset.contactEmail;
+						if (!email) return;
+						const data = new FormData(form);
+						const subject = 'Institution assessment request';
+						const body = [
+							`Institution name: ${data.get('institution') ?? ''}`,
+							`City: ${data.get('city') ?? ''}`,
+							`Goal: ${data.get('goal') ?? ''}`,
+							`Target timeline: ${data.get('timeline') ?? ''}`,
+							`Contact: ${data.get('contact') ?? ''}`,
+							'',
+							`${data.get('context') ?? ''}`,
+						].join('\n');
+						window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+					});
+				});
+			</script>
 			<section class="section section--tight" id="faq" aria-labelledby="faq-heading">
 				<div class="wrap wrap--narrow">
 					<h2 id="faq-heading" class="heading-lg">{{.Messages.FAQ.Heading}}</h2>
-					<div class="faq faq--minimal">
-						{{range .Messages.FAQ.Items}}<details class="faq__item"><summary>{{.Question}}</summary><p>{{.Answer}}</p></details>{{end}}
+					<p class="muted intro-copy">{{.Messages.FAQ.Intro}}</p>
+					<div class="faq faq--open">
+						{{range .Messages.FAQ.Items}}<article class="faq__item"><h3>{{.Question}}</h3><p>{{.Answer}}</p></article>{{end}}
 					</div>
 				</div>
 			</section>
@@ -152,7 +288,10 @@
 				<div class="cta-panel">
 					<h2 id="cta-heading" class="cta-panel__title">{{.Messages.CTABand.Heading}}</h2>
 					<p class="cta-panel__sub">{{.Messages.CTABand.Sub}}</p>
-					<a class="btn btn--primary btn--lg" href="{{whatsapp .Messages.CTABand.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.CTABand.Button}}</a>
+					<div class="cta-panel__actions">
+						<a class="btn btn--primary btn--lg" href="{{emailURL .Messages.CTABand.EmailSubject .Messages.CTABand.EmailBody}}">{{.Messages.CTABand.Button}}</a>
+						<a class="btn btn--ghost btn--lg cta-panel__secondary" href="{{whatsapp .Messages.CTABand.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.CTABand.SecondaryButton}}</a>
+					</div>
 				</div>
 			</section>
 		</main>

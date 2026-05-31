@@ -1,6 +1,6 @@
 ---
 import type { Messages } from '../i18n/types';
-import { telegramEnabled, telegramUrl, whatsappUrl } from '../i18n/contact';
+import { CONTACT_EMAIL, telegramEnabled, telegramUrl, whatsappUrl } from '../i18n/contact';
 
 interface Props {
 	messages: Messages;
@@ -21,10 +21,12 @@ const privacyPath = messages.lang === 'uz' ? '/uz/privacy' : '/privacy';
 			<div class="site-footer__brand">{messages.brandShort}</div>
 			<p style="margin: 0.5rem 0 0; max-width: 28rem;">{messages.footer.tagline}</p>
 			<p class="muted" style="margin: 0.75rem 0 0;">{messages.footer.addressLine}</p>
+			<p class="muted" style="margin: 0.35rem 0 0;">{CONTACT_EMAIL}</p>
 			<p class="muted" style="margin: 0.35rem 0 0; font-size: 0.85rem;">{messages.brandLegal}</p>
 		</div>
 		<div class="site-footer__links">
 			<a href={wa} rel="noopener noreferrer" target="_blank">{messages.footer.whatsapp}</a>
+			<a href={`mailto:${CONTACT_EMAIL}`}>{messages.footer.email}</a>
 			{showTg && (
 				<a href={tg} rel="noopener noreferrer" target="_blank">
 					{messages.footer.telegram}

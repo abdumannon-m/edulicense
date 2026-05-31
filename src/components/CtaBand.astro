@@ -1,6 +1,6 @@
 ---
 import type { Messages } from '../i18n/types';
-import { whatsappUrl } from '../i18n/contact';
+import { emailUrl, whatsappUrl } from '../i18n/contact';
 
 interface Props {
 	messages: Messages;
@@ -8,14 +8,20 @@ interface Props {
 
 const { messages } = Astro.props;
 const wa = whatsappUrl(messages.ctaBand.whatsappPrefill);
+const email = emailUrl(messages.ctaBand.emailSubject, messages.ctaBand.emailBody);
 ---
 
 <section class="wrap section-cta" aria-labelledby="cta-heading">
 	<div class="cta-panel">
 		<h2 id="cta-heading" class="cta-panel__title">{messages.ctaBand.heading}</h2>
 		<p class="cta-panel__sub">{messages.ctaBand.sub}</p>
-		<a class="btn btn--primary btn--lg" href={wa} rel="noopener noreferrer" target="_blank">
+		<div class="cta-panel__actions">
+		<a class="btn btn--primary btn--lg" href={email}>
 			{messages.ctaBand.button}
 		</a>
+		<a class="btn btn--ghost btn--lg cta-panel__secondary" href={wa} rel="noopener noreferrer" target="_blank">
+			{messages.ctaBand.secondaryButton}
+		</a>
+		</div>
 	</div>
 </section>

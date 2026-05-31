@@ -1,0 +1,40 @@
+---
+import type { Messages } from '../i18n/types';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+---
+
+<section class="section section--tight proof-section" id="proof" aria-labelledby="proof-heading">
+	<div class="wrap">
+		<div class="section-head">
+			<p class="eyebrow">{messages.nav.proof}</p>
+			<h2 id="proof-heading" class="heading-lg">{messages.proof.heading}</h2>
+			<p class="muted intro-copy">{messages.proof.intro}</p>
+		</div>
+		<div class="proof-stats">
+			{
+				messages.proof.stats.map((stat) => (
+					<div class="proof-stat">
+						<strong>{stat.value}</strong>
+						<span>{stat.label}</span>
+					</div>
+				))
+			}
+		</div>
+		<div class="proof-grid">
+			{
+				messages.proof.items.map((item) => (
+					<article class="proof-card">
+						<h3>{item.title}</h3>
+						<p>{item.body}</p>
+						{item.href && item.linkLabel ? <a href={item.href}>{item.linkLabel}</a> : null}
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>

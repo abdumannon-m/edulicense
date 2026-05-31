@@ -35,6 +35,14 @@ func newRenderer(parse func(*template.Template) (*template.Template, error), nam
 		"whatsapp": func(message string) string {
 			return "https://wa.me/998901234567?text=" + url.QueryEscape(message)
 		},
+		"emailURL": func(subject, body string) string {
+			values := url.Values{}
+			values.Set("subject", subject)
+			if body != "" {
+				values.Set("body", body)
+			}
+			return "mailto:info@edulicense.uz?" + values.Encode()
+		},
 		"ptrString": func(value *string) string {
 			if value == nil {
 				return ""
@@ -48,6 +56,12 @@ func newRenderer(parse func(*template.Template) (*template.Template, error), nam
 				return "/"
 			}
 			return strings.TrimPrefix(path, "/uz")
+		},
+		"initial": func(value string) string {
+			if value == "" {
+				return ""
+			}
+			return string([]rune(value)[0])
 		},
 		"eq": func(a, b any) bool { return fmt.Sprint(a) == fmt.Sprint(b) },
 		"selected": func(current, value string) template.HTMLAttr {

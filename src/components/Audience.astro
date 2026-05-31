@@ -11,6 +11,7 @@ const { messages } = Astro.props;
 <section class="section section--tight" id="audience" aria-labelledby="audience-heading">
 	<div class="wrap wrap--narrow">
 		<h2 id="audience-heading" class="heading-lg">{messages.audience.heading}</h2>
+		<p class="muted intro-copy">{messages.audience.intro}</p>
 		<ul class="audience-minimal">
 			{messages.audience.items.map((item) => <li>{item}</li>)}
 		</ul>

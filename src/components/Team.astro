@@ -1,0 +1,31 @@
+---
+import type { Messages } from '../i18n/types';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+---
+
+<section class="section section--tight" id="team" aria-labelledby="team-heading">
+	<div class="wrap">
+		<div class="section-head">
+			<p class="eyebrow">{messages.nav.team}</p>
+			<h2 id="team-heading" class="heading-lg">{messages.team.heading}</h2>
+			<p class="muted intro-copy">{messages.team.intro}</p>
+		</div>
+		<div class="team-grid">
+			{
+				messages.team.items.map((item) => (
+					<article class="team-card">
+						<div class="team-card__avatar" aria-hidden="true">{item.title.charAt(0)}</div>
+						<p class="team-card__role">{item.role}</p>
+						<h3>{item.title}</h3>
+						<p>{item.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>

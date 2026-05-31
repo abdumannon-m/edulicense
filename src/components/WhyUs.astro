@@ -13,4 +13,14 @@ const { messages } = Astro.props;
 		<h2 id="why-heading" class="heading-lg">{messages.why.heading}</h2>
 		<p class="lead">{messages.why.body}</p>
 	</div>
+	<div class="wrap why-grid">
+		{
+			messages.why.items.map((item) => (
+				<article class="why-card">
+					<h3>{item.title}</h3>
+					<p>{item.body}</p>
+				</article>
+			))
+		}
+	</div>
 </section>

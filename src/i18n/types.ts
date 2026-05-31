@@ -12,8 +12,11 @@ export interface Messages {
 	nav: {
 		services: string;
 		audience: string;
+		proof: string;
 		why: string;
 		process: string;
+		team: string;
+		engagement: string;
 		faq: string;
 		contact: string;
 		language: string;
@@ -28,8 +31,11 @@ export interface Messages {
 		title: string;
 		subtitle: string;
 		cta: string;
+		secondaryCta: string;
 		scrollHint: string;
 		whatsappPrefill: string;
+		emailSubject: string;
+		emailBody: string;
 		imageAlt: string;
 	};
 	pillars: {
@@ -39,11 +45,19 @@ export interface Messages {
 	};
 	audience: {
 		heading: string;
+		intro: string;
 		items: string[];
+	};
+	proof: {
+		heading: string;
+		intro: string;
+		stats: Array<{ value: string; label: string }>;
+		items: Array<{ title: string; body: string; href?: string; linkLabel?: string }>;
 	};
 	why: {
 		heading: string;
 		body: string;
+		items: Array<{ title: string; body: string }>;
 	};
 	process: {
 		heading: string;
@@ -51,17 +65,32 @@ export interface Messages {
 	};
 	faq: {
 		heading: string;
+		intro: string;
 		items: Array<{ question: string; answer: string }>;
+	};
+	team: {
+		heading: string;
+		intro: string;
+		items: Array<{ title: string; role: string; body: string }>;
+	};
+	engagement: {
+		heading: string;
+		intro: string;
+		items: Array<{ title: string; price: string; body: string }>;
 	};
 	ctaBand: {
 		heading: string;
 		sub: string;
 		button: string;
+		secondaryButton: string;
+		emailSubject: string;
+		emailBody: string;
 		whatsappPrefill: string;
 	};
 	footer: {
 		tagline: string;
 		whatsapp: string;
+		email: string;
 		telegram: string;
 		privacy: string;
 		rights: string;

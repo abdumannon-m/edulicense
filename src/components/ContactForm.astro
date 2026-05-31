@@ -1,0 +1,79 @@
+---
+import type { Messages } from '../i18n/types';
+import { CONTACT_EMAIL } from '../i18n/contact';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+const isUz = messages.lang === 'uz';
+---
+
+<section class="section section--tight contact-section" id="contact" aria-labelledby="contact-heading">
+	<div class="wrap contact-grid">
+		<div class="contact-copy">
+			<p class="eyebrow">{messages.nav.contact}</p>
+			<h2 id="contact-heading" class="heading-lg">{messages.ctaBand.heading}</h2>
+			<p class="lead">{messages.ctaBand.sub}</p>
+		</div>
+		<form class="contact-form" data-contact-email={CONTACT_EMAIL}>
+			<div class="contact-form__row">
+				<label>
+					{isUz ? 'Muassasa nomi' : 'Institution name'}
+					<input name="institution" required />
+				</label>
+				<label>
+					{isUz ? 'Shahar' : 'City'}
+					<input name="city" required />
+				</label>
+			</div>
+			<label>
+				{isUz ? 'Maqsad' : 'Goal'}
+				<select name="goal" required>
+					<option value="International licensing">{isUz ? 'Xalqaro litsenziya' : 'International licensing'}</option>
+					<option value="SAT test centre">{isUz ? 'SAT test markazi' : 'SAT test centre'}</option>
+					<option value="Operational readiness">{isUz ? 'Operatsion tayyorgarlik' : 'Operational readiness'}</option>
+				</select>
+			</label>
+			<div class="contact-form__row">
+				<label>
+					{isUz ? 'Maqsadli muddat' : 'Target timeline'}
+					<input name="timeline" />
+				</label>
+				<label>
+					{isUz ? 'Aloqa' : 'Contact'}
+					<input name="contact" required />
+				</label>
+			</div>
+			<label>
+				{isUz ? 'Qisqa izoh' : 'Brief context'}
+				<textarea name="context"></textarea>
+			</label>
+			<button class="btn btn--primary btn--lg" type="submit">{messages.ctaBand.button}</button>
+		</form>
+	</div>
+</section>
+
+<script>
+	document.querySelectorAll('.contact-form').forEach((form) => {
+		form.addEventListener('submit', (event) => {
+			event.preventDefault();
+			if (!(form instanceof HTMLFormElement)) return;
+			const email = form.dataset.contactEmail;
+			if (!email) return;
+			const data = new FormData(form);
+			const subject = 'Institution assessment request';
+			const body = [
+				`Institution name: ${data.get('institution') ?? ''}`,
+				`City: ${data.get('city') ?? ''}`,
+				`Goal: ${data.get('goal') ?? ''}`,
+				`Target timeline: ${data.get('timeline') ?? ''}`,
+				`Contact: ${data.get('contact') ?? ''}`,
+				'',
+				`${data.get('context') ?? ''}`,
+			].join('\n');
+			window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+		});
+	});
+</script>

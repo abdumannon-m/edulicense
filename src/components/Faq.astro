@@ -11,13 +11,14 @@ const { messages } = Astro.props;
 <section class="section section--tight" id="faq" aria-labelledby="faq-heading">
 	<div class="wrap wrap--narrow">
 		<h2 id="faq-heading" class="heading-lg">{messages.faq.heading}</h2>
-		<div class="faq faq--minimal">
+		<p class="muted intro-copy">{messages.faq.intro}</p>
+		<div class="faq faq--open">
 			{
 				messages.faq.items.map((item) => (
-					<details class="faq__item">
-						<summary>{item.question}</summary>
+					<article class="faq__item">
+						<h3>{item.question}</h3>
 						<p>{item.answer}</p>
-					</details>
+					</article>
 				))
 			}
 		</div>
