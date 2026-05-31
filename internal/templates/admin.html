@@ -1,0 +1,306 @@
+{{define "admin_head"}}
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="robots" content="noindex,nofollow">
+		<title>{{.Title}} · Edu License Admin</title>
+		<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+		<link rel="stylesheet" href="/static/css/admin.css">
+		<script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+	</head>
+	<body class="admin-body">
+{{end}}
+
+{{define "admin_nav"}}
+		<header class="admin-topbar">
+			<a class="admin-brand" href="/admin">Edu License Admin</a>
+			<nav class="admin-nav" aria-label="Admin navigation">
+				{{if eq .CurrentUser.Role "super_admin"}}<a href="/admin/overview">Overview</a>{{end}}
+				{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "admin")}}<a href="/admin/applications">Applications</a>{{end}}
+				{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "sales")}}<a href="/admin/crm">Sales CRM</a>{{end}}
+			</nav>
+			<form method="post" action="/admin/logout">
+				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+				<button class="admin-link-button" type="submit">Log out</button>
+			</form>
+		</header>
+{{end}}
+
+{{define "admin_alerts"}}
+	{{if .Error}}<div class="admin-alert admin-alert--error">{{.Error}}</div>{{end}}
+	{{if .Success}}<div class="admin-alert admin-alert--success">{{.Success}}</div>{{end}}
+{{end}}
+
+{{define "admin_login"}}
+{{template "admin_head" .}}
+		<main class="login-page">
+			<form class="login-card" method="post" action="/admin/login">
+				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+				<p class="admin-kicker">Private dashboard</p>
+				<h1>Admin login</h1>
+				{{template "admin_alerts" .}}
+				<label>Email<input name="email" type="email" autocomplete="email" required></label>
+				<label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+				<button class="admin-button" type="submit">Log in</button>
+			</form>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "admin_overview"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Super admin</p>
+					<h1>Company overview</h1>
+				</div>
+			</div>
+			{{template "admin_alerts" .}}
+			<section class="stats-grid">
+				<div class="stat-card"><span>Active users</span><strong>{{.Stats.ActiveUsers}}</strong></div>
+				<div class="stat-card"><span>Won deals</span><strong>{{.Stats.WonDeals}}</strong></div>
+				<div class="stat-card"><span>Converted deals</span><strong>{{.Stats.ConvertedDeals}}</strong></div>
+				<div class="stat-card"><span>Overdue reminders</span><strong>{{.Stats.OverdueReminders}}</strong></div>
+			</section>
+			<div class="admin-grid">
+				<section class="admin-panel">
+					<h2>Applications by stage</h2>
+					<div class="stage-list">
+						{{range .ApplicationStages}}<div><span>{{stageLabel .}}</span><strong>{{index $.Stats.ApplicationCounts .}}</strong></div>{{end}}
+					</div>
+				</section>
+				<section class="admin-panel">
+					<h2>CRM by stage</h2>
+					<div class="stage-list">
+						{{range .SalesStages}}<div><span>{{stageLabel .}}</span><strong>{{index $.Stats.DealCounts .}}</strong></div>{{end}}
+					</div>
+				</section>
+				<section class="admin-panel">
+					<h2>Upcoming reminders</h2>
+					<div class="simple-list">
+						{{range .Stats.DueReminders}}
+							<div><strong>{{.Title}}</strong><span>{{.EntityName}} · {{formatTime .DueAt}}</span></div>
+						{{else}}<p class="muted">No open reminders.</p>{{end}}
+					</div>
+				</section>
+				<section class="admin-panel">
+					<h2>Recent activity</h2>
+					<div class="simple-list">
+						{{range .Stats.RecentActivity}}
+							<div><strong>{{.Summary}}</strong><span>{{.UserName}} · {{formatTime .CreatedAt}}</span></div>
+						{{else}}<p class="muted">No activity yet.</p>{{end}}
+					</div>
+				</section>
+				<section class="admin-panel">
+					<h2>Create user</h2>
+					<form class="stack-form" method="post" action="/admin/users">
+						<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+						<input name="name" placeholder="Full name" required>
+						<input name="email" type="email" placeholder="Email" required>
+						<select name="role">
+							<option value="admin">Admin</option>
+							<option value="sales">Sales</option>
+							<option value="super_admin">Super admin</option>
+						</select>
+						<input name="password" type="password" placeholder="Temporary password" required>
+						<button class="admin-button admin-button--secondary" type="submit">Create user</button>
+					</form>
+				</section>
+				<section class="admin-panel">
+					<h2>Users</h2>
+					<div class="simple-list">
+						{{range .Users}}
+							<div><strong>{{.Name}}</strong><span>{{.Email}} · {{.Role}}</span></div>
+						{{else}}<p class="muted">No users yet.</p>{{end}}
+					</div>
+				</section>
+			</div>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "admin_applications"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Operations</p>
+					<h1>SAT test center applications</h1>
+				</div>
+				<a class="admin-button" href="/admin/applications/new">New application</a>
+			</div>
+			{{template "admin_alerts" .}}
+			<form class="filter-row" method="get" action="/admin/applications">
+				<select name="stage"><option value="">All stages</option>{{range .ApplicationStages}}<option value="{{.}}">{{stageLabel .}}</option>{{end}}</select>
+				<select name="admin"><option value="">All admins</option>{{range .Users}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select>
+				<input name="location" placeholder="Location">
+				<button class="admin-button admin-button--secondary" type="submit">Filter</button>
+			</form>
+			<section class="application-list">
+				{{range .Applications}}
+					<article class="application-card">
+						<div>
+							<p class="admin-kicker">{{stageLabel .Stage}}</p>
+							<h2><a href="/admin/applications/{{.ID}}">{{.InstitutionName}}</a></h2>
+							<p>{{.Location}} {{if .Website}}· <a href="{{.Website}}" target="_blank" rel="noopener">{{.Website}}</a>{{end}}</p>
+						</div>
+						<dl>
+							<div><dt>Responsible</dt><dd>{{.ResponsiblePerson}}</dd></div>
+							<div><dt>Phone</dt><dd>{{.Phone}}</dd></div>
+							<div><dt>Admin</dt><dd>{{.AssignedAdminName}}</dd></div>
+							<div><dt>Payment</dt><dd>{{paymentLabel .PaymentOption}} {{ptrString .PaymentAmount}} {{.PaymentCurrency}}</dd></div>
+							<div><dt>Profit share</dt><dd>{{.ProfitSharing}}</dd></div>
+						</dl>
+					</article>
+				{{else}}
+					<p class="empty-state">No applications yet.</p>
+				{{end}}
+			</section>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "admin_application_form"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Operations</p>
+					<h1>{{if .Application.ID}}Edit application{{else}}New application{{end}}</h1>
+				</div>
+				<a class="admin-button admin-button--secondary" href="/admin/applications">Back</a>
+			</div>
+			{{template "admin_alerts" .}}
+			<form class="admin-form" method="post" action="{{if .Application.ID}}/admin/applications/{{.Application.ID}}{{else}}/admin/applications{{end}}">
+				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+				<section class="form-section">
+					<h2>Institution</h2>
+					<label>Name<input name="institution_name" value="{{.Application.InstitutionName}}" required></label>
+					<label>Type<input name="institution_type" value="{{.Application.InstitutionType}}"></label>
+					<label>Location<input name="location" value="{{.Application.Location}}"></label>
+					<label>Website<input name="website" value="{{.Application.Website}}"></label>
+					<label>Responsible person<input name="responsible_person" value="{{.Application.ResponsiblePerson}}"></label>
+					<label>Phone<input name="phone" value="{{.Application.Phone}}"></label>
+					<label>Director phone<input name="director_phone" value="{{.Application.DirectorPhone}}"></label>
+				</section>
+				<section class="form-section">
+					<h2>Process</h2>
+					<label>Stage<select name="stage">{{range .ApplicationStages}}<option value="{{.}}" {{selected $.Application.Stage .}}>{{stageLabel .}}</option>{{end}}</select></label>
+					<label>Assigned admin<select name="assigned_admin_id"><option value="">Unassigned</option>{{range .Users}}<option value="{{.ID}}" {{selected $.Application.AssignedAdminID .ID}}>{{.Name}}</option>{{end}}</select></label>
+					<label>CEEB code<input name="ceeb_code" value="{{.Application.CEEBCode}}"></label>
+				</section>
+				<section class="form-section">
+					<h2>Commercials</h2>
+					<label>Payment option<select name="payment_option">{{range .PaymentOptions}}<option value="{{.}}" {{selected $.Application.PaymentOption .}}>{{paymentLabel .}}</option>{{end}}</select></label>
+					<label>Payment amount<input name="payment_amount" value="{{ptrString .Application.PaymentAmount}}" inputmode="decimal"></label>
+					<label>Currency<select name="payment_currency"><option value="USD" {{selected .Application.PaymentCurrency "USD"}}>USD</option><option value="UZS" {{selected .Application.PaymentCurrency "UZS"}}>UZS</option></select></label>
+					<label>Profit sharing<select name="profit_sharing"><option value="">None</option>{{range .ProfitSharingOptions}}<option value="{{.}}" {{selected $.Application.ProfitSharing .}}>{{.}}</option>{{end}}</select></label>
+				</section>
+				<section class="form-section form-section--wide">
+					<h2>Document checklist</h2>
+					<div class="check-grid">
+						{{range .ChecklistItems}}
+							<label class="check-item"><input type="checkbox" name="checklist_{{.Key}}" {{checked $.Application.ChecklistStatus .Key}}> {{.Label}}</label>
+						{{end}}
+					</div>
+				</section>
+				<button class="admin-button" type="submit">{{if .Application.ID}}Save changes{{else}}Create application{{end}}</button>
+			</form>
+			{{if .Application.ID}}
+				<div class="admin-grid">
+					<section class="admin-panel">
+						<h2>Documents</h2>
+						<form class="inline-form" method="post" action="/admin/applications/{{.Application.ID}}/documents" enctype="multipart/form-data">
+							<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+							<select name="doc_type">{{range .DocumentTypes}}<option value="{{.Key}}">{{.Label}}</option>{{end}}</select>
+							<input type="file" name="file" required>
+							<button class="admin-button admin-button--secondary" type="submit">Upload</button>
+						</form>
+						<div class="simple-list">
+							{{range .Application.Documents}}<div><strong>{{.OriginalFilename}}</strong><span>{{.DocType}} · {{formatTime .CreatedAt}}</span></div>{{else}}<p class="muted">No uploads yet.</p>{{end}}
+						</div>
+					</section>
+					<section class="admin-panel">
+						<h2>Reminders</h2>
+						<form class="stack-form" method="post" action="/admin/reminders">
+							<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+							<input type="hidden" name="entity_type" value="application">
+							<input type="hidden" name="entity_id" value="{{.Application.ID}}">
+							<input name="title" placeholder="Domain registration expected" required>
+							<input name="due_days" inputmode="numeric" placeholder="Due in days, e.g. 3">
+							<textarea name="note" placeholder="Notes"></textarea>
+							<button class="admin-button admin-button--secondary" type="submit">Add reminder</button>
+						</form>
+						<div class="simple-list">
+							{{range .Application.Reminders}}<div><strong>{{.Title}}</strong><span>{{formatTime .DueAt}} · {{.Note}}</span></div>{{else}}<p class="muted">No reminders.</p>{{end}}
+						</div>
+					</section>
+				</div>
+				<form class="danger-zone" method="post" action="/admin/applications/{{.Application.ID}}/delete">
+					<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+					<button type="submit">Delete application</button>
+				</form>
+			{{end}}
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "admin_crm"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		<main class="admin-main admin-main--wide">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Sales</p>
+					<h1>Sales CRM</h1>
+				</div>
+			</div>
+			{{template "admin_alerts" .}}
+			<form class="crm-create" method="post" action="/admin/crm/deals">
+				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+				<input name="school_name" placeholder="School or university name" required>
+				<input name="capacity" inputmode="numeric" placeholder="Capacity">
+				<select name="assigned_sales_agent_id"><option value="">Assign agent</option>{{range .Users}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select>
+				<input name="negotiation_price" inputmode="decimal" placeholder="Negotiation price">
+				<select name="profit_sharing"><option value="">Profit share</option>{{range .ProfitSharingOptions}}<option value="{{.}}">{{.}}</option>{{end}}</select>
+				<button class="admin-button" type="submit">Add deal</button>
+			</form>
+			<section class="crm-board">
+				{{range .SalesStages}}
+					<div class="crm-column">
+						<h2>{{stageLabel .}}</h2>
+						{{range index $.DealsByStage .}}
+							<article class="deal-card">
+								<h3>{{.SchoolName}}</h3>
+								<p>Capacity: {{.Capacity}}</p>
+								<p>Agent: {{.AssignedSalesAgentName}}</p>
+								<p>Price: {{ptrString .NegotiationPrice}} {{.Currency}}</p>
+								<p>Share: {{.ProfitSharing}}</p>
+								{{$deal := .}}
+								<form method="post" action="/admin/crm/deals/{{.ID}}/stage" hx-post="/admin/crm/deals/{{.ID}}/stage" hx-target="body" hx-swap="outerHTML">
+									<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
+									<select name="stage">{{range $stage := $.SalesStages}}<option value="{{$stage}}" {{selected $deal.Stage $stage}}>{{stageLabel $stage}}</option>{{end}}</select>
+									<button type="submit">Move</button>
+								</form>
+							</article>
+						{{end}}
+					</div>
+				{{end}}
+			</section>
+		</main>
+	</body>
+</html>
+{{end}}

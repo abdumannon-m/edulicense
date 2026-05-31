@@ -1,0 +1,206 @@
+{{define "public_head"}}
+<!doctype html>
+<html lang="{{.Messages.Lang}}">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{{.Title}}</title>
+		<meta name="description" content="{{.Description}}">
+		<link rel="canonical" href="{{.CanonicalURL}}">
+		<link rel="alternate" hreflang="en" href="{{.BaseURL}}{{if eq .Messages.Lang "uz"}}{{if eq .Path "/uz"}}/{{else}}{{trimUZ .Path}}{{end}}{{else}}{{.Path}}{{end}}">
+		<link rel="alternate" hreflang="uz" href="{{.BaseURL}}{{if eq .Messages.Lang "uz"}}{{.Path}}{{else}}{{if eq .Path "/"}}/uz{{else}}/uz{{.Path}}{{end}}{{end}}">
+		<meta property="og:type" content="website">
+		<meta property="og:locale" content="{{.Messages.OGLocale}}">
+		<meta property="og:title" content="{{.Title}}">
+		<meta property="og:description" content="{{.Description}}">
+		<meta property="og:url" content="{{.CanonicalURL}}">
+		<meta property="og:image" content="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80">
+		<meta name="twitter:card" content="summary_large_image">
+		<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+		<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
+		<link rel="stylesheet" href="/static/css/site.css">
+		<link rel="stylesheet" href="/static/css/admin.css">
+	</head>
+	<body>
+{{end}}
+
+{{define "public_header"}}
+		<a class="skip-link" href="#main">{{if eq .Messages.Lang "uz"}}Asosiy tarkibga{{else}}Skip to content{{end}}</a>
+		<header class="site-header">
+			<div class="wrap site-header__inner">
+				<a class="site-header__brand" href="{{if eq .Messages.Lang "uz"}}/uz{{else}}/{{end}}">{{.Messages.BrandShort}}</a>
+				<nav class="site-header__nav" aria-label="Page sections">
+					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#services">{{.Messages.Nav.Services}}</a>
+					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#audience">{{.Messages.Nav.Audience}}</a>
+					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#why">{{.Messages.Nav.Why}}</a>
+					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#process">{{.Messages.Nav.Process}}</a>
+					<a href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#faq">{{.Messages.Nav.FAQ}}</a>
+				</nav>
+				<div class="site-header__actions">
+					<a class="site-header__lang" href="{{if eq .Messages.Lang "uz"}}/{{else}}/uz{{end}}">
+						{{if eq .Messages.Lang "uz"}}{{.Messages.Nav.SwitchToEn}}{{else}}{{.Messages.Nav.SwitchToUz}}{{end}}
+					</a>
+					<a class="btn btn--primary site-header__cta" href="{{whatsapp .Messages.Hero.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.Nav.Contact}}</a>
+				</div>
+			</div>
+		</header>
+{{end}}
+
+{{define "public_footer"}}
+		<footer class="site-footer">
+			<div class="wrap site-footer__grid">
+				<div>
+					<div class="site-footer__brand">{{.Messages.BrandShort}}</div>
+					<p style="margin: 0.5rem 0 0; max-width: 28rem;">{{.Messages.Footer.Tagline}}</p>
+					<p class="muted" style="margin: 0.75rem 0 0;">{{.Messages.Footer.AddressLine}}</p>
+					<p class="muted" style="margin: 0.35rem 0 0; font-size: 0.85rem;">{{.Messages.BrandLegal}}</p>
+				</div>
+				<div class="site-footer__links">
+					<a href="{{whatsapp .Messages.Hero.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.Footer.WhatsApp}}</a>
+					<a href="{{if eq .Messages.Lang "uz"}}/uz/privacy{{else}}/privacy{{end}}">{{.Messages.Footer.Privacy}}</a>
+					<a href="#main">{{if eq .Messages.Lang "uz"}}Yuqoriga{{else}}Top{{end}}</a>
+				</div>
+			</div>
+			<div class="wrap site-footer__bottom">© {{year}} {{.Messages.BrandShort}}. {{.Messages.Footer.Rights}}</div>
+		</footer>
+	</body>
+</html>
+{{end}}
+
+{{define "pillar_icon"}}
+	{{if eq . "license"}}
+		<svg class="pillar-icon-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48" aria-hidden="true"><rect x="11" y="10" width="26" height="30" rx="3" stroke="currentColor" stroke-width="1.75"></rect><path stroke="currentColor" stroke-width="1.75" stroke-linecap="round" d="M16 18h16M16 24h11M16 30h16"></path></svg>
+	{{else if eq . "institution"}}
+		<svg class="pillar-icon-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" d="M12 36V19.5L24 12l12 7.5V36H12Zm8-16v16m8-12v12"></path></svg>
+	{{else}}
+		<svg class="pillar-icon-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48" aria-hidden="true"><rect x="11" y="13" width="26" height="22" rx="3" stroke="currentColor" stroke-width="1.75"></rect><path stroke="currentColor" stroke-width="1.75" stroke-linecap="round" d="M17 20h6M25 26h6M17 32h14"></path></svg>
+	{{end}}
+{{end}}
+
+{{define "public_home"}}
+{{template "public_head" .}}
+{{template "public_header" .}}
+		<main id="main">
+			<section class="hero" aria-labelledby="hero-title">
+				<div class="wrap hero__grid">
+					<div class="hero__copy">
+						<p class="eyebrow hero__eyebrow">{{.Messages.Hero.Eyebrow}}</p>
+						<h1 id="hero-title" class="heading-xl">{{.Messages.Hero.Title}}</h1>
+						<p class="hero__subtitle">{{.Messages.Hero.Subtitle}}</p>
+						<div class="hero__actions">
+							<a class="btn btn--primary btn--hero" href="{{whatsapp .Messages.Hero.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.Hero.CTA}}</a>
+							<a class="hero__link" href="{{if eq .Messages.Lang "uz"}}/uz{{end}}#services">{{.Messages.Hero.ScrollHint}}</a>
+						</div>
+					</div>
+					<figure class="hero__figure">
+						<img class="hero__img" src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=960&q=80" alt="{{.Messages.Hero.ImageAlt}}" width="960" height="720">
+						<figcaption class="hero__credit">{{.Messages.Footer.CreditPhoto}}</figcaption>
+					</figure>
+				</div>
+			</section>
+			<section class="section section--spacious" id="services" aria-labelledby="pillars-heading">
+				<div class="wrap">
+					<h2 id="pillars-heading" class="heading-lg heading-lg--center">{{.Messages.Pillars.Heading}}</h2>
+					<div class="pillar-grid">
+						{{range .Messages.Pillars.Items}}
+							<article class="pillar-card">
+								<div class="pillar-card__icon" aria-hidden="true">{{template "pillar_icon" .Icon}}</div>
+								<h3 class="pillar-card__title">{{.Title}}</h3>
+								<p class="pillar-card__tagline">{{.Tagline}}</p>
+							</article>
+						{{end}}
+					</div>
+				</div>
+			</section>
+			<section class="section section--tight" id="audience" aria-labelledby="audience-heading">
+				<div class="wrap wrap--narrow">
+					<h2 id="audience-heading" class="heading-lg">{{.Messages.Audience.Heading}}</h2>
+					<ul class="audience-minimal">{{range .Messages.Audience.Items}}<li>{{.}}</li>{{end}}</ul>
+				</div>
+			</section>
+			<section class="section section--tight section--surface" id="why" aria-labelledby="why-heading">
+				<div class="wrap wrap--narrow">
+					<h2 id="why-heading" class="heading-lg">{{.Messages.Why.Heading}}</h2>
+					<p class="lead">{{.Messages.Why.Body}}</p>
+				</div>
+			</section>
+			<section class="section section--tight section--surface" id="process" aria-labelledby="process-heading">
+				<div class="wrap">
+					<h2 id="process-heading" class="heading-lg heading-lg--center">{{.Messages.Process.Heading}}</h2>
+					<ol class="process-track">
+						{{range $i, $step := .Messages.Process.Steps}}
+							<li class="process-track__item">
+								<span class="process-track__num" aria-hidden="true">{{inc $i}}</span>
+								<div><strong class="process-track__title">{{$step.Title}}</strong><p class="process-track__body">{{$step.Body}}</p></div>
+							</li>
+						{{end}}
+					</ol>
+				</div>
+			</section>
+			<section class="section section--tight" id="faq" aria-labelledby="faq-heading">
+				<div class="wrap wrap--narrow">
+					<h2 id="faq-heading" class="heading-lg">{{.Messages.FAQ.Heading}}</h2>
+					<div class="faq faq--minimal">
+						{{range .Messages.FAQ.Items}}<details class="faq__item"><summary>{{.Question}}</summary><p>{{.Answer}}</p></details>{{end}}
+					</div>
+				</div>
+			</section>
+			<section class="wrap section-cta" aria-labelledby="cta-heading">
+				<div class="cta-panel">
+					<h2 id="cta-heading" class="cta-panel__title">{{.Messages.CTABand.Heading}}</h2>
+					<p class="cta-panel__sub">{{.Messages.CTABand.Sub}}</p>
+					<a class="btn btn--primary btn--lg" href="{{whatsapp .Messages.CTABand.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.CTABand.Button}}</a>
+				</div>
+			</section>
+		</main>
+		<a class="fab" href="{{whatsapp .Messages.Hero.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.Hero.CTA}}</a>
+{{template "public_footer" .}}
+{{end}}
+
+{{define "public_privacy"}}
+{{template "public_head" .}}
+{{template "public_header" .}}
+		<main id="main" class="wrap privacy-page">
+			<h1 class="heading-lg">{{.Messages.Privacy.Title}}</h1>
+			<p>{{.Messages.Privacy.Body}}</p>
+			<p><a href="{{if eq .Messages.Lang "uz"}}/uz{{else}}/{{end}}">{{.Messages.Privacy.Back}}</a></p>
+		</main>
+{{template "public_footer" .}}
+{{end}}
+
+{{define "public_verify"}}
+{{template "public_head" .}}
+		<main id="main" class="verify-page">
+			<div class="wrap wrap--narrow">
+				<article class="cert">
+					<header class="cert__top">
+						<span class="cert__brand">{{.Messages.BrandShort}}</span>
+						<span class="cert__badge">{{.Messages.Verify.Badge}}</span>
+					</header>
+					<h1 class="cert__heading">{{.Messages.Verify.Heading}}</h1>
+					<p class="cert__intro">{{.Messages.Verify.Intro}}</p>
+					<div class="cert__institution">
+						<p class="cert__inst-name">{{.Certificate.Institution}}</p>
+						<p class="cert__inst-role">{{.Certificate.Designation}}</p>
+					</div>
+					<dl class="cert__details">
+						<div class="cert__detail"><dt>{{.Messages.Verify.SATDate}}</dt><dd>{{.Certificate.SATAdministrationDate}}</dd></div>
+						<div class="cert__detail"><dt>{{.Messages.Verify.VerificationID}}</dt><dd class="cert__detail-mono">{{.Certificate.VerificationID}}</dd></div>
+						<div class="cert__detail"><dt>{{.Messages.Verify.IssueDate}}</dt><dd>{{.Certificate.IssueDate}}</dd></div>
+					</dl>
+					<figure class="cert__shot">
+						<figcaption class="cert__shot-head">{{.Messages.Verify.ScreenshotHeading}}</figcaption>
+						<img src="{{.Certificate.CollegeBoardScreenshot}}" alt="{{.Messages.Verify.ScreenshotHeading}} - {{.Certificate.Institution}}" width="880" height="540">
+						<figcaption class="cert__shot-cap">{{.Messages.Verify.ScreenshotCaption}}</figcaption>
+					</figure>
+					<p class="cert__note">{{.Messages.Verify.FooterNote}}</p>
+				</article>
+				<p class="verify-back"><a href="{{if eq .Messages.Lang "uz"}}/uz{{else}}/{{end}}">← {{.Messages.Verify.BackHome}}</a></p>
+			</div>
+		</main>
+	</body>
+</html>
+{{end}}
