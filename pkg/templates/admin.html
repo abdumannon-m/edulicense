@@ -7,11 +7,7 @@
 		<meta name="robots" content="noindex,nofollow">
 		<title>{{.Title}} · Edu License Admin</title>
 		<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 		<link rel="stylesheet" href="/static/css/admin.css">
-		<script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
 	</head>
 	<body class="admin-body">
 {{end}}
@@ -24,7 +20,7 @@
 				{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "admin")}}<a href="/admin/applications">Applications</a>{{end}}
 				{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "sales")}}<a href="/admin/crm">Sales CRM</a>{{end}}
 			</nav>
-			<form method="post" action="/admin/logout">
+			<form class="admin-logout" method="post" action="/admin/logout">
 				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
 				<button class="admin-link-button" type="submit">Log out</button>
 			</form>
@@ -290,7 +286,7 @@
 								<p>Price: {{ptrString .NegotiationPrice}} {{.Currency}}</p>
 								<p>Share: {{.ProfitSharing}}</p>
 								{{$deal := .}}
-								<form method="post" action="/admin/crm/deals/{{.ID}}/stage" hx-post="/admin/crm/deals/{{.ID}}/stage" hx-target="body" hx-swap="outerHTML">
+								<form class="deal-move-form" method="post" action="/admin/crm/deals/{{.ID}}/stage">
 									<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
 									<select name="stage">{{range $stage := $.SalesStages}}<option value="{{$stage}}" {{selected $deal.Stage $stage}}>{{stageLabel $stage}}</option>{{end}}</select>
 									<button type="submit">Move</button>
