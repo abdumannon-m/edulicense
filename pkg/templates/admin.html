@@ -375,28 +375,208 @@
 				<select name="profit_sharing"><option value="">Profit share</option>{{range .ProfitSharingOptions}}<option value="{{.}}">{{.}}</option>{{end}}</select>
 				<button class="admin-button" type="submit">Add deal</button>
 			</form>
-			<section class="crm-board">
+			<p class="crm-board-status" data-crm-status aria-live="polite"></p>
+			<section class="crm-board" data-crm-board data-csrf-token="{{.CSRFToken}}">
 				{{range .SalesStages}}
-					<div class="crm-column">
-						<h2>{{stageLabel .}}</h2>
-						{{range index $.DealsByStage .}}
-							<article class="deal-card">
-								<h3>{{.SchoolName}}</h3>
-								<p>Capacity: {{.Capacity}}</p>
-								<p>Agent: {{.AssignedSalesAgentName}}</p>
-								<p>Price: {{ptrString .NegotiationPrice}} {{.Currency}}</p>
-								<p>Share: {{.ProfitSharing}}</p>
-								{{$deal := .}}
-								<form class="deal-move-form" method="post" action="/admin/crm/deals/{{.ID}}/stage">
-									<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
-									<select name="stage">{{range $stage := $.SalesStages}}<option value="{{$stage}}" {{selected $deal.Stage $stage}}>{{stageLabel $stage}}</option>{{end}}</select>
-									<button type="submit">Move</button>
-								</form>
-							</article>
-						{{end}}
+					{{$stage := .}}
+					{{$deals := index $.DealsByStage $stage}}
+					<div class="crm-column" data-stage-column data-stage="{{$stage}}">
+						<header class="crm-column__head">
+							<h2>{{stageLabel $stage}}</h2>
+							<span data-stage-count>{{len $deals}}</span>
+						</header>
+						<div class="crm-column__dropzone" data-stage-list>
+							<p class="crm-empty" data-stage-empty {{if $deals}}hidden{{end}}>No deals in this stage.</p>
+							{{range $deals}}
+								<article class="deal-card" draggable="true" data-deal-card data-deal-id="{{.ID}}" data-current-stage="{{.Stage}}" data-stage-url="/admin/crm/deals/{{.ID}}/stage">
+									<div class="deal-card__head">
+										<h3>{{.SchoolName}}</h3>
+										<span class="deal-card__drag-handle" aria-hidden="true">Drag</span>
+									</div>
+									<dl class="deal-card__meta">
+										<div><dt>Capacity</dt><dd>{{.Capacity}}</dd></div>
+										<div><dt>Agent</dt><dd>{{if .AssignedSalesAgentName}}{{.AssignedSalesAgentName}}{{else}}Unassigned{{end}}</dd></div>
+										<div><dt>Price</dt><dd>{{ptrString .NegotiationPrice}} {{.Currency}}</dd></div>
+										<div><dt>Share</dt><dd>{{if .ProfitSharing}}{{.ProfitSharing}}{{else}}Not set{{end}}</dd></div>
+									</dl>
+									{{$deal := .}}
+									<form class="deal-move-form" method="post" action="/admin/crm/deals/{{.ID}}/stage">
+										<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
+										<select name="stage">{{range $stageOption := $.SalesStages}}<option value="{{$stageOption}}" {{selected $deal.Stage $stageOption}}>{{stageLabel $stageOption}}</option>{{end}}</select>
+										<button type="submit">Move</button>
+									</form>
+								</article>
+							{{end}}
+						</div>
 					</div>
 				{{end}}
 			</section>
+			<script>
+				(() => {
+					const board = document.querySelector('[data-crm-board]');
+					if (!board || !('draggable' in document.createElement('span'))) return;
+
+					board.classList.add('crm-board--dnd-ready');
+					const status = document.querySelector('[data-crm-status]');
+					let draggedCard = null;
+					let sourceList = null;
+					let sourceNext = null;
+					let statusTimer = 0;
+
+					const showStatus = (message, tone = 'success') => {
+						if (!status) return;
+						window.clearTimeout(statusTimer);
+						status.textContent = message;
+						status.dataset.tone = tone;
+						status.hidden = false;
+						statusTimer = window.setTimeout(() => {
+							status.textContent = '';
+							status.hidden = true;
+						}, tone === 'error' ? 3200 : 1500);
+					};
+
+					const updateColumn = (column) => {
+						if (!column) return;
+						const count = column.querySelectorAll('[data-deal-card]').length;
+						const countNode = column.querySelector('[data-stage-count]');
+						const empty = column.querySelector('[data-stage-empty]');
+						if (countNode) countNode.textContent = count;
+						if (empty) empty.hidden = count !== 0;
+					};
+
+					const stageLabel = (column) => {
+						const heading = column && column.querySelector('h2');
+						return heading ? heading.textContent.trim() : 'stage';
+					};
+
+					const closestInsertTarget = (list, pointerY) => {
+						const cards = Array.from(list.querySelectorAll('[data-deal-card]:not(.is-dragging)'));
+						return cards.reduce((closest, card) => {
+							const box = card.getBoundingClientRect();
+							const offset = pointerY - box.top - box.height / 2;
+							if (offset < 0 && offset > closest.offset) {
+								return { offset, element: card };
+							}
+							return closest;
+						}, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+					};
+
+					const insertCardAtPointer = (list, card, pointerY) => {
+						const before = closestInsertTarget(list, pointerY);
+						if (before) {
+							list.insertBefore(card, before);
+						} else {
+							list.appendChild(card);
+						}
+					};
+
+					const revertCard = (card, list, nextNode) => {
+						if (!card || !list) return;
+						if (nextNode && nextNode.parentElement === list) {
+							list.insertBefore(card, nextNode);
+						} else {
+							list.appendChild(card);
+						}
+						updateColumn(list.closest('[data-stage-column]'));
+					};
+
+					board.querySelectorAll('[data-stage-column]').forEach(updateColumn);
+
+					board.addEventListener('dragstart', (event) => {
+						const card = event.target.closest('[data-deal-card]');
+						if (!card) return;
+						draggedCard = card;
+						sourceList = card.closest('[data-stage-list]');
+						sourceNext = card.nextElementSibling;
+						card.classList.add('is-dragging');
+						event.dataTransfer.effectAllowed = 'move';
+						event.dataTransfer.setData('text/plain', card.dataset.dealId);
+					});
+
+					board.addEventListener('dragover', (event) => {
+						const list = event.target.closest('[data-stage-list]');
+						if (!list || !draggedCard) return;
+						event.preventDefault();
+						insertCardAtPointer(list, draggedCard, event.clientY);
+						board.querySelectorAll('.crm-column.is-drag-over').forEach((column) => column.classList.remove('is-drag-over'));
+						list.closest('[data-stage-column]').classList.add('is-drag-over');
+						event.dataTransfer.dropEffect = 'move';
+					});
+
+					board.addEventListener('drop', async (event) => {
+						const list = event.target.closest('[data-stage-list]');
+						if (!list || !draggedCard) return;
+						event.preventDefault();
+
+						const card = draggedCard;
+						const previousList = sourceList;
+						const previousNext = sourceNext;
+						const targetColumn = list.closest('[data-stage-column]');
+						const previousStage = card.dataset.currentStage;
+						const targetStage = targetColumn.dataset.stage;
+
+						insertCardAtPointer(list, card, event.clientY);
+						card.classList.remove('is-dragging');
+						card.classList.add('is-saving');
+						board.querySelectorAll('.crm-column.is-drag-over').forEach((column) => column.classList.remove('is-drag-over'));
+						updateColumn(previousList.closest('[data-stage-column]'));
+						updateColumn(targetColumn);
+
+						draggedCard = null;
+
+						if (targetStage === previousStage) {
+							card.classList.remove('is-saving');
+							return;
+						}
+
+						card.dataset.currentStage = targetStage;
+						const select = card.querySelector('select[name="stage"]');
+						if (select) select.value = targetStage;
+
+						const formData = new FormData();
+						formData.append('csrf_token', board.dataset.csrfToken);
+						formData.append('stage', targetStage);
+
+						try {
+							const response = await fetch(card.dataset.stageUrl, {
+								method: 'POST',
+								headers: {
+									'Accept': 'application/json',
+									'X-Requested-With': 'fetch'
+								},
+								body: formData,
+								credentials: 'same-origin'
+							});
+							if (!response.ok) {
+								const error = await response.json().catch(() => ({ error: 'Could not move deal.' }));
+								throw new Error(error.error || 'Could not move deal.');
+							}
+							const payload = await response.json();
+							card.dataset.currentStage = payload.stage;
+							if (select) select.value = payload.stage;
+							showStatus(`Moved to ${stageLabel(targetColumn)}.`);
+						} catch (error) {
+							card.dataset.currentStage = previousStage;
+							if (select) select.value = previousStage;
+							revertCard(card, previousList, previousNext);
+							updateColumn(targetColumn);
+							showStatus(error.message || 'Could not move deal.', 'error');
+						} finally {
+							card.classList.remove('is-saving');
+							sourceList = null;
+							sourceNext = null;
+						}
+					});
+
+					board.addEventListener('dragend', () => {
+						if (draggedCard) draggedCard.classList.remove('is-dragging', 'is-saving');
+						board.querySelectorAll('.crm-column.is-drag-over').forEach((column) => column.classList.remove('is-drag-over'));
+						draggedCard = null;
+						sourceList = null;
+						sourceNext = null;
+					});
+				})();
+			</script>
 		</main>
 	</body>
 </html>

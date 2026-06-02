@@ -2,6 +2,7 @@ package web
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -362,30 +363,77 @@ func (s *Server) crmCreateDeal(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) crmMoveDeal(w http.ResponseWriter, r *http.Request) {
-	if !s.validateCSRF(w, r) {
+	wantsJSON := wantsJSONResponse(r)
+	if !s.auth.ValidateCSRF(r) {
+		if wantsJSON {
+			writeJSONError(w, http.StatusForbidden, "invalid CSRF token")
+			return
+		}
+		http.Error(w, "invalid CSRF token", http.StatusForbidden)
 		return
 	}
 	user, _ := httpx.CurrentUser(r)
 	id := chi.URLParam(r, "id")
 	stage := r.FormValue("stage")
 	if !app.ValidSalesStage(stage) {
+		if wantsJSON {
+			writeJSONError(w, http.StatusBadRequest, "invalid CRM stage")
+			return
+		}
 		redirectWithError(w, r, "/admin/crm", errors.New("invalid CRM stage"))
 		return
 	}
 	deal, err := s.store.DealByID(r.Context(), id)
 	if err != nil {
+		if wantsJSON {
+			writeJSONError(w, http.StatusNotFound, err.Error())
+			return
+		}
 		redirectWithError(w, r, "/admin/crm", err)
 		return
 	}
 	if user.Role == app.RoleSales && deal.AssignedSalesAgentID != user.ID && deal.CreatedBy != user.ID {
+		if wantsJSON {
+			writeJSONError(w, http.StatusForbidden, "forbidden")
+			return
+		}
 		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
-	if _, err := s.store.UpdateDealStage(r.Context(), id, stage, user.ID); err != nil {
+	updated, err := s.store.UpdateDealStage(r.Context(), id, stage, user.ID)
+	if err != nil {
+		if wantsJSON {
+			writeJSONError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
 		redirectWithError(w, r, "/admin/crm", err)
 		return
 	}
+	if wantsJSON {
+		writeJSON(w, http.StatusOK, map[string]string{
+			"id":                     updated.ID,
+			"stage":                  updated.Stage,
+			"stageLabel":             app.StageLabel(updated.Stage),
+			"convertedApplicationID": updated.ConvertedApplicationID,
+		})
+		return
+	}
 	redirectWithSuccess(w, r, "/admin/crm", "Deal moved")
+}
+
+func wantsJSONResponse(r *http.Request) bool {
+	return strings.Contains(r.Header.Get("Accept"), "application/json") ||
+		strings.EqualFold(r.Header.Get("X-Requested-With"), "fetch")
+}
+
+func writeJSONError(w http.ResponseWriter, status int, message string) {
+	writeJSON(w, status, map[string]string{"error": message})
+}
+
+func writeJSON(w http.ResponseWriter, status int, payload any) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(payload)
 }
 
 func parseApplicationInput(r *http.Request) (app.ApplicationInput, error) {
