@@ -212,16 +212,14 @@ form {
 	transform: none;
 }
 
-.admin-button--secondary {
+.admin-button.admin-button--secondary,
+.admin-button.admin-button--secondary:visited {
+	border-color: var(--admin-accent);
 	background: #fff;
 	color: var(--admin-accent);
 }
 
-.admin-button--secondary:visited {
-	color: var(--admin-accent);
-}
-
-.admin-button--secondary:hover {
+.admin-button.admin-button--secondary:hover {
 	background: var(--admin-accent-soft);
 	color: var(--admin-accent-dark);
 }
@@ -662,6 +660,35 @@ textarea::placeholder {
 	min-width: 12rem;
 }
 
+.admin-form__actions {
+	display: flex;
+	grid-column: 1 / -1;
+	justify-content: flex-end;
+	padding: 0.75rem;
+	background: rgba(255, 255, 255, 0.94);
+	border: 1px solid var(--admin-border);
+	border-radius: 8px;
+	box-shadow: 0 10px 28px rgba(23, 32, 29, 0.12);
+	backdrop-filter: blur(10px);
+}
+
+.admin-form__actions--top {
+	position: sticky;
+	top: 4.75rem;
+	z-index: 9;
+	margin: -0.2rem -0.2rem 0;
+}
+
+.admin-form__actions--bottom {
+	position: sticky;
+	bottom: 1rem;
+	z-index: 8;
+}
+
+.admin-form__actions .admin-button {
+	min-width: 11rem;
+}
+
 .form-section {
 	display: grid;
 	align-content: start;
@@ -949,9 +976,22 @@ textarea::placeholder {
 	.crm-create .admin-button,
 	.filter-row .admin-button,
 	.inline-form .admin-button,
-	.admin-form > .admin-button {
+	.admin-form > .admin-button,
+	.admin-form__actions .admin-button {
 		width: 100%;
 		min-width: 0;
+	}
+
+	.admin-form__actions {
+		padding: 0.6rem;
+	}
+
+	.admin-form__actions--bottom {
+		bottom: 0.5rem;
+	}
+
+	.admin-form__actions--top {
+		top: 0.5rem;
 	}
 
 	.simple-list div,

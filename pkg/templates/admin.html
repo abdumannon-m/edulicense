@@ -277,6 +277,9 @@
 			{{end}}
 			<form class="admin-form" method="post" action="{{if .Application.ID}}/admin/applications/{{.Application.ID}}{{else}}/admin/applications{{end}}">
 				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+				<div class="admin-form__actions admin-form__actions--top">
+					<button class="admin-button" type="submit">{{if .Application.ID}}Save changes{{else}}Create application{{end}}</button>
+				</div>
 				<section class="form-section">
 					<h2>Institution</h2>
 					<label>Name<input name="institution_name" value="{{.Application.InstitutionName}}" required></label>
@@ -308,7 +311,9 @@
 						{{end}}
 					</div>
 				</section>
-				<button class="admin-button" type="submit">{{if .Application.ID}}Save changes{{else}}Create application{{end}}</button>
+				<div class="admin-form__actions admin-form__actions--bottom">
+					<button class="admin-button" type="submit">{{if .Application.ID}}Save changes{{else}}Create application{{end}}</button>
+				</div>
 			</form>
 			{{if .Application.ID}}
 				<div class="admin-grid">
