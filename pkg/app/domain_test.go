@@ -1,6 +1,9 @@
 package app
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestRoleCanAccess(t *testing.T) {
 	tests := []struct {
@@ -67,5 +70,29 @@ func TestValidateProfitSharing(t *testing.T) {
 	}
 	if err := ValidateProfitSharing("90-10"); err == nil {
 		t.Fatal("unknown profit sharing should fail")
+	}
+}
+
+func TestCertificateInputForApplication(t *testing.T) {
+	issuedAt := time.Date(2026, 6, 2, 12, 0, 0, 0, time.UTC)
+	input := CertificateInputForApplication(TestCenterApplication{
+		ID:              "8f3bd10a-1111-2222-3333-444444444444",
+		InstitutionName: "Oriental University in Tashkent",
+		CEEBCode:        "43425",
+	}, issuedAt)
+	if input.Slug != "oriental-university-in-tashkent-sat-center-43425-8f3bd10a" {
+		t.Fatalf("Slug = %q", input.Slug)
+	}
+	if input.VerificationID != "EL-SAT-43425-2026" {
+		t.Fatalf("VerificationID = %q", input.VerificationID)
+	}
+	if input.IssueDate != "02/06/2026" {
+		t.Fatalf("IssueDate = %q", input.IssueDate)
+	}
+	if input.CountryRegion != "Uzbekistan" {
+		t.Fatalf("CountryRegion = %q", input.CountryRegion)
+	}
+	if got := TestCenterCodeFromVerificationID(input.VerificationID); got != "43425" {
+		t.Fatalf("TestCenterCodeFromVerificationID = %q", got)
 	}
 }

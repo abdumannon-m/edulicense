@@ -1095,3 +1095,159 @@ a {
 .privacy-page p {
 	color: var(--color-muted);
 }
+
+/* Certificate verification */
+.certificate-page {
+	min-height: 100vh;
+	padding: 2rem;
+	background: #f3f5f8;
+	color: #07559e;
+}
+
+.certificate-sheet {
+	width: min(100%, 1120px);
+	margin: 0 auto;
+	padding: 2rem 2rem 1.5rem;
+	background: #fff;
+	box-shadow: 0 18px 44px rgba(20, 38, 55, 0.12);
+}
+
+.certificate-rule {
+	height: 2px;
+	margin-bottom: 2.15rem;
+	background: #07559e;
+}
+
+.certificate-sheet h1 {
+	margin: 0 0 0.55rem;
+	color: #07559e;
+	font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+	font-size: 2rem;
+	font-weight: 800;
+	line-height: 1.1;
+	letter-spacing: 0;
+}
+
+.certificate-sheet p {
+	max-width: 62rem;
+	margin: 1.35rem 0 0;
+	color: #07559e;
+	font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+	font-size: 1.13rem;
+	line-height: 1.42;
+}
+
+.certificate-sheet .certificate-lead {
+	margin-top: 0;
+	font-size: 1.2rem;
+}
+
+.certificate-code {
+	font-weight: 700;
+}
+
+.certificate-logos {
+	display: grid;
+	grid-template-columns: 7.25rem 7.25rem minmax(14rem, 1fr);
+	align-items: center;
+	gap: 4rem;
+	margin: 2rem 0 4rem;
+}
+
+.certificate-qr {
+	width: 7.25rem;
+	height: 7.25rem;
+	image-rendering: crisp-edges;
+}
+
+.certificate-mark {
+	width: 5.6rem;
+	height: 5.6rem;
+	justify-self: center;
+}
+
+.college-board-wordmark {
+	color: #07559e;
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: 2.45rem;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.certificate-meta {
+	margin: 0;
+	padding-left: 1rem;
+	color: #07559e;
+	font-size: 0.85rem;
+	line-height: 1.35;
+}
+
+.certificate-actions {
+	display: flex;
+	justify-content: center;
+	gap: 0.75rem;
+	margin: 1rem auto 0;
+}
+
+@media (max-width: 760px) {
+	.certificate-page {
+		padding: 0.75rem;
+	}
+
+	.certificate-sheet {
+		padding: 1.1rem;
+	}
+
+	.certificate-sheet h1 {
+		font-size: 1.55rem;
+	}
+
+	.certificate-sheet p,
+	.certificate-sheet .certificate-lead {
+		font-size: 1rem;
+	}
+
+	.certificate-logos {
+		grid-template-columns: 1fr;
+		justify-items: start;
+		gap: 1.25rem;
+		margin-bottom: 2rem;
+	}
+
+	.certificate-mark {
+		justify-self: start;
+	}
+
+	.college-board-wordmark {
+		font-size: 2rem;
+	}
+
+	.certificate-actions {
+		flex-direction: column;
+	}
+}
+
+@media print {
+	@page {
+		size: landscape;
+		margin: 12mm;
+	}
+
+	.site-header,
+	.site-footer,
+	.certificate-actions {
+		display: none !important;
+	}
+
+	.certificate-page {
+		min-height: auto;
+		padding: 0;
+		background: #fff;
+	}
+
+	.certificate-sheet {
+		width: 100%;
+		padding: 0;
+		box-shadow: none;
+	}
+}

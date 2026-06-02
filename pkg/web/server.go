@@ -35,6 +35,8 @@ type Store interface {
 	DashboardStats(ctx context.Context, now time.Time) (app.DashboardStats, error)
 	LogActivity(ctx context.Context, userID, action, entityType, entityID, summary string) error
 	CreateUser(ctx context.Context, input auth.CreateUserInput) (app.User, error)
+	CertificateBySlug(ctx context.Context, slug string) (app.Certificate, error)
+	UpsertCertificate(ctx context.Context, input app.CertificateInput) (app.Certificate, error)
 }
 
 type Server struct {
@@ -66,6 +68,9 @@ func (s *Server) Routes() http.Handler {
 	r.Get("/uz", s.home("uz"))
 	r.Get("/privacy", s.privacy("en"))
 	r.Get("/uz/privacy", s.privacy("uz"))
+	r.Get("/verify/{slug}", s.verify("en"))
+	r.Get("/uz/verify/{slug}", s.verify("uz"))
+	r.Get("/verify/{slug}/qr.png", s.certificateQR)
 	r.Get("/robots.txt", s.robots)
 	r.Get("/sitemap.xml", s.sitemap)
 
@@ -83,6 +88,7 @@ func (s *Server) Routes() http.Handler {
 		admin.Post("/admin/applications", s.requireArea("applications", s.applicationCreate))
 		admin.Get("/admin/applications/{id}", s.requireArea("applications", s.applicationEdit))
 		admin.Post("/admin/applications/{id}", s.requireArea("applications", s.applicationUpdate))
+		admin.Post("/admin/applications/{id}/certificate", s.requireArea("applications", s.applicationGenerateCertificate))
 		admin.Post("/admin/applications/{id}/delete", s.requireArea("applications", s.applicationDelete))
 		admin.Post("/admin/applications/{id}/documents", s.requireArea("applications", s.applicationUploadDocument))
 		admin.Post("/admin/reminders", s.requireArea("reminders", s.reminderCreate))

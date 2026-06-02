@@ -157,6 +157,18 @@
 							<div><dt>Payment</dt><dd>{{paymentLabel .PaymentOption}} {{ptrString .PaymentAmount}} {{.PaymentCurrency}}</dd></div>
 							<div><dt>Profit share</dt><dd>{{.ProfitSharing}}</dd></div>
 						</dl>
+						{{if eq .Stage "in_test_center_list"}}
+							<div class="application-card__actions">
+								{{if .CertificateSlug}}
+									<a class="admin-button" href="/verify/{{.CertificateSlug}}" target="_blank" rel="noopener">View license</a>
+								{{else}}
+									<form method="post" action="/admin/applications/{{.ID}}/certificate">
+										<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
+										<button class="admin-button" type="submit">Generate license</button>
+									</form>
+								{{end}}
+							</div>
+						{{end}}
 					</article>
 				{{else}}
 					<p class="empty-state">No applications yet.</p>
@@ -179,6 +191,23 @@
 				<a class="admin-button admin-button--secondary" href="/admin/applications">Back</a>
 			</div>
 			{{template "admin_alerts" .}}
+			{{if and .Application.ID (eq .Application.Stage "in_test_center_list")}}
+				<section class="admin-panel certificate-panel">
+					<div>
+						<h2>License certificate</h2>
+						<p class="muted">Generate a public verification certificate with a QR code after the institution appears in the test center list.</p>
+						{{if .Application.VerificationID}}<p class="muted">Certificate ID: {{.Application.VerificationID}}</p>{{end}}
+					</div>
+					{{if .Application.CertificateSlug}}
+						<a class="admin-button" href="/verify/{{.Application.CertificateSlug}}" target="_blank" rel="noopener">View license</a>
+					{{else}}
+						<form method="post" action="/admin/applications/{{.Application.ID}}/certificate">
+							<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+							<button class="admin-button" type="submit">Generate license</button>
+						</form>
+					{{end}}
+				</section>
+			{{end}}
 			<form class="admin-form" method="post" action="{{if .Application.ID}}/admin/applications/{{.Application.ID}}{{else}}/admin/applications{{end}}">
 				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
 				<section class="form-section">

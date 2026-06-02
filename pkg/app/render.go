@@ -50,6 +50,7 @@ func newRenderer(parse func(*template.Template) (*template.Template, error), nam
 			return *value
 		},
 		"lower": strings.ToLower,
+		"upper": strings.ToUpper,
 		"inc":   func(i int) int { return i + 1 },
 		"trimUZ": func(path string) string {
 			if path == "/uz" {

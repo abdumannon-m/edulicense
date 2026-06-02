@@ -258,3 +258,33 @@
 		</main>
 {{template "public_footer" .}}
 {{end}}
+
+{{define "public_verify"}}
+{{template "public_head" .}}
+		<main id="main" class="certificate-page">
+			<section class="certificate-sheet" aria-labelledby="certificate-title">
+				<div class="certificate-rule"></div>
+				<h1 id="certificate-title">{{upper .Certificate.Institution}}</h1>
+				<p class="certificate-lead">has been identified as an available SAT Test Center listed within the official College Board SAT Test Center Search system for the upcoming SAT administration period.</p>
+				<p class="certificate-code"><strong>Test Center Code:</strong> {{if .Certificate.TestCenterCode}}{{.Certificate.TestCenterCode}}{{else}}Not specified{{end}}</p>
+				<p>This verification is based on the publicly accessible SAT Test Center Search database provided by College Board at the time of issuance of this certificate.</p>
+				<p>The above-mentioned institution is recognized in the SAT registration system as an active and searchable test center location for SAT administrations available in {{.Certificate.CountryRegion}} region.</p>
+				<p>This certificate is issued by Edu License LLC for verification and informational purposes regarding SAT Test Center listing status.</p>
+				<div class="certificate-logos">
+					<img class="certificate-qr" src="/verify/{{.Certificate.Slug}}/qr.png" alt="QR code for certificate verification">
+					<img class="certificate-mark" src="/static/favicon.svg" alt="Edu License mark">
+					<div class="college-board-wordmark" aria-label="College Board">CollegeBoard</div>
+				</div>
+				<ul class="certificate-meta">
+					<li>Issued By: Edu License LLC / Verification Status: VERIFIED / Country/Region: {{.Certificate.CountryRegion}} / Institution: {{.Certificate.Institution}} / Test Center Code: {{if .Certificate.TestCenterCode}}{{.Certificate.TestCenterCode}}{{else}}Not specified{{end}} / Verification Date: {{.Certificate.IssueDate}}</li>
+					<li>Certificate ID: {{.Certificate.VerificationID}}</li>
+				</ul>
+			</section>
+			<div class="certificate-actions">
+				<a class="btn btn--ghost" href="{{.BaseURL}}">Edu License</a>
+				<button class="btn btn--primary" type="button" onclick="window.print()">Print certificate</button>
+			</div>
+		</main>
+	</body>
+</html>
+{{end}}

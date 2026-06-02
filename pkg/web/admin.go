@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -13,6 +14,7 @@ import (
 	"edu-license/pkg/auth"
 	"edu-license/pkg/httpx"
 	"edu-license/pkg/storage"
+	"edu-license/pkg/store"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -126,6 +128,12 @@ func (s *Server) applicationsIndex(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	for i := range applications {
+		if err := s.attachApplicationCertificate(r.Context(), &applications[i]); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
 	users, err := s.store.ListUsersByRoles(r.Context(), app.RoleAdmin, app.RoleSuperAdmin)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -181,6 +189,10 @@ func (s *Server) applicationEdit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
+	if err := s.attachApplicationCertificate(r.Context(), &application); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	users, err := s.store.ListUsersByRoles(r.Context(), app.RoleAdmin, app.RoleSuperAdmin)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -209,6 +221,42 @@ func (s *Server) applicationUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	redirectWithSuccess(w, r, "/admin/applications/"+id, "Application updated")
+}
+
+func (s *Server) applicationGenerateCertificate(w http.ResponseWriter, r *http.Request) {
+	if !s.validateCSRF(w, r) {
+		return
+	}
+	id := chi.URLParam(r, "id")
+	user, _ := httpx.CurrentUser(r)
+	application, err := s.store.ApplicationByID(r.Context(), id)
+	if err != nil {
+		redirectWithError(w, r, "/admin/applications/"+id, err)
+		return
+	}
+	if application.Stage != "in_test_center_list" {
+		redirectWithError(w, r, "/admin/applications/"+id, errors.New("license can only be generated after the application is in the test center list"))
+		return
+	}
+	if strings.TrimSpace(application.CEEBCode) == "" {
+		redirectWithError(w, r, "/admin/applications/"+id, errors.New("test center code is required before generating a license"))
+		return
+	}
+	input := app.CertificateInputForApplication(application, s.nowInAppTimezone())
+	if _, err := s.store.CertificateBySlug(r.Context(), input.Slug); err == nil {
+		redirectWithSuccess(w, r, "/admin/applications/"+id, "License already generated")
+		return
+	} else if !store.IsNotFound(err) {
+		redirectWithError(w, r, "/admin/applications/"+id, err)
+		return
+	}
+	certificate, err := s.store.UpsertCertificate(r.Context(), input)
+	if err != nil {
+		redirectWithError(w, r, "/admin/applications/"+id, err)
+		return
+	}
+	_ = s.store.LogActivity(r.Context(), user.ID, "create", "certificate", certificate.ID, "Generated license for "+application.InstitutionName)
+	redirectWithSuccess(w, r, "/admin/applications/"+id, "License generated")
 }
 
 func (s *Server) applicationDelete(w http.ResponseWriter, r *http.Request) {
@@ -447,4 +495,30 @@ func defaultString(value, fallback string) string {
 		return fallback
 	}
 	return value
+}
+
+func (s *Server) nowInAppTimezone() time.Time {
+	loc, err := time.LoadLocation(s.cfg.Timezone)
+	if err != nil {
+		return time.Now()
+	}
+	return time.Now().In(loc)
+}
+
+func (s *Server) attachApplicationCertificate(ctx context.Context, application *app.TestCenterApplication) error {
+	if application == nil || application.ID == "" || application.Stage != "in_test_center_list" || strings.TrimSpace(application.CEEBCode) == "" {
+		return nil
+	}
+	input := app.CertificateInputForApplication(*application, time.Now())
+	certificate, err := s.store.CertificateBySlug(ctx, input.Slug)
+	if err != nil {
+		if store.IsNotFound(err) {
+			return nil
+		}
+		return err
+	}
+	application.CertificateID = certificate.ID
+	application.CertificateSlug = certificate.Slug
+	application.VerificationID = certificate.VerificationID
+	return nil
 }

@@ -3,7 +3,9 @@ package app
 import (
 	"fmt"
 	"slices"
+	"strings"
 	"time"
+	"unicode"
 )
 
 type Role string
@@ -33,6 +35,8 @@ type Certificate struct {
 	CollegeBoardScreenshot string
 	VerificationID         string
 	IssueDate              string
+	TestCenterCode         string
+	CountryRegion          string
 }
 
 type SalesDeal struct {
@@ -75,6 +79,9 @@ type TestCenterApplication struct {
 	CreatedBy         string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
+	CertificateID     string
+	CertificateSlug   string
+	VerificationID    string
 	Documents         []ApplicationDocument
 	Reminders         []Reminder
 }
@@ -164,6 +171,18 @@ type DocumentInput struct {
 	SizeBytes        int64
 	StorageKey       string
 	UploadedBy       string
+}
+
+type CertificateInput struct {
+	Slug                   string
+	Institution            string
+	Designation            string
+	SATAdministrationDate  string
+	CollegeBoardScreenshot string
+	VerificationID         string
+	IssueDate              string
+	TestCenterCode         string
+	CountryRegion          string
 }
 
 type DashboardStats struct {
@@ -303,6 +322,93 @@ func PaymentLabel(value string) string {
 	default:
 		return value
 	}
+}
+
+func CertificateInputForApplication(application TestCenterApplication, issuedAt time.Time) CertificateInput {
+	code := strings.TrimSpace(application.CEEBCode)
+	year := issuedAt.Format("2006")
+	shortID := shortIdentifier(application.ID)
+	verificationID := fmt.Sprintf("EL-SAT-%s-%s", code, year)
+	if code == "" {
+		verificationID = fmt.Sprintf("EL-SAT-%s-%s", strings.ToUpper(shortID), year)
+	}
+	return CertificateInput{
+		Slug:                   certificateSlug(application.InstitutionName, code, shortID),
+		Institution:            application.InstitutionName,
+		Designation:            "SAT Test Center Listing Verification",
+		SATAdministrationDate:  "upcoming SAT administration period",
+		CollegeBoardScreenshot: "",
+		VerificationID:         verificationID,
+		IssueDate:              issuedAt.Format("02/01/2006"),
+		TestCenterCode:         code,
+		CountryRegion:          "Uzbekistan",
+	}
+}
+
+func TestCenterCodeFromVerificationID(verificationID string) string {
+	parts := strings.Split(verificationID, "-")
+	if len(parts) >= 3 && parts[0] == "EL" && parts[1] == "SAT" {
+		return parts[2]
+	}
+	return ""
+}
+
+func certificateSlug(institution, code, shortID string) string {
+	parts := []string{slugify(institution), "sat-center"}
+	if code != "" {
+		parts = append(parts, strings.ToLower(code))
+	}
+	if shortID != "" {
+		parts = append(parts, strings.ToLower(shortID))
+	}
+	return strings.Join(compactStrings(parts), "-")
+}
+
+func slugify(value string) string {
+	value = strings.ToLower(strings.TrimSpace(value))
+	var builder strings.Builder
+	lastDash := false
+	for _, r := range value {
+		switch {
+		case r >= 'a' && r <= 'z', r >= '0' && r <= '9':
+			builder.WriteRune(r)
+			lastDash = false
+		case unicode.IsSpace(r) || r == '-' || r == '_' || r == '/':
+			if builder.Len() > 0 && !lastDash {
+				builder.WriteByte('-')
+				lastDash = true
+			}
+		}
+	}
+	out := strings.Trim(builder.String(), "-")
+	if out == "" {
+		return "certificate"
+	}
+	return out
+}
+
+func shortIdentifier(id string) string {
+	id = strings.TrimSpace(id)
+	if id == "" {
+		return ""
+	}
+	if idx := strings.Index(id, "-"); idx > 0 {
+		return id[:idx]
+	}
+	if len(id) > 8 {
+		return id[:8]
+	}
+	return id
+}
+
+func compactStrings(values []string) []string {
+	out := values[:0]
+	for _, value := range values {
+		if strings.TrimSpace(value) != "" {
+			out = append(out, value)
+		}
+	}
+	return out
 }
 
 func ValidateProfitSharing(value string) error {

@@ -8,6 +8,14 @@
     {
       "source": "/admin/:path*",
       "destination": "/api/app?path=/admin/:path*"
+    },
+    {
+      "source": "/verify/:path*",
+      "destination": "/api/app?path=/verify/:path*"
+    },
+    {
+      "source": "/uz/verify/:path*",
+      "destination": "/api/app?path=/uz/verify/:path*"
     }
   ]
 }

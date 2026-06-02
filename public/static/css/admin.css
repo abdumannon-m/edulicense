@@ -502,6 +502,20 @@ textarea::placeholder {
 	margin: 0;
 }
 
+.application-card__actions {
+	display: flex;
+	grid-column: 1 / -1;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+	justify-content: flex-end;
+	padding-top: 0.85rem;
+	border-top: 1px solid var(--admin-border);
+}
+
+.application-card__actions form {
+	display: flex;
+}
+
 .application-card dl div {
 	min-width: 0;
 }
@@ -547,6 +561,29 @@ textarea::placeholder {
 
 .form-section--wide {
 	grid-column: 1 / -1;
+}
+
+.certificate-panel {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.certificate-panel h2 {
+	margin: 0 0 0.35rem;
+	font-size: 1rem;
+	font-weight: 850;
+}
+
+.certificate-panel p {
+	margin: 0.25rem 0 0;
+}
+
+.certificate-panel form {
+	display: flex;
+	flex: 0 0 auto;
 }
 
 .check-grid {
@@ -736,6 +773,23 @@ textarea::placeholder {
 
 	.application-card dl {
 		grid-template-columns: 1fr;
+	}
+
+	.application-card__actions,
+	.certificate-panel {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.application-card__actions {
+		justify-content: flex-start;
+	}
+
+	.application-card__actions .admin-button,
+	.application-card__actions form,
+	.certificate-panel .admin-button,
+	.certificate-panel form {
+		width: 100%;
 	}
 }
 

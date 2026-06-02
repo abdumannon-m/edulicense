@@ -145,20 +145,25 @@ func (s *Postgres) CertificateBySlug(ctx context.Context, slug string) (app.Cert
 		FROM certificates
 		WHERE slug = $1
 	`, slug)
-	var cert app.Certificate
-	if err := row.Scan(
-		&cert.ID,
-		&cert.Slug,
-		&cert.Institution,
-		&cert.Designation,
-		&cert.SATAdministrationDate,
-		&cert.CollegeBoardScreenshot,
-		&cert.VerificationID,
-		&cert.IssueDate,
-	); err != nil {
-		return app.Certificate{}, err
-	}
-	return cert, nil
+	return scanCertificate(row)
+}
+
+func (s *Postgres) UpsertCertificate(ctx context.Context, input app.CertificateInput) (app.Certificate, error) {
+	row := s.pool.QueryRow(ctx, `
+		INSERT INTO certificates (
+			slug, institution, designation, sat_administration_date,
+			college_board_screenshot, verification_id, issue_date
+		) VALUES (
+			$1, $2, $3, $4,
+			$5, $6, $7
+		)
+		ON CONFLICT (slug) DO UPDATE
+		SET updated_at = certificates.updated_at
+		RETURNING id::text, slug, institution, designation, sat_administration_date,
+			college_board_screenshot, verification_id, issue_date
+	`, input.Slug, input.Institution, input.Designation, input.SATAdministrationDate,
+		input.CollegeBoardScreenshot, input.VerificationID, input.IssueDate)
+	return scanCertificate(row)
 }
 
 func (s *Postgres) ListApplications(ctx context.Context, stage, adminID, location string) ([]app.TestCenterApplication, error) {
@@ -666,6 +671,25 @@ func scanUser(row pgx.Row) (app.User, error) {
 		return app.User{}, err
 	}
 	return user, nil
+}
+
+func scanCertificate(row pgx.Row) (app.Certificate, error) {
+	var cert app.Certificate
+	if err := row.Scan(
+		&cert.ID,
+		&cert.Slug,
+		&cert.Institution,
+		&cert.Designation,
+		&cert.SATAdministrationDate,
+		&cert.CollegeBoardScreenshot,
+		&cert.VerificationID,
+		&cert.IssueDate,
+	); err != nil {
+		return app.Certificate{}, err
+	}
+	cert.TestCenterCode = app.TestCenterCodeFromVerificationID(cert.VerificationID)
+	cert.CountryRegion = "Uzbekistan"
+	return cert, nil
 }
 
 func scanApplication(row pgx.Row) (app.TestCenterApplication, error) {
