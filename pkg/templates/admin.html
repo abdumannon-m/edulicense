@@ -136,21 +136,26 @@
 				<a class="admin-button" href="/admin/applications/new">New application</a>
 			</div>
 			{{template "admin_alerts" .}}
-			<form class="filter-row" method="get" action="/admin/applications">
+			<form class="filter-row filter-row--applications" method="get" action="/admin/applications" data-application-filters>
 				<select name="stage"><option value="">All stages</option>{{range .ApplicationStages}}<option value="{{.}}">{{stageLabel .}}</option>{{end}}</select>
 				<select name="admin"><option value="">All admins</option>{{range .Users}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select>
 				<input name="location" placeholder="Location">
 				<button class="admin-button admin-button--secondary" type="submit">Filter</button>
+				<button class="admin-button admin-button--secondary" type="button" data-clear-filters>Clear</button>
+				<p class="filter-count"><span data-visible-count>{{len .Applications}}</span> / <span data-total-count>{{len .Applications}}</span> shown</p>
 			</form>
-			<section class="application-list">
+			<section class="application-list" data-application-list>
 				{{range .Applications}}
-					<article class="application-card">
-						<div>
-							<p class="admin-kicker">{{stageLabel .Stage}}</p>
+					<article class="application-card" data-application-card data-stage="{{.Stage}}" data-admin="{{.AssignedAdminID}}" data-location="{{lower .Location}}">
+						<div class="application-card__main">
+							<div class="application-card__head">
+								<span class="stage-badge stage-badge--{{.Stage}}">{{stageLabel .Stage}}</span>
+								{{if .CertificateSlug}}<span class="certificate-chip">Certificate generated</span>{{end}}
+							</div>
 							<h2><a href="/admin/applications/{{.ID}}">{{.InstitutionName}}</a></h2>
 							<p>{{.Location}} {{if .Website}}· <a href="{{.Website}}" target="_blank" rel="noopener">{{.Website}}</a>{{end}}</p>
 						</div>
-						<dl>
+						<dl class="application-card__meta">
 							<div><dt>Responsible</dt><dd>{{.ResponsiblePerson}}</dd></div>
 							<div><dt>Phone</dt><dd>{{.Phone}}</dd></div>
 							<div><dt>Admin</dt><dd>{{.AssignedAdminName}}</dd></div>
@@ -159,12 +164,13 @@
 						</dl>
 						{{if eq .Stage "in_test_center_list"}}
 							<div class="application-card__actions">
+								<span class="application-card__action-label">Certificate</span>
 								{{if .CertificateSlug}}
-									<a class="admin-button" href="/verify/{{.CertificateSlug}}" target="_blank" rel="noopener">View license</a>
+									<a class="admin-button" href="/verify/{{.CertificateSlug}}" target="_blank" rel="noopener">View certificate</a>
 								{{else}}
 									<form method="post" action="/admin/applications/{{.ID}}/certificate">
 										<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
-										<button class="admin-button" type="submit">Generate license</button>
+										<button class="admin-button" type="submit">Generate certificate</button>
 									</form>
 								{{end}}
 							</div>
@@ -173,7 +179,61 @@
 				{{else}}
 					<p class="empty-state">No applications yet.</p>
 				{{end}}
+				<p class="empty-state" data-filter-empty hidden>No applications match these filters.</p>
 			</section>
+			<script>
+				(() => {
+					const form = document.querySelector('[data-application-filters]');
+					const cards = Array.from(document.querySelectorAll('[data-application-card]'));
+					const empty = document.querySelector('[data-filter-empty]');
+					const visibleCount = document.querySelector('[data-visible-count]');
+					const totalCount = document.querySelector('[data-total-count]');
+					if (!form || !cards.length) return;
+					const stage = form.elements.namedItem('stage');
+					const admin = form.elements.namedItem('admin');
+					const location = form.elements.namedItem('location');
+					const params = new URLSearchParams(window.location.search);
+					if (params.has('stage')) stage.value = params.get('stage');
+					if (params.has('admin')) admin.value = params.get('admin');
+					if (params.has('location')) location.value = params.get('location');
+					const applyFilters = () => {
+						const stageValue = stage.value;
+						const adminValue = admin.value;
+						const locationValue = location.value.trim().toLowerCase();
+						let shown = 0;
+						for (const card of cards) {
+							const matchesStage = !stageValue || card.dataset.stage === stageValue;
+							const matchesAdmin = !adminValue || card.dataset.admin === adminValue;
+							const matchesLocation = !locationValue || (card.dataset.location || '').includes(locationValue);
+							const visible = matchesStage && matchesAdmin && matchesLocation;
+							card.hidden = !visible;
+							if (visible) shown += 1;
+						}
+						if (visibleCount) visibleCount.textContent = String(shown);
+						if (totalCount) totalCount.textContent = String(cards.length);
+						if (empty) empty.hidden = shown !== 0;
+						const next = new URLSearchParams();
+						if (stageValue) next.set('stage', stageValue);
+						if (adminValue) next.set('admin', adminValue);
+						if (locationValue) next.set('location', location.value.trim());
+						const query = next.toString();
+						window.history.replaceState(null, '', query ? `${window.location.pathname}?${query}` : window.location.pathname);
+					};
+					form.addEventListener('input', applyFilters);
+					form.addEventListener('change', applyFilters);
+					form.addEventListener('submit', (event) => {
+						event.preventDefault();
+						applyFilters();
+					});
+					form.querySelector('[data-clear-filters]')?.addEventListener('click', () => {
+						stage.value = '';
+						admin.value = '';
+						location.value = '';
+						applyFilters();
+					});
+					applyFilters();
+				})();
+			</script>
 		</main>
 	</body>
 </html>
@@ -187,25 +247,32 @@
 				<div>
 					<p class="admin-kicker">Operations</p>
 					<h1>{{if .Application.ID}}Edit application{{else}}New application{{end}}</h1>
+					{{if .Application.ID}}<div class="admin-page-head__badges"><span class="stage-badge stage-badge--{{.Application.Stage}}">{{stageLabel .Application.Stage}}</span>{{if .Application.CertificateSlug}}<span class="certificate-chip">Certificate generated</span>{{end}}</div>{{end}}
 				</div>
 				<a class="admin-button admin-button--secondary" href="/admin/applications">Back</a>
 			</div>
 			{{template "admin_alerts" .}}
-			{{if and .Application.ID (eq .Application.Stage "in_test_center_list")}}
+			{{if .Application.ID}}
 				<section class="admin-panel certificate-panel">
 					<div>
-						<h2>License certificate</h2>
-						<p class="muted">Generate a public verification certificate with a QR code after the institution appears in the test center list.</p>
+						<p class="admin-kicker">Certificate</p>
+						<h2>Generate certificate</h2>
+						<p class="muted">Create a public verification certificate with a QR code for this application.</p>
 						{{if .Application.VerificationID}}<p class="muted">Certificate ID: {{.Application.VerificationID}}</p>{{end}}
 					</div>
-					{{if .Application.CertificateSlug}}
-						<a class="admin-button" href="/verify/{{.Application.CertificateSlug}}" target="_blank" rel="noopener">View license</a>
-					{{else}}
-						<form method="post" action="/admin/applications/{{.Application.ID}}/certificate">
-							<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-							<button class="admin-button" type="submit">Generate license</button>
-						</form>
-					{{end}}
+					<div class="certificate-panel__actions">
+						{{if .Application.CertificateSlug}}
+							<a class="admin-button" href="/verify/{{.Application.CertificateSlug}}" target="_blank" rel="noopener">View certificate</a>
+						{{else if eq .Application.Stage "in_test_center_list"}}
+							<form method="post" action="/admin/applications/{{.Application.ID}}/certificate">
+								<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+								<button class="admin-button" type="submit">Generate certificate</button>
+							</form>
+						{{else}}
+							<button class="admin-button" type="button" disabled>Generate certificate</button>
+							<p class="certificate-panel__hint">Available after status becomes “In the test center list”.</p>
+						{{end}}
+					</div>
 				</section>
 			{{end}}
 			<form class="admin-form" method="post" action="{{if .Application.ID}}/admin/applications/{{.Application.ID}}{{else}}/admin/applications{{end}}">

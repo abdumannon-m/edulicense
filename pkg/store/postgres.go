@@ -148,6 +148,31 @@ func (s *Postgres) CertificateBySlug(ctx context.Context, slug string) (app.Cert
 	return scanCertificate(row)
 }
 
+func (s *Postgres) CertificatesBySlugs(ctx context.Context, slugs []string) (map[string]app.Certificate, error) {
+	out := make(map[string]app.Certificate, len(slugs))
+	if len(slugs) == 0 {
+		return out, nil
+	}
+	rows, err := s.pool.Query(ctx, `
+		SELECT id::text, slug, institution, designation, sat_administration_date,
+			college_board_screenshot, verification_id, issue_date
+		FROM certificates
+		WHERE slug = ANY($1)
+	`, slugs)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		certificate, err := scanCertificate(rows)
+		if err != nil {
+			return nil, err
+		}
+		out[certificate.Slug] = certificate
+	}
+	return out, rows.Err()
+}
+
 func (s *Postgres) UpsertCertificate(ctx context.Context, input app.CertificateInput) (app.Certificate, error) {
 	row := s.pool.QueryRow(ctx, `
 		INSERT INTO certificates (

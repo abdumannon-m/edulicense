@@ -118,21 +118,14 @@ func (s *Server) userCreate(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) applicationsIndex(w http.ResponseWriter, r *http.Request) {
 	data := s.adminData(w, r, "SAT test center applications")
-	applications, err := s.store.ListApplications(
-		r.Context(),
-		r.URL.Query().Get("stage"),
-		r.URL.Query().Get("admin"),
-		r.URL.Query().Get("location"),
-	)
+	applications, err := s.store.ListApplications(r.Context(), "", "", "")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	for i := range applications {
-		if err := s.attachApplicationCertificate(r.Context(), &applications[i]); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	if err := s.attachApplicationCertificates(r.Context(), applications); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	users, err := s.store.ListUsersByRoles(r.Context(), app.RoleAdmin, app.RoleSuperAdmin)
 	if err != nil {
@@ -520,5 +513,35 @@ func (s *Server) attachApplicationCertificate(ctx context.Context, application *
 	application.CertificateID = certificate.ID
 	application.CertificateSlug = certificate.Slug
 	application.VerificationID = certificate.VerificationID
+	return nil
+}
+
+func (s *Server) attachApplicationCertificates(ctx context.Context, applications []app.TestCenterApplication) error {
+	slugIndexes := map[string][]int{}
+	slugs := []string{}
+	seen := map[string]bool{}
+	for i := range applications {
+		application := &applications[i]
+		if application.ID == "" || application.Stage != "in_test_center_list" || strings.TrimSpace(application.CEEBCode) == "" {
+			continue
+		}
+		input := app.CertificateInputForApplication(*application, time.Now())
+		if !seen[input.Slug] {
+			slugs = append(slugs, input.Slug)
+			seen[input.Slug] = true
+		}
+		slugIndexes[input.Slug] = append(slugIndexes[input.Slug], i)
+	}
+	certificates, err := s.store.CertificatesBySlugs(ctx, slugs)
+	if err != nil {
+		return err
+	}
+	for slug, certificate := range certificates {
+		for _, index := range slugIndexes[slug] {
+			applications[index].CertificateID = certificate.ID
+			applications[index].CertificateSlug = certificate.Slug
+			applications[index].VerificationID = certificate.VerificationID
+		}
+	}
 	return nil
 }

@@ -36,6 +36,7 @@ type Store interface {
 	LogActivity(ctx context.Context, userID, action, entityType, entityID, summary string) error
 	CreateUser(ctx context.Context, input auth.CreateUserInput) (app.User, error)
 	CertificateBySlug(ctx context.Context, slug string) (app.Certificate, error)
+	CertificatesBySlugs(ctx context.Context, slugs []string) (map[string]app.Certificate, error)
 	UpsertCertificate(ctx context.Context, input app.CertificateInput) (app.Certificate, error)
 }
 
