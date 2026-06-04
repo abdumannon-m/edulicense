@@ -480,6 +480,35 @@ func (s *Postgres) UpdateDealStage(ctx context.Context, id, stage, actorID strin
 	return s.DealByID(ctx, id)
 }
 
+func (s *Postgres) DeleteDeal(ctx context.Context, id, actorID string) error {
+	deal, err := s.DealByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	_, err = tx.Exec(ctx, `DELETE FROM reminders WHERE entity_type = 'deal' AND entity_id = $1`, id)
+	if err != nil {
+		return err
+	}
+	tag, err := tx.Exec(ctx, `DELETE FROM sales_deals WHERE id = $1`, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return pgx.ErrNoRows
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return err
+	}
+	_ = s.LogActivity(ctx, actorID, "delete", "deal", id, "Deleted CRM lead "+deal.SchoolName)
+	return nil
+}
+
 func (s *Postgres) convertWonDeal(ctx context.Context, tx pgx.Tx, dealID, actorID string) error {
 	var applicationID sql.NullString
 	var schoolName, profitSharing, currency string

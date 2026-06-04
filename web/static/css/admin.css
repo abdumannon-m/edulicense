@@ -910,6 +910,7 @@ textarea::placeholder {
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: 0.75rem;
+	position: relative;
 }
 
 .deal-card h3 {
@@ -918,6 +919,13 @@ textarea::placeholder {
 	font-size: 1rem;
 	font-weight: 850;
 	line-height: 1.2;
+}
+
+.deal-card__actions {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: 0.4rem;
 }
 
 .deal-card__drag-handle {
@@ -931,6 +939,77 @@ textarea::placeholder {
 	line-height: 1;
 	text-transform: uppercase;
 	letter-spacing: 0;
+}
+
+.deal-card__menu {
+	position: relative;
+	flex: 0 0 auto;
+}
+
+.deal-card__menu summary {
+	display: grid;
+	width: 1.85rem;
+	height: 1.85rem;
+	place-items: center;
+	border: 1px solid var(--admin-border);
+	border-radius: 999px;
+	background: #fff;
+	color: var(--admin-text);
+	font-size: 1rem;
+	font-weight: 900;
+	line-height: 1;
+	list-style: none;
+	cursor: pointer;
+	user-select: none;
+}
+
+.deal-card__menu summary::-webkit-details-marker {
+	display: none;
+}
+
+.deal-card__menu[open] summary,
+.deal-card__menu summary:hover {
+	border-color: rgba(15, 94, 87, 0.28);
+	background: var(--admin-accent-soft);
+	color: var(--admin-accent-dark);
+}
+
+.deal-card__menu-panel {
+	position: absolute;
+	top: calc(100% + 0.35rem);
+	right: 0;
+	z-index: 20;
+	min-width: 10rem;
+	padding: 0.35rem;
+	border: 1px solid var(--admin-border);
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 14px 34px rgba(23, 32, 29, 0.16);
+}
+
+.deal-delete-form {
+	margin: 0;
+}
+
+.deal-menu__button {
+	width: 100%;
+	min-height: 38px;
+	padding: 0 0.7rem;
+	border: 0;
+	border-radius: 7px;
+	background: transparent;
+	color: var(--admin-text);
+	font-weight: 850;
+	text-align: left;
+	cursor: pointer;
+}
+
+.deal-menu__button--danger {
+	color: var(--admin-danger);
+}
+
+.deal-menu__button--danger:hover {
+	background: #fff0f0;
 }
 
 .deal-card__meta {
@@ -964,8 +1043,7 @@ textarea::placeholder {
 	white-space: nowrap;
 }
 
-.deal-move-form,
-.deal-card form {
+.deal-move-form {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) auto;
 	gap: 0.5rem;
@@ -976,7 +1054,7 @@ textarea::placeholder {
 	display: none;
 }
 
-.deal-card button {
+.deal-move-form button {
 	min-height: 42px;
 	padding: 0 0.75rem;
 	border: 1px solid var(--admin-blue);
@@ -1142,8 +1220,7 @@ textarea::placeholder {
 		text-align: left;
 	}
 
-	.deal-move-form,
-	.deal-card form {
+	.deal-move-form {
 		grid-template-columns: 1fr;
 	}
 }

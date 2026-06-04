@@ -391,7 +391,18 @@
 								<article class="deal-card" draggable="true" data-deal-card data-deal-id="{{.ID}}" data-current-stage="{{.Stage}}" data-stage-url="/admin/crm/deals/{{.ID}}/stage">
 									<div class="deal-card__head">
 										<h3>{{.SchoolName}}</h3>
-										<span class="deal-card__drag-handle" aria-hidden="true">Drag</span>
+										<div class="deal-card__actions">
+											<span class="deal-card__drag-handle" aria-hidden="true">Drag</span>
+											<details class="deal-card__menu" data-deal-menu>
+												<summary aria-label="Lead actions">...</summary>
+												<div class="deal-card__menu-panel">
+													<form class="deal-delete-form" method="post" action="/admin/crm/deals/{{.ID}}/delete" data-delete-form onsubmit="return confirm('Delete this lead?')">
+														<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
+														<button class="deal-menu__button deal-menu__button--danger" type="submit">Delete lead</button>
+													</form>
+												</div>
+											</details>
+										</div>
 									</div>
 									<dl class="deal-card__meta">
 										<div><dt>Capacity</dt><dd>{{.Capacity}}</dd></div>
@@ -485,6 +496,10 @@
 					board.addEventListener('dragstart', (event) => {
 						const card = event.target.closest('[data-deal-card]');
 						if (!card) return;
+						if (event.target.closest('[data-deal-menu]')) {
+							event.preventDefault();
+							return;
+						}
 						draggedCard = card;
 						sourceList = card.closest('[data-stage-list]');
 						sourceNext = card.nextElementSibling;
@@ -574,6 +589,46 @@
 						draggedCard = null;
 						sourceList = null;
 						sourceNext = null;
+					});
+
+					board.addEventListener('submit', async (event) => {
+						const form = event.target.closest('[data-delete-form]');
+						if (!form || event.defaultPrevented) return;
+						event.preventDefault();
+
+						const card = form.closest('[data-deal-card]');
+						const column = card && card.closest('[data-stage-column]');
+						if (!card || !column) return;
+						card.classList.add('is-saving');
+
+						try {
+							const response = await fetch(form.action, {
+								method: 'POST',
+								headers: {
+									'Accept': 'application/json',
+									'X-Requested-With': 'fetch'
+								},
+								body: new FormData(form),
+								credentials: 'same-origin'
+							});
+							if (!response.ok) {
+								const error = await response.json().catch(() => ({ error: 'Could not delete lead.' }));
+								throw new Error(error.error || 'Could not delete lead.');
+							}
+							card.remove();
+							updateColumn(column);
+							showStatus('Lead deleted.');
+						} catch (error) {
+							card.classList.remove('is-saving');
+							showStatus(error.message || 'Could not delete lead.', 'error');
+						}
+					});
+
+					document.addEventListener('click', (event) => {
+						if (event.target.closest('[data-deal-menu]')) return;
+						board.querySelectorAll('[data-deal-menu][open]').forEach((menu) => {
+							menu.open = false;
+						});
 					});
 				})();
 			</script>

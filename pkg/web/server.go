@@ -28,6 +28,7 @@ type Store interface {
 	DealByID(ctx context.Context, id string) (app.SalesDeal, error)
 	CreateDeal(ctx context.Context, input app.DealInput, actorID string) (app.SalesDeal, error)
 	UpdateDealStage(ctx context.Context, id, stage, actorID string) (app.SalesDeal, error)
+	DeleteDeal(ctx context.Context, id, actorID string) error
 	CreateReminder(ctx context.Context, input app.ReminderInput, actorID string) (app.Reminder, error)
 	ListOpenReminders(ctx context.Context, limit int) ([]app.Reminder, error)
 	ListDueReminders(ctx context.Context, now time.Time, limit int) ([]app.Reminder, error)
@@ -96,6 +97,7 @@ func (s *Server) Routes() http.Handler {
 		admin.Get("/admin/crm", s.requireArea("crm", s.crmIndex))
 		admin.Post("/admin/crm/deals", s.requireArea("crm", s.crmCreateDeal))
 		admin.Post("/admin/crm/deals/{id}/stage", s.requireArea("crm", s.crmMoveDeal))
+		admin.Post("/admin/crm/deals/{id}/delete", s.requireArea("crm", s.crmDeleteDeal))
 	})
 
 	return r

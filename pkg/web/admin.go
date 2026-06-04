@@ -421,6 +421,52 @@ func (s *Server) crmMoveDeal(w http.ResponseWriter, r *http.Request) {
 	redirectWithSuccess(w, r, "/admin/crm", "Deal moved")
 }
 
+func (s *Server) crmDeleteDeal(w http.ResponseWriter, r *http.Request) {
+	wantsJSON := wantsJSONResponse(r)
+	if !s.auth.ValidateCSRF(r) {
+		if wantsJSON {
+			writeJSONError(w, http.StatusForbidden, "invalid CSRF token")
+			return
+		}
+		http.Error(w, "invalid CSRF token", http.StatusForbidden)
+		return
+	}
+
+	user, _ := httpx.CurrentUser(r)
+	id := chi.URLParam(r, "id")
+	deal, err := s.store.DealByID(r.Context(), id)
+	if err != nil {
+		if wantsJSON {
+			writeJSONError(w, http.StatusNotFound, err.Error())
+			return
+		}
+		redirectWithError(w, r, "/admin/crm", err)
+		return
+	}
+	if user.Role == app.RoleSales && deal.AssignedSalesAgentID != user.ID && deal.CreatedBy != user.ID {
+		if wantsJSON {
+			writeJSONError(w, http.StatusForbidden, "forbidden")
+			return
+		}
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	if err := s.store.DeleteDeal(r.Context(), id, user.ID); err != nil {
+		if wantsJSON {
+			writeJSONError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		redirectWithError(w, r, "/admin/crm", err)
+		return
+	}
+	if wantsJSON {
+		writeJSON(w, http.StatusOK, map[string]string{"id": id})
+		return
+	}
+	redirectWithSuccess(w, r, "/admin/crm", "Lead deleted")
+}
+
 func wantsJSONResponse(r *http.Request) bool {
 	return strings.Contains(r.Header.Get("Accept"), "application/json") ||
 		strings.EqualFold(r.Header.Get("X-Requested-With"), "fetch")

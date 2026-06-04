@@ -64,6 +64,9 @@ func TestAdminCRMTemplateRendersDragBoard(t *testing.T) {
 		`data-stage-column data-stage="new_lead"`,
 		`data-deal-card data-deal-id="deal-1"`,
 		`data-stage-url="/admin/crm/deals/deal-1/stage"`,
+		`action="/admin/crm/deals/deal-1/delete"`,
+		`data-delete-form`,
+		`Delete lead`,
 		`draggable="true"`,
 		`crm-board--dnd-ready`,
 	} {
