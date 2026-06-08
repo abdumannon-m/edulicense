@@ -28,7 +28,7 @@ func Load() Config {
 	cfg := Config{
 		Addr:          env("ADDR", ":8080"),
 		AppBaseURL:    strings.TrimRight(env("APP_BASE_URL", "http://localhost:8080"), "/"),
-		DatabaseURL:   os.Getenv("DATABASE_URL"),
+		DatabaseURL:   firstEnv("DATABASE_URL", "POSTGRES_URL"),
 		SessionSecret: env("SESSION_SECRET", "dev-only-change-me"),
 		CookieSecure:  env("COOKIE_SECURE", "false") == "true",
 		S3Endpoint:    os.Getenv("S3_ENDPOINT"),
@@ -48,7 +48,7 @@ func Load() Config {
 
 func (c Config) ValidateServer() error {
 	if c.DatabaseURL == "" {
-		return fmt.Errorf("DATABASE_URL is required")
+		return fmt.Errorf("DATABASE_URL or POSTGRES_URL is required")
 	}
 	if c.SessionSecret == "" || c.SessionSecret == "dev-only-change-me" {
 		return fmt.Errorf("SESSION_SECRET must be set to a strong random value")
@@ -61,4 +61,13 @@ func env(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+func firstEnv(keys ...string) string {
+	for _, key := range keys {
+		if value := strings.TrimSpace(os.Getenv(key)); value != "" {
+			return value
+		}
+	}
+	return ""
 }

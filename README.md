@@ -16,7 +16,7 @@ cp .env.example .env
 
 Required values:
 
-- `DATABASE_URL`
+- `DATABASE_URL` (or `POSTGRES_URL` on Vercel)
 - `SESSION_SECRET`
 - `APP_BASE_URL`
 - S3/R2 vars for document uploads
@@ -66,9 +66,9 @@ Set `COOKIE_SECURE=true` in production. `/robots.txt` disallows `/admin`, but se
 
 The repository also includes `api/app.go` and `vercel.json` so Vercel can route `/admin` and `/admin/*` into a Go Function while the existing public Astro pages continue to serve normally. Configure these Vercel environment variables before redeploying:
 
-- `DATABASE_URL`
+- `DATABASE_URL` (or `POSTGRES_URL` from a Vercel Postgres integration)
 - `SESSION_SECRET`
-- `APP_BASE_URL=https://edulicense.uz`
+- `APP_BASE_URL=https://www.edulicense.uz`
 - `COOKIE_SECURE=true`
 - S3/R2 variables for uploads
 - Telegram variables for reminders
