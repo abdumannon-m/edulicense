@@ -22,7 +22,6 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
 		<link rel="stylesheet" href="/static/css/site.css">
-		<link rel="stylesheet" href="/static/css/admin.css">
 	</head>
 	<body>
 {{end}}
@@ -63,6 +62,7 @@
 								<a class="site-header__drawer-lang" href="{{if eq .Messages.Lang "uz"}}/{{else}}/uz{{end}}">
 									{{if eq .Messages.Lang "uz"}}{{.Messages.Nav.SwitchToEn}}{{else}}{{.Messages.Nav.SwitchToUz}}{{end}}
 								</a>
+								<a class="site-header__drawer-cta" href="{{whatsapp .Messages.Hero.WhatsAppPrefill}}" rel="noopener noreferrer" target="_blank">{{.Messages.Nav.Contact}}</a>
 							</nav>
 						</div>
 					</details>
@@ -154,7 +154,7 @@
 					</div>
 				</div>
 			</section>
-			<section class="section section--tight" id="audience" aria-labelledby="audience-heading">
+			<section class="section section--tight audience-section" id="audience" aria-labelledby="audience-heading">
 				<div class="wrap wrap--narrow">
 					<h2 id="audience-heading" class="heading-lg">{{.Messages.Audience.Heading}}</h2>
 					<p class="muted intro-copy">{{.Messages.Audience.Intro}}</p>
@@ -233,6 +233,17 @@
 					</div>
 				</div>
 			</section>
+			<script>
+				document.querySelectorAll('.faq--minimal').forEach((faq) => {
+					faq.addEventListener('toggle', (event) => {
+						const item = event.target;
+						if (!(item instanceof HTMLDetailsElement) || !item.open) return;
+						faq.querySelectorAll('details[open]').forEach((openItem) => {
+							if (openItem !== item) openItem.removeAttribute('open');
+						});
+					}, true);
+				});
+			</script>
 			<section class="wrap section-cta" aria-labelledby="cta-heading">
 				<div class="cta-panel">
 					<h2 id="cta-heading" class="cta-panel__title">{{.Messages.CTABand.Heading}}</h2>

@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import { en } from '../i18n/en';
 ---
 
@@ -8,9 +10,11 @@ import { en } from '../i18n/en';
 	title={`${en.privacy.title} · ${en.brandShort}`}
 	description={en.metaDescription}
 >
+	<SiteHeader messages={en} whatsappPrefill={en.hero.whatsappPrefill} />
 	<main id="main" class="wrap privacy-page">
 		<h1 class="heading-lg">{en.privacy.title}</h1>
 		<p>{en.privacy.body}</p>
 		<p><a href="/">{en.privacy.back}</a></p>
 	</main>
+	<SiteFooter messages={en} heroPrefill={en.hero.whatsappPrefill} />
 </BaseLayout>

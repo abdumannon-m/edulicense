@@ -80,20 +80,20 @@ export const en: Messages = {
 		intro:
 			'Licensing work is high-stakes, so we focus on visible readiness signals without exposing confidential client work.',
 		stats: [
-			{ value: '9-point', label: 'website and document readiness checklist before submission' },
-			{ value: 'Local', label: 'Uzbek licence, address, and public evidence reviewed together' },
+			{ value: 'Structured', label: 'readiness review before major licensing decisions' },
+			{ value: 'Local', label: 'Uzbek context and international evidence standards reviewed together' },
 			{ value: 'Clear', label: 'single project owner, timeline, and responsibility map' },
 		],
 		items: [
 			{
-				title: 'Document-first workflow',
+				title: 'Readiness-first workflow',
 				body:
-					'We check licence details, domain email, English website evidence, responsible staff details, and application ownership before submission.',
+					'We review institutional readiness, public-facing evidence, leadership ownership, and project gaps before work moves into a formal licensing track.',
 			},
 			{
 				title: 'Public evidence review',
 				body:
-					'Founder or director details, timetable, address, phone, and email are checked so the website supports the institutional story.',
+					'We check whether the institution’s public materials tell a coherent, credible story for partners, families, and review bodies.',
 			},
 			{
 				title: 'Confidential client work',
@@ -110,7 +110,7 @@ export const en: Messages = {
 			{
 				title: 'Local evidence control',
 				body:
-					'We check licence details, website content, addresses, contacts, and operational documents before an application leaves your team.',
+					'We help align local institutional facts, public materials, and operational evidence before formal review begins.',
 			},
 			{
 				title: 'Application ownership',
@@ -120,7 +120,7 @@ export const en: Messages = {
 			{
 				title: 'Operational readiness',
 				body:
-					'The work does not stop at forms. We help align people, schedules, website proof, and communications so the institution can actually operate.',
+					'The work does not stop at forms. We help align people, schedules, evidence, and communications so the institution can actually operate.',
 			},
 		],
 	},
@@ -168,7 +168,7 @@ export const en: Messages = {
 			{
 				question: 'What documents do we need first?',
 				answer:
-					'We start with the licence, domain email, English website, one responsible staff member, and website proof for leadership, timetable, address, phone, and email.',
+					'We start with a short readiness review, then share a private checklist tailored to your institution, target programme, and timeline.',
 			},
 			{
 				question: 'How do we start?',
@@ -178,7 +178,7 @@ export const en: Messages = {
 		],
 	},
 	team: {
-		heading: 'A practical team around the application',
+		heading: 'A practical team around the project',
 		intro:
 			'Consulting is delivered by people, not templates. The operating model below shows who is accountable during a project.',
 		items: [
@@ -190,15 +190,15 @@ export const en: Messages = {
 			},
 			{
 				title: 'Application operations',
-				role: 'Documents and submission follow-up',
+				role: 'Documents and project follow-up',
 				body:
-					'Day-to-day tracking of missing documents, submission steps, responsible staff, reminders, and external communication.',
+					'Day-to-day tracking of missing inputs, project owners, reminders, next steps, and external communication.',
 			},
 			{
 				title: 'School readiness coordination',
-				role: 'Website, timetable, contacts, evidence',
+				role: 'Public materials and evidence',
 				body:
-					'Practical support to make public-facing evidence match the licence, address, staff structure, and operational reality.',
+					'Practical support to make public-facing materials match the institution’s staff structure and operational reality.',
 			},
 		],
 	},
@@ -217,7 +217,7 @@ export const en: Messages = {
 				title: 'Application project',
 				price: 'Fixed project scope',
 				body:
-					'End-to-end support for a defined licensing application, including document tracking and submission follow-up.',
+					'End-to-end support for a defined licensing project, including evidence tracking and follow-up coordination.',
 			},
 			{
 				title: 'Advisory retainer',
@@ -249,9 +249,9 @@ export const en: Messages = {
 		creditPhoto: 'Classroom photo: Unsplash',
 	},
 	privacy: {
-		title: 'Privacy notice (stub)',
+		title: 'Privacy notice',
 		body:
-			'Placeholder only. Add your real policy before collecting personal data beyond WhatsApp messages.',
+			'Edu License uses contact details and institution information only to respond to enquiries, assess project fit, and coordinate agreed work. We do not sell personal data. Documents shared with us are treated as confidential project materials and are used only for the purpose agreed with the institution.',
 		back: 'Back to home',
 	},
 };

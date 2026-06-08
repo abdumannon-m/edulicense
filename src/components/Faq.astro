@@ -24,3 +24,14 @@ const { messages } = Astro.props;
 		</div>
 	</div>
 </section>
+<script>
+	document.querySelectorAll('.faq--minimal').forEach((faq) => {
+		faq.addEventListener('toggle', (event) => {
+			const item = event.target;
+			if (!(item instanceof HTMLDetailsElement) || !item.open) return;
+			faq.querySelectorAll('details[open]').forEach((openItem) => {
+				if (openItem !== item) openItem.removeAttribute('open');
+			});
+		}, true);
+	});
+</script>

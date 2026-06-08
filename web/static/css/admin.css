@@ -46,6 +46,12 @@ html {
 	text-underline-offset: 0.18em;
 }
 
+.admin-body :focus-visible {
+	outline: 2px solid var(--admin-accent);
+	outline-offset: 3px;
+	border-radius: 6px;
+}
+
 button,
 input,
 select,
@@ -616,6 +622,10 @@ textarea::placeholder {
 	border-top: 1px solid var(--admin-border);
 }
 
+.application-card__actions .admin-button {
+	min-width: 9.75rem;
+}
+
 .application-card__action-label {
 	margin-right: auto;
 	color: var(--admin-muted);
@@ -881,10 +891,12 @@ textarea::placeholder {
 }
 
 .deal-card {
+	position: relative;
 	padding: 0.9rem;
 	margin-bottom: 0.75rem;
 	box-shadow: none;
 	cursor: grab;
+	touch-action: pan-y;
 	transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 	will-change: transform;
 }
@@ -893,6 +905,11 @@ textarea::placeholder {
 	border-color: rgba(15, 94, 87, 0.24);
 	box-shadow: 0 8px 20px rgba(23, 32, 29, 0.08);
 	transform: translateY(-1px);
+}
+
+.deal-card:focus-within {
+	border-color: rgba(15, 94, 87, 0.38);
+	box-shadow: 0 0 0 3px rgba(15, 94, 87, 0.12);
 }
 
 .deal-card.is-dragging {
@@ -980,6 +997,7 @@ textarea::placeholder {
 	right: 0;
 	z-index: 20;
 	min-width: 10rem;
+	max-width: calc(100vw - 2rem);
 	padding: 0.35rem;
 	border: 1px solid var(--admin-border);
 	border-radius: 8px;
@@ -1001,6 +1019,7 @@ textarea::placeholder {
 	color: var(--admin-text);
 	font-weight: 850;
 	text-align: left;
+	white-space: nowrap;
 	cursor: pointer;
 }
 
@@ -1180,6 +1199,10 @@ textarea::placeholder {
 @media (max-width: 620px) {
 	.admin-body {
 		font-size: 14px;
+	}
+
+	.crm-board {
+		grid-auto-columns: minmax(16rem, 86vw);
 	}
 
 	.stats-grid,

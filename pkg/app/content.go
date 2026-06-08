@@ -229,13 +229,13 @@ var EnglishMessages = Messages{
 		Heading: "Evidence, not vague promises",
 		Intro:   "Licensing work is high-stakes, so we focus on visible readiness signals without exposing confidential client work.",
 		Stats: []ProofStat{
-			{Value: "9-point", Label: "website and document readiness checklist before submission"},
-			{Value: "Local", Label: "Uzbek licence, address, and public evidence reviewed together"},
+			{Value: "Structured", Label: "readiness review before major licensing decisions"},
+			{Value: "Local", Label: "Uzbek context and international evidence standards reviewed together"},
 			{Value: "Clear", Label: "single project owner, timeline, and responsibility map"},
 		},
 		Items: []ProofItem{
-			{Title: "Document-first workflow", Body: "We check licence details, domain email, English website evidence, responsible staff details, and application ownership before submission."},
-			{Title: "Public evidence review", Body: "Founder or director details, timetable, address, phone, and email are checked so the website supports the institutional story."},
+			{Title: "Readiness-first workflow", Body: "We review institutional readiness, public-facing evidence, leadership ownership, and project gaps before work moves into a formal licensing track."},
+			{Title: "Public evidence review", Body: "We check whether the institution's public materials tell a coherent, credible story for partners, families, and review bodies."},
 			{Title: "Confidential client work", Body: "Many licensing and school-readiness projects cannot be named publicly. References can be discussed during a qualified discovery call."},
 		},
 	},
@@ -243,9 +243,9 @@ var EnglishMessages = Messages{
 		Heading: "Why Edu License",
 		Body:    "We combine local execution in Uzbekistan with the paperwork discipline international bodies expect.",
 		Items: []WhyItem{
-			{Title: "Local evidence control", Body: "We check licence details, website content, addresses, contacts, and operational documents before an application leaves your team."},
+			{Title: "Local evidence control", Body: "We help align local institutional facts, public materials, and operational evidence before formal review begins."},
 			{Title: "Application ownership", Body: "One responsible person tracks the timeline, missing documents, submission steps, and follow-up."},
-			{Title: "Operational readiness", Body: "The work does not stop at forms. We help align people, schedules, website proof, and communications so the institution can actually operate."},
+			{Title: "Operational readiness", Body: "The work does not stop at forms. We help align people, schedules, evidence, and communications so the institution can actually operate."},
 		},
 	},
 	Process: ProcessMessages{
@@ -264,17 +264,17 @@ var EnglishMessages = Messages{
 			{Question: "Do you guarantee a licence?", Answer: "No — exam boards and programme bodies make final decisions. We align you with requirements and prepare a strong, coherent submission."},
 			{Question: "Which programmes?", Answer: "Typically British-style pathways, IB-oriented models, American or dual-diploma setups. We confirm fit early."},
 			{Question: "Timeline?", Answer: "Expect months, not weeks — structured around your maturity, recruitment, and target authorisation date."},
-			{Question: "What documents do we need first?", Answer: "We start with the licence, domain email, English website, one responsible staff member, and website proof for leadership, timetable, address, phone, and email."},
+			{Question: "What documents do we need first?", Answer: "We start with a short readiness review, then share a private checklist tailored to your institution, target programme, and timeline."},
 			{Question: "How do we start?", Answer: "Send the institution name, city, current licence status, target programme, and desired timeline. We reply with the right next step instead of a generic package."},
 		},
 	},
 	Team: TeamMessages{
-		Heading: "A practical team around the application",
+		Heading: "A practical team around the project",
 		Intro:   "Consulting is delivered by people, not templates. The operating model below shows who is accountable during a project.",
 		Items: []TeamItem{
 			{Title: "Founder-led advisory", Role: "Strategy and institution fit", Body: "Senior guidance on whether the target licence or programme path fits the institution before work begins."},
-			{Title: "Application operations", Role: "Documents and submission follow-up", Body: "Day-to-day tracking of missing documents, submission steps, responsible staff, reminders, and external communication."},
-			{Title: "School readiness coordination", Role: "Website, timetable, contacts, evidence", Body: "Practical support to make public-facing evidence match the licence, address, staff structure, and operational reality."},
+			{Title: "Application operations", Role: "Documents and project follow-up", Body: "Day-to-day tracking of missing inputs, project owners, reminders, next steps, and external communication."},
+			{Title: "School readiness coordination", Role: "Public materials and evidence", Body: "Practical support to make public-facing materials match the institution's staff structure and operational reality."},
 		},
 	},
 	Engagement: EngagementMessages{
@@ -282,7 +282,7 @@ var EnglishMessages = Messages{
 		Intro:   "Exact pricing depends on the institution, but we make the commercial model clear before work starts.",
 		Items: []EngagementItem{
 			{Title: "Readiness review", Price: "Fixed diagnostic", Body: "A short review of licence, website, documents, gaps, and target timeline. Best when you need a decision before committing to a full project."},
-			{Title: "Application project", Price: "Fixed project scope", Body: "End-to-end support for a defined licensing application, including document tracking and submission follow-up."},
+			{Title: "Application project", Price: "Fixed project scope", Body: "End-to-end support for a defined licensing project, including evidence tracking and follow-up coordination."},
 			{Title: "Advisory retainer", Price: "Monthly support", Body: "Ongoing support for schools building multiple pathways, preparing operations, or coordinating several approval tracks at once."},
 		},
 	},
@@ -306,8 +306,8 @@ var EnglishMessages = Messages{
 		CreditPhoto: "Classroom photo: Unsplash",
 	},
 	Privacy: PrivacyMessages{
-		Title: "Privacy notice (stub)",
-		Body:  "Placeholder only. Add your real policy before collecting personal data beyond WhatsApp messages.",
+		Title: "Privacy notice",
+		Body:  "Edu License uses contact details and institution information only to respond to enquiries, assess project fit, and coordinate agreed work. We do not sell personal data. Documents shared with us are treated as confidential project materials and are used only for the purpose agreed with the institution.",
 		Back:  "Back to home",
 	},
 }
@@ -369,13 +369,13 @@ var UzbekMessages = Messages{
 		Heading: "Umumiy va'dalar emas, dalillar",
 		Intro:   "Litsenziya ishlari mas'uliyatli. Shuning uchun maxfiy mijoz ishlarini oshkor qilmasdan, tayyorgarlik dalillariga e'tibor beramiz.",
 		Stats: []ProofStat{
-			{Value: "9 band", Label: "arizadan oldingi website va hujjat tayyorgarligi tekshiruvi"},
-			{Value: "Mahalliy", Label: "litsenziya, manzil va ochiq dalillar birga tekshiriladi"},
+			{Value: "Tizimli", Label: "katta litsenziya qarorlaridan oldingi tayyorgarlik ko'rigi"},
+			{Value: "Mahalliy", Label: "O'zbekiston konteksti va xalqaro dalil standartlari birga ko'riladi"},
 			{Value: "Aniq", Label: "bitta loyiha egasi, timeline va mas'uliyat xaritasi"},
 		},
 		Items: []ProofItem{
-			{Title: "Hujjatdan boshlanadigan jarayon", Body: "Arizadan oldin litsenziya ma'lumotlari, domen email, inglizcha website, mas'ul xodim va ariza egaligini tekshiramiz."},
-			{Title: "Ochiq dalillar tekshiruvi", Body: "Rahbar ma'lumotlari, dars jadvali, manzil, telefon va email websiteda muassasa hikoyasini qo'llashi kerak."},
+			{Title: "Tayyorgarlikdan boshlanadigan jarayon", Body: "Rasmiy litsenziya yo'liga kirishdan oldin muassasa tayyorgarligi, ochiq dalillar, loyiha egaligi va bo'shliqlarni ko'rib chiqamiz."},
+			{Title: "Ochiq dalillar tekshiruvi", Body: "Muassasaning ochiq materiallari hamkorlar, ota-onalar va ko'rib chiquvchi tashkilotlar uchun ishonchli hikoya berishini tekshiramiz."},
 			{Title: "Maxfiy mijoz ishlari", Body: "Ko'p litsenziya va tayyorgarlik loyihalarini ochiq nomlash mumkin emas. Tavsiyalar malakali suhbatda muhokama qilinadi."},
 		},
 	},
@@ -383,9 +383,9 @@ var UzbekMessages = Messages{
 		Heading: "Nega Edu License",
 		Body:    "Biz O'zbekistondagi mahalliy ijroni xalqaro tashkilotlar kutadigan hujjat intizomi bilan birlashtiramiz.",
 		Items: []WhyItem{
-			{Title: "Mahalliy dalil nazorati", Body: "Ariza yuborilishidan oldin litsenziya ma'lumotlari, website, manzil, kontaktlar va operatsion hujjatlarni tekshiramiz."},
+			{Title: "Mahalliy dalil nazorati", Body: "Rasmiy ko'rib chiqishdan oldin mahalliy faktlar, ochiq materiallar va operatsion dalillarni moslashtirishga yordam beramiz."},
 			{Title: "Ariza egasi aniq", Body: "Bitta mas'ul shaxs timeline, yetishmayotgan hujjatlar, ariza bosqichlari va follow-upni kuzatadi."},
-			{Title: "Operatsion tayyorgarlik", Body: "Ish faqat forma to'ldirish bilan tugamaydi. Jamoa, jadval, website dalillari va kommunikatsiyalarni ham moslaymiz."},
+			{Title: "Operatsion tayyorgarlik", Body: "Ish faqat forma to'ldirish bilan tugamaydi. Jamoa, jadval, dalillar va kommunikatsiyalarni ham moslaymiz."},
 		},
 	},
 	Process: ProcessMessages{
@@ -404,17 +404,17 @@ var UzbekMessages = Messages{
 			{Question: "Litsenziya kafolati bormi?", Answer: "Yo'q — yakuniy qarorni imtihon markazi yoki tashkilot qiladi. Biz talablarga moslashtiramiz va kuchli, izchil topshiriq uchun tayyorlaymiz."},
 			{Question: "Qaysi dasturlar?", Answer: "Odatda Britaniya uslubidagi yo'llar, IBga yaqin modellar, American yoki dual-diploma yo'nalishlari. Mosligini boshida aniqlaymiz."},
 			{Question: "Qancha vaqt?", Answer: "Bir necha oy — boshlang'ich holat, kadrlar va maqsadli vakolatlash sanasiga bog'liq."},
-			{Question: "Avval qanday hujjatlar kerak?", Answer: "Ingliz tilidagi litsenziya, domen email, inglizcha website, bitta mas'ul xodim va websiteda rahbar, jadval, manzil, telefon hamda email dalillari kerak."},
+			{Question: "Avval qanday hujjatlar kerak?", Answer: "Avval qisqa tayyorgarlik ko'rigidan boshlaymiz, keyin muassasa, maqsadli dastur va timeline bo'yicha maxsus yopiq checklist beramiz."},
 			{Question: "Qanday boshlaymiz?", Answer: "Muassasa nomi, shahar, hozirgi litsenziya holati, maqsadli dastur va muddatni yuboring. Biz umumiy paket emas, to'g'ri keyingi qadamni aytamiz."},
 		},
 	},
 	Team: TeamMessages{
-		Heading: "Ariza atrofidagi amaliy jamoa",
+		Heading: "Loyiha atrofidagi amaliy jamoa",
 		Intro:   "Konsalting shablonlar bilan emas, odamlar bilan bajariladi. Quyidagi model loyiha davomida kim mas'ul ekanini ko'rsatadi.",
 		Items: []TeamItem{
 			{Title: "Founder-led advisory", Role: "Strategiya va muassasa mosligi", Body: "Ish boshlanishidan oldin maqsadli litsenziya yoki dastur yo'li muassasaga mosligini baholash."},
-			{Title: "Application operations", Role: "Hujjatlar va ariza follow-up", Body: "Yetishmayotgan hujjatlar, ariza bosqichlari, mas'ul xodimlar, eslatmalar va tashqi kommunikatsiyani kundalik kuzatish."},
-			{Title: "School readiness coordination", Role: "Website, jadval, kontaktlar, dalillar", Body: "Ochiq dalillar litsenziya, manzil, xodimlar tuzilmasi va haqiqiy operatsiyaga mos bo'lishini ta'minlash."},
+			{Title: "Application operations", Role: "Hujjatlar va loyiha follow-up", Body: "Yetishmayotgan ma'lumotlar, loyiha egalari, eslatmalar, keyingi qadamlar va tashqi kommunikatsiyani kundalik kuzatish."},
+			{Title: "School readiness coordination", Role: "Ochiq materiallar va dalillar", Body: "Ochiq materiallar xodimlar tuzilmasi va haqiqiy operatsiyaga mos bo'lishini ta'minlash."},
 		},
 	},
 	Engagement: EngagementMessages{
@@ -422,7 +422,7 @@ var UzbekMessages = Messages{
 		Intro:   "Aniq narx muassasaga bog'liq, lekin tijoriy model ish boshlanishidan oldin kelishiladi.",
 		Items: []EngagementItem{
 			{Title: "Tayyorlik tekshiruvi", Price: "Fixed diagnostic", Body: "Litsenziya, website, hujjatlar, bo'shliqlar va timeline bo'yicha qisqa ko'rib chiqish. To'liq loyihadan oldin qaror kerak bo'lsa mos."},
-			{Title: "Ariza loyihasi", Price: "Fixed project scope", Body: "Belgilangan litsenziya arizasi uchun hujjat kuzatuvi va submission follow-up bilan end-to-end yordam."},
+			{Title: "Ariza loyihasi", Price: "Fixed project scope", Body: "Belgilangan litsenziya loyihasi uchun dalillar kuzatuvi va follow-up koordinatsiyasi bilan end-to-end yordam."},
 			{Title: "Advisory retainer", Price: "Monthly support", Body: "Bir nechta yo'nalish, operatsion tayyorgarlik yoki parallel approval tracklarni yuritayotgan maktablar uchun davomiy yordam."},
 		},
 	},
@@ -446,8 +446,8 @@ var UzbekMessages = Messages{
 		CreditPhoto: "Rasm: Unsplash",
 	},
 	Privacy: PrivacyMessages{
-		Title: "Maxfiylik (stub)",
-		Body:  "Vaqtinchina. WhatsAppdan tashqari ma'lumot yig'ishdan oldin haqiqiy siyosatni joylashtiring.",
+		Title: "Maxfiylik siyosati",
+		Body:  "Edu License kontakt ma'lumotlari va muassasa haqidagi ma'lumotlardan faqat so'rovlarga javob berish, loyiha mosligini baholash va kelishilgan ishlarni muvofiqlashtirish uchun foydalanadi. Shaxsiy ma'lumotlarni sotmaymiz. Bizga yuborilgan hujjatlar maxfiy loyiha materiallari sifatida ko'riladi va faqat muassasa bilan kelishilgan maqsadda ishlatiladi.",
 		Back:  "Bosh sahifa",
 	},
 }

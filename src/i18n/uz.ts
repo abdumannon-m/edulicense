@@ -81,20 +81,20 @@ export const uz: Messages = {
 		intro:
 			'Litsenziya ishlari mas’uliyatli. Shuning uchun maxfiy mijoz ishlarini oshkor qilmasdan, tayyorgarlik dalillariga e’tibor beramiz.',
 		stats: [
-			{ value: '9 band', label: 'arizadan oldingi website va hujjat tayyorgarligi tekshiruvi' },
-			{ value: 'Mahalliy', label: 'litsenziya, manzil va ochiq dalillar birga tekshiriladi' },
+			{ value: 'Tizimli', label: 'katta litsenziya qarorlaridan oldingi tayyorgarlik ko‘rigi' },
+			{ value: 'Mahalliy', label: 'O‘zbekiston konteksti va xalqaro dalil standartlari birga ko‘riladi' },
 			{ value: 'Aniq', label: 'bitta loyiha egasi, timeline va mas’uliyat xaritasi' },
 		],
 		items: [
 			{
-				title: 'Hujjatdan boshlanadigan jarayon',
+				title: 'Tayyorgarlikdan boshlanadigan jarayon',
 				body:
-					'Arizadan oldin litsenziya ma’lumotlari, domen email, inglizcha website, mas’ul xodim va ariza egaligini tekshiramiz.',
+					'Rasmiy litsenziya yo‘liga kirishdan oldin muassasa tayyorgarligi, ochiq dalillar, loyiha egaligi va bo‘shliqlarni ko‘rib chiqamiz.',
 			},
 			{
 				title: 'Ochiq dalillar tekshiruvi',
 				body:
-					'Rahbar ma’lumotlari, dars jadvali, manzil, telefon va email websiteda muassasa hikoyasini qo‘llashi kerak.',
+					'Muassasaning ochiq materiallari hamkorlar, ota-onalar va ko‘rib chiquvchi tashkilotlar uchun ishonchli hikoya berishini tekshiramiz.',
 			},
 			{
 				title: 'Maxfiy mijoz ishlari',
@@ -111,7 +111,7 @@ export const uz: Messages = {
 			{
 				title: 'Mahalliy dalil nazorati',
 				body:
-					'Ariza yuborilishidan oldin litsenziya ma’lumotlari, website, manzil, kontaktlar va operatsion hujjatlarni tekshiramiz.',
+					'Rasmiy ko‘rib chiqishdan oldin mahalliy faktlar, ochiq materiallar va operatsion dalillarni moslashtirishga yordam beramiz.',
 			},
 			{
 				title: 'Ariza egasi aniq',
@@ -121,7 +121,7 @@ export const uz: Messages = {
 			{
 				title: 'Operatsion tayyorgarlik',
 				body:
-					'Ish faqat forma to‘ldirish bilan tugamaydi. Jamoa, jadval, website dalillari va kommunikatsiyalarni ham moslaymiz.',
+					'Ish faqat forma to‘ldirish bilan tugamaydi. Jamoa, jadval, dalillar va kommunikatsiyalarni ham moslaymiz.',
 			},
 		],
 	},
@@ -169,7 +169,7 @@ export const uz: Messages = {
 			{
 				question: 'Avval qanday hujjatlar kerak?',
 				answer:
-					'Ingliz tilidagi litsenziya, domen email, inglizcha website, bitta mas’ul xodim va websiteda rahbar, jadval, manzil, telefon hamda email dalillari kerak.',
+					'Avval qisqa tayyorgarlik ko‘rigidan boshlaymiz, keyin muassasa, maqsadli dastur va timeline bo‘yicha maxsus yopiq checklist beramiz.',
 			},
 			{
 				question: 'Qanday boshlaymiz?',
@@ -179,7 +179,7 @@ export const uz: Messages = {
 		],
 	},
 	team: {
-		heading: 'Ariza atrofidagi amaliy jamoa',
+		heading: 'Loyiha atrofidagi amaliy jamoa',
 		intro:
 			'Konsalting shablonlar bilan emas, odamlar bilan bajariladi. Quyidagi model loyiha davomida kim mas’ul ekanini ko‘rsatadi.',
 		items: [
@@ -191,15 +191,15 @@ export const uz: Messages = {
 			},
 			{
 				title: 'Application operations',
-				role: 'Hujjatlar va ariza follow-up',
+				role: 'Hujjatlar va loyiha follow-up',
 				body:
-					'Yetishmayotgan hujjatlar, ariza bosqichlari, mas’ul xodimlar, eslatmalar va tashqi kommunikatsiyani kundalik kuzatish.',
+					'Yetishmayotgan ma’lumotlar, loyiha egalari, eslatmalar, keyingi qadamlar va tashqi kommunikatsiyani kundalik kuzatish.',
 			},
 			{
 				title: 'School readiness coordination',
-				role: 'Website, jadval, kontaktlar, dalillar',
+				role: 'Ochiq materiallar va dalillar',
 				body:
-					'Ochiq dalillar litsenziya, manzil, xodimlar tuzilmasi va haqiqiy operatsiyaga mos bo‘lishini ta’minlash.',
+					'Ochiq materiallar xodimlar tuzilmasi va haqiqiy operatsiyaga mos bo‘lishini ta’minlash.',
 			},
 		],
 	},
@@ -218,7 +218,7 @@ export const uz: Messages = {
 				title: 'Ariza loyihasi',
 				price: 'Fixed project scope',
 				body:
-					'Belgilangan litsenziya arizasi uchun hujjat kuzatuvi va submission follow-up bilan end-to-end yordam.',
+					'Belgilangan litsenziya loyihasi uchun dalillar kuzatuvi va follow-up koordinatsiyasi bilan end-to-end yordam.',
 			},
 			{
 				title: 'Advisory retainer',
@@ -250,9 +250,9 @@ export const uz: Messages = {
 		creditPhoto: 'Rasm: Unsplash',
 	},
 	privacy: {
-		title: 'Maxfiylik (stub)',
+		title: 'Maxfiylik siyosati',
 		body:
-			"Vaqtinchina. WhatsAppdan tashqari ma'lumot yig‘ishdan oldin haqiqiy siyosatni joylashtiring.",
+			'Edu License kontakt ma’lumotlari va muassasa haqidagi ma’lumotlardan faqat so‘rovlarga javob berish, loyiha mosligini baholash va kelishilgan ishlarni muvofiqlashtirish uchun foydalanadi. Shaxsiy ma’lumotlarni sotmaymiz. Bizga yuborilgan hujjatlar maxfiy loyiha materiallari sifatida ko‘riladi va faqat muassasa bilan kelishilgan maqsadda ishlatiladi.',
 		back: 'Bosh sahifa',
 	},
 };
