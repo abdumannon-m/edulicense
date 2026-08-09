@@ -47,21 +47,24 @@ export const PARTNERS: Partner[] = [
 		name: 'Cambridge Unit School',
 		logo: '/partners/cambridge-unit-school.png',
 	},
-	// Waiting on the logo files below — save them under these exact names in
-	// `public/partners/`, then uncomment.
-	// {
-	// 	name: 'Karshi International University',
-	// 	logo: '/partners/karshi-international-university.png',
-	// },
-	// {
-	// 	name: 'Salam International School',
-	// 	logo: '/partners/salam-international-school.png',
-	// 	// Artwork is a blue gradient square; let it fill the tile.
-	// 	background: '#123a8c',
-	// 	bleed: true,
-	// },
-	// {
-	// 	name: "Yakubov's School",
-	// 	logo: '/partners/yakubovs-school.png',
-	// },
+	{
+		name: 'Karshi International University',
+		// Official mark from kiu.uz. Swap in the full horizontal lockup (mark +
+		// wordmark) if the university supplies it.
+		logo: '/partners/karshi-international-university.png',
+	},
+	{
+		name: 'Salam International School',
+		logo: '/partners/salam-international-school.jpg',
+		// Artwork is a blue gradient square with no transparency; let it fill the
+		// tile rather than float as a coloured block inside it.
+		background: '#123a8c',
+		bleed: true,
+	},
+	{
+		name: "Yakubov's School",
+		// Cropped to the wordmark; the source export sat on a large white canvas
+		// that would have rendered the logo a third the size of its neighbours.
+		logo: '/partners/yakubovs-school.png',
+	},
 ];
