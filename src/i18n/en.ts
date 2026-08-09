@@ -29,7 +29,6 @@ export const en: Messages = {
 			'Tashkent-based team helping Uzbekistan schools align with global programmes, stand up strong institutions, and open with confidence.',
 		cta: 'Request an assessment',
 		secondaryCta: 'WhatsApp us',
-		scrollHint: 'See how we help',
 		whatsappPrefill:
 			'Hello — I would like to discuss international licensing and school setup for our institution in Uzbekistan.',
 		emailSubject: 'Institution readiness assessment',

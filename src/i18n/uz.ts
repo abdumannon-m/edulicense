@@ -30,7 +30,6 @@ export const uz: Messages = {
 			"Toshkentdagi jamoamiz O‘zbekiston maktablarini global dasturlarga moslash, mustahkam tuzilma qurish va ishonch bilan ochishda qo‘llab-quvvatlaydi.",
 		cta: 'Baholash so‘rash',
 		secondaryCta: 'WhatsApp orqali',
-		scrollHint: "Qanday yordam berishimiz",
 		whatsappPrefill:
 			"Assalomu alaykum — O‘zbekistondagi maktabimiz uchun xalqaro litsenza va tashkil etish bo‘yicha maslahat kerak.",
 		emailSubject: 'Muassasa tayyorgarligini baholash',

@@ -29,7 +29,6 @@ export interface Messages {
 		subtitle: string;
 		cta: string;
 		secondaryCta: string;
-		scrollHint: string;
 		whatsappPrefill: string;
 		emailSubject: string;
 		emailBody: string;

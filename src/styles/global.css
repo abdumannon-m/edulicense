@@ -22,6 +22,13 @@
 	--content-max: 72rem;
 	--narrow: 40rem;
 	--ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+	--header-h: 4.5rem;
+}
+
+@media (max-width: 560px) {
+	:root {
+		--header-h: 3.875rem;
+	}
 }
 
 *,
@@ -123,23 +130,10 @@ a {
 	padding-block: var(--space-tight);
 }
 
-.section--surface {
-	background: var(--color-surface);
-	border-block: 1px solid var(--color-border);
-}
-
 /*
- * Two surfaces, alternating. The page used to carry eight near-identical tints
- * that read as one texture; a plain alternation makes each boundary legible.
+ * Two surfaces, alternating, with no rule between them — the change of surface
+ * is the boundary.
  */
-.services-section,
-.process-section,
-.partners-section,
-.engagement-section,
-.faq-section {
-	border-block: 1px solid var(--color-border);
-}
-
 .services-section,
 .partners-section,
 .faq-section {
@@ -166,14 +160,6 @@ a {
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: var(--color-accent);
-}
-
-.eyebrow::before {
-	content: '';
-	width: 1.5rem;
-	height: 1px;
-	background: currentColor;
-	opacity: 0.55;
 }
 
 .eyebrow--center {
@@ -288,7 +274,9 @@ a {
 	align-items: center;
 	justify-content: space-between;
 	gap: 1.5rem;
-	padding-block: 0.95rem;
+	/* + the 1px bottom border = --header-h, which the hero subtracts. */
+	min-height: calc(var(--header-h) - 1px);
+	padding-block: 0.5rem;
 }
 
 .site-header__brand {
@@ -358,7 +346,6 @@ a {
 .site-header__drawer-lang {
 	margin-top: 0.35rem;
 	padding-top: 0.7rem;
-	border-top: 1px solid var(--color-border);
 	font-weight: 600;
 }
 
@@ -479,23 +466,18 @@ a {
 }
 
 /* ——— Hero ——— */
+/*
+ * Grid rather than flex so the inner .wrap keeps its own width and gutter —
+ * a `width: 100%` here would out-specify .wrap and pin the copy to the edge.
+ */
 .hero {
-	padding-block: clamp(3.25rem, 7vw, 5.5rem);
+	display: grid;
+	align-content: center;
+	min-height: calc(100vh - var(--header-h));
+	min-height: calc(100svh - var(--header-h));
+	padding-block: clamp(2.5rem, 5vw, 4rem);
 	position: relative;
 	overflow: hidden;
-}
-
-.hero::before {
-	content: '';
-	position: absolute;
-	top: -14rem;
-	right: -10rem;
-	width: 34rem;
-	height: 34rem;
-	background: radial-gradient(circle, rgba(15, 94, 87, 0.1), transparent 68%);
-	pointer-events: none;
-	z-index: 0;
-	display: none;
 }
 
 .hero__grid {
@@ -527,20 +509,6 @@ a {
 	align-items: center;
 	gap: 1rem 1.5rem;
 	margin-top: 2rem;
-}
-
-.hero__link {
-	font-size: 0.95rem;
-	font-weight: 600;
-	color: var(--color-accent);
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 4px;
-	transition: color 0.15s ease;
-}
-
-.hero__link:hover {
-	color: var(--color-accent-hover);
 }
 
 .hero__figure {
@@ -1053,7 +1021,6 @@ a {
 .site-footer__bottom {
 	margin-top: 2.25rem;
 	padding-top: 1.25rem;
-	border-top: 1px solid var(--color-border);
 	font-size: 0.8125rem;
 }
 
