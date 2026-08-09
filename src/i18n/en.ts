@@ -15,8 +15,10 @@ export const en: Messages = {
 		why: 'Why us',
 		process: 'Process',
 		team: 'Team',
+		partners: 'Partners',
 		engagement: 'Engagement',
 		faq: 'FAQ',
+		office: 'Office',
 		contact: 'Contact us',
 		language: 'Language',
 		switchToEn: 'English',
@@ -202,6 +204,11 @@ export const en: Messages = {
 			},
 		],
 	},
+	partners: {
+		heading: 'Institutions and organisations we work with',
+		intro:
+			'We deliver alongside programme bodies, schools, and service partners who share our standards for quality.',
+	},
 	engagement: {
 		heading: 'Engagement model',
 		intro:
@@ -227,6 +234,15 @@ export const en: Messages = {
 			},
 		],
 	},
+	office: {
+		heading: 'Visit our office',
+		intro: 'We meet institutions in person in Tashkent — book a time and we will host you.',
+		addressLabel: 'Address',
+		address:
+			'Tashkent, Mirzo Ulugbek district, Sayram neighbourhood, Sayram street, 7th lane, house 21',
+		directions: 'Open in Yandex Maps',
+		mapTitle: 'Edu License office on Yandex Maps',
+	},
 	ctaBand: {
 		heading: 'Request an institution assessment',
 		sub: 'Share your school name, city, current licence status, and target timeline. We will reply with the right next step.',
@@ -245,7 +261,8 @@ export const en: Messages = {
 		telegram: 'Telegram',
 		privacy: 'Privacy',
 		rights: 'All rights reserved.',
-		addressLine: 'Tashkent, Uzbekistan',
+		addressLine:
+			'Tashkent, Mirzo Ulugbek district, Sayram neighbourhood, Sayram street, 7th lane, house 21',
 		creditPhoto: 'Classroom photo: Unsplash',
 	},
 	privacy: {

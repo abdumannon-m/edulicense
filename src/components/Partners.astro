@@ -1,0 +1,54 @@
+---
+import type { Messages } from '../i18n/types';
+import { PARTNERS } from '../data/partners';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages } = Astro.props;
+const partners = PARTNERS;
+---
+
+{
+	partners.length > 0 && (
+		<section
+			class="section section--tight partners-section"
+			id="partners"
+			aria-labelledby="partners-heading"
+		>
+			<div class="wrap">
+				<div class="section-head">
+					<p class="eyebrow">{messages.nav.partners}</p>
+					<h2 id="partners-heading" class="heading-lg">
+						{messages.partners.heading}
+					</h2>
+					{messages.partners.intro && (
+						<p class="muted intro-copy">{messages.partners.intro}</p>
+					)}
+				</div>
+				<ul class="partner-grid" role="list">
+					{partners.map((partner) => (
+						<li
+							class:list={['partner-tile', partner.bleed && 'partner-tile--bleed']}
+							style={[
+								partner.background && `--partner-bg: ${partner.background};`,
+								partner.scale && `--partner-scale: ${partner.scale};`,
+							]
+								.filter(Boolean)
+								.join(' ') || undefined}
+						>
+							{partner.href ? (
+								<a class="partner-tile__link" href={partner.href} rel="noopener noreferrer" target="_blank">
+									<img class="partner-tile__logo" src={partner.logo} alt={partner.name} loading="lazy" decoding="async" />
+								</a>
+							) : (
+								<img class="partner-tile__logo" src={partner.logo} alt={partner.name} loading="lazy" decoding="async" />
+							)}
+						</li>
+					))}
+				</ul>
+			</div>
+		</section>
+	)
+}

@@ -157,8 +157,18 @@ a {
 	background: var(--color-bg);
 }
 
+.partners-section {
+	background: #ffffff;
+	border-block: 1px solid var(--color-border);
+}
+
 .engagement-section {
 	background: #f7f8fb;
+}
+
+.office-section {
+	background: #fbf9f5;
+	border-block: 1px solid var(--color-border);
 }
 
 .faq-section {
@@ -816,6 +826,131 @@ a {
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius-sm);
 	box-shadow: var(--shadow-soft);
+}
+
+/* ——— Partners ——— */
+/*
+ * Logos arrive with mismatched artwork: some transparent, some with a white
+ * wordmark, some as a solid coloured square. Every logo therefore sits on a
+ * same-size tile that owns the background (`--partner-bg`, white by default),
+ * so the row reads as one set no matter what each file carries.
+ */
+/*
+ * Flex rather than grid so a short list stays centred at its natural tile size
+ * instead of stretching two logos across the full row.
+ */
+.partner-grid {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 1rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.partner-tile {
+	--partner-bg: var(--color-surface);
+	--partner-scale: 1;
+
+	display: block;
+	flex: 0 1 clamp(9rem, 20vw, 12rem);
+	aspect-ratio: 3 / 2;
+	padding: 1.15rem;
+	overflow: hidden;
+	background: var(--partner-bg);
+	border: 1px solid var(--color-border);
+	border-radius: 8px;
+	box-shadow: var(--shadow-soft);
+	transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.partner-tile:hover {
+	border-color: var(--color-border-strong);
+	box-shadow: var(--shadow-lift);
+}
+
+.partner-tile__link {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/*
+ * The image box fills the tile's content box and `object-fit` letterboxes the
+ * artwork inside it, so wide wordmarks and square marks land on the same
+ * optical baseline regardless of their intrinsic ratio.
+ */
+.partner-tile__logo {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	transform: scale(var(--partner-scale));
+}
+
+/* Artwork that fills its own canvas covers the tile instead of floating in it. */
+.partner-tile--bleed {
+	padding: 0;
+}
+
+.partner-tile--bleed .partner-tile__logo {
+	object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.partner-tile {
+		transition: none;
+	}
+}
+
+/* ——— Office / map ——— */
+.office-grid {
+	display: grid;
+	gap: clamp(1.5rem, 4vw, 2.5rem);
+	align-items: center;
+}
+
+@media (min-width: 880px) {
+	.office-grid {
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+	}
+}
+
+.office-address__label {
+	margin: 1.75rem 0 0.4rem;
+	color: #214d7a;
+	font-size: 0.78rem;
+	font-weight: 800;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.office-address {
+	margin: 0;
+	max-width: 26rem;
+	font-size: 1.05rem;
+	font-style: normal;
+	line-height: 1.5;
+}
+
+.office-directions {
+	margin-top: 1.5rem;
+}
+
+.office-map {
+	overflow: hidden;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-soft);
+	background: var(--color-surface);
+}
+
+.office-map iframe {
+	display: block;
+	width: 100%;
+	height: clamp(18rem, 42vw, 26rem);
+	border: 0;
 }
 
 /* ——— Process ——— */

@@ -16,8 +16,10 @@ export interface Messages {
 		why: string;
 		process: string;
 		team: string;
+		partners: string;
 		engagement: string;
 		faq: string;
+		office: string;
 		contact: string;
 		language: string;
 		switchToEn: string;
@@ -73,10 +75,22 @@ export interface Messages {
 		intro: string;
 		items: Array<{ title: string; role: string; body: string }>;
 	};
+	partners: {
+		heading: string;
+		intro: string;
+	};
 	engagement: {
 		heading: string;
 		intro: string;
 		items: Array<{ title: string; price: string; body: string }>;
+	};
+	office: {
+		heading: string;
+		intro: string;
+		addressLabel: string;
+		address: string;
+		directions: string;
+		mapTitle: string;
 	};
 	ctaBand: {
 		heading: string;

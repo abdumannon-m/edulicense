@@ -16,8 +16,10 @@ export const uz: Messages = {
 		why: 'Nega biz',
 		process: 'Jarayon',
 		team: 'Jamoa',
+		partners: 'Hamkorlarimiz',
 		engagement: 'Hamkorlik',
 		faq: 'Savollar',
+		office: 'Ofis',
 		contact: 'Contact us',
 		language: 'Til',
 		switchToEn: 'English',
@@ -203,6 +205,11 @@ export const uz: Messages = {
 			},
 		],
 	},
+	partners: {
+		heading: 'Biz hamkorlik qiladigan tashkilotlar',
+		intro:
+			'Ishlarni dastur tashkilotlari, maktablar va sifat standartlarimizni baham ko‘radigan xizmat hamkorlari bilan birga olib boramiz.',
+	},
 	engagement: {
 		heading: 'Hamkorlik modeli',
 		intro:
@@ -228,6 +235,16 @@ export const uz: Messages = {
 			},
 		],
 	},
+	office: {
+		heading: 'Ofisimizga tashrif buyuring',
+		intro:
+			'Muassasalar bilan Toshkentda yuzma-yuz uchrashamiz — vaqt kelishing va sizni kutib olamiz.',
+		addressLabel: 'Manzil',
+		address:
+			'Toshkent shahri, Mirzo Ulug‘bek tumani, Sayram MFY, Sayram ko‘chasi, 7-tor ko‘chasi, 21-uy',
+		directions: 'Yandex Xaritada ochish',
+		mapTitle: 'Edu License ofisi Yandex Xaritada',
+	},
 	ctaBand: {
 		heading: 'Muassasa baholashini so‘rang',
 		sub: 'Maktab nomi, shahar, litsenziya holati va maqsadli muddatni yuboring. Keyingi to‘g‘ri qadam bilan javob beramiz.',
@@ -246,7 +263,8 @@ export const uz: Messages = {
 		telegram: 'Telegram',
 		privacy: 'Maxfiylik',
 		rights: 'Barcha huquqlar himoyalangan.',
-		addressLine: 'Toshkent, O‘zbekiston',
+		addressLine:
+			'Toshkent shahri, Mirzo Ulug‘bek tumani, Sayram MFY, Sayram ko‘chasi, 7-tor ko‘chasi, 21-uy',
 		creditPhoto: 'Rasm: Unsplash',
 	},
 	privacy: {

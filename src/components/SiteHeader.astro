@@ -1,6 +1,7 @@
 ---
 import type { Messages } from '../i18n/types';
 import { whatsappUrl } from '../i18n/contact';
+import { PARTNERS } from '../data/partners';
 
 interface Props {
 	messages: Messages;
@@ -17,6 +18,7 @@ const otherLabel =
 
 const navLabel = messages.lang === 'uz' ? 'Sahifa bo‘limlari' : 'Page sections';
 
+// Desktop nav stays short enough to fit on one row; the drawer carries the full set.
 const links = [
 	{ href: `${homePath}#services`, label: messages.nav.services },
 	{ href: `${homePath}#audience`, label: messages.nav.audience },
@@ -25,6 +27,17 @@ const links = [
 	{ href: `${homePath}#process`, label: messages.nav.process },
 	{ href: `${homePath}#engagement`, label: messages.nav.engagement },
 	{ href: `${homePath}#faq`, label: messages.nav.faq },
+];
+
+const partnersLink = { href: `${homePath}#partners`, label: messages.nav.partners };
+const officeLink = { href: `${homePath}#office`, label: messages.nav.office };
+
+// Drawer order mirrors the page order: … process, [partners], engagement, faq, office.
+const drawerLinks = [
+	...links.slice(0, 5),
+	...(PARTNERS.length > 0 ? [partnersLink] : []),
+	...links.slice(5),
+	officeLink,
 ];
 ---
 
@@ -62,7 +75,7 @@ const links = [
 				</summary>
 				<div class="site-header__drawer">
 					<nav aria-label={navLabel}>
-						{links.map((link) => <a href={link.href}>{link.label}</a>)}
+						{drawerLinks.map((link) => <a href={link.href}>{link.label}</a>)}
 						<a
 							class="site-header__drawer-lang"
 							href={otherHome}
