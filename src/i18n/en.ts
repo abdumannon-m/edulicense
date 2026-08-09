@@ -10,15 +10,10 @@ export const en: Messages = {
 	brandLegal: 'Edu License LLC',
 	nav: {
 		services: 'Services',
-		audience: 'Who we help',
-		proof: 'Proof',
-		why: 'Why us',
 		process: 'Process',
-		team: 'Team',
 		partners: 'Partners',
 		engagement: 'Engagement',
 		faq: 'FAQ',
-		office: 'Office',
 		contact: 'Contact us',
 		language: 'Language',
 		switchToEn: 'English',
@@ -66,66 +61,6 @@ export const en: Messages = {
 			},
 		],
 	},
-	audience: {
-		heading: 'Who we work with',
-		intro:
-			'We are most useful when a school or university needs a practical path from ambition to an evidence-ready application.',
-		items: [
-			'Private schools preparing for international programme authorisation.',
-			'Universities and education groups preparing institutional evidence for international partnerships.',
-			'Established institutions adding Cambridge, IB-oriented, American, or dual-diploma pathways.',
-			'Leadership teams that need Uzbek context translated into international evidence standards.',
-		],
-	},
-	proof: {
-		heading: 'Evidence, not vague promises',
-		intro:
-			'Licensing work is high-stakes, so we focus on visible readiness signals without exposing confidential client work.',
-		stats: [
-			{ value: 'Structured', label: 'readiness review before major licensing decisions' },
-			{ value: 'Local', label: 'Uzbek context and international evidence standards reviewed together' },
-			{ value: 'Clear', label: 'single project owner, timeline, and responsibility map' },
-		],
-		items: [
-			{
-				title: 'Readiness-first workflow',
-				body:
-					'We review institutional readiness, public-facing evidence, leadership ownership, and project gaps before work moves into a formal licensing track.',
-			},
-			{
-				title: 'Public evidence review',
-				body:
-					'We check whether the institution’s public materials tell a coherent, credible story for partners, families, and review bodies.',
-			},
-			{
-				title: 'Confidential client work',
-				body:
-					'Many licensing and school-readiness projects cannot be named publicly. References can be discussed during a qualified discovery call.',
-			},
-		],
-	},
-	why: {
-		heading: 'Why Edu License',
-		body:
-			'We combine local execution in Uzbekistan with the paperwork discipline international bodies expect.',
-		items: [
-			{
-				title: 'Local evidence control',
-				body:
-					'We help align local institutional facts, public materials, and operational evidence before formal review begins.',
-			},
-			{
-				title: 'Application ownership',
-				body:
-					'One responsible person tracks the timeline, missing documents, submission steps, and follow-up.',
-			},
-			{
-				title: 'Operational readiness',
-				body:
-					'The work does not stop at forms. We help align people, schedules, evidence, and communications so the institution can actually operate.',
-			},
-		],
-	},
 	process: {
 		heading: 'How it works',
 		steps: [
@@ -153,6 +88,11 @@ export const en: Messages = {
 			'Short answers to the issues school founders and university teams usually raise before starting.',
 		items: [
 			{
+				question: 'Who do you work with?',
+				answer:
+					'Private schools preparing for international programme authorisation, universities and education groups building institutional evidence for partnerships, and established institutions adding Cambridge, IB-oriented, American, or dual-diploma pathways. We are most useful when a leadership team needs Uzbek context translated into international evidence standards.',
+			},
+			{
 				question: 'Do you guarantee a licence?',
 				answer:
 					'No — exam boards and programme bodies make final decisions. We align you with requirements and prepare a strong, coherent submission.',
@@ -176,31 +116,6 @@ export const en: Messages = {
 				question: 'How do we start?',
 				answer:
 					'Send the institution name, city, current licence status, target programme, and desired timeline. We reply with the right next step instead of a generic package.',
-			},
-		],
-	},
-	team: {
-		heading: 'A practical team around the project',
-		intro:
-			'Consulting is delivered by people, not templates. The operating model below shows who is accountable during a project.',
-		items: [
-			{
-				title: 'Founder-led advisory',
-				role: 'Strategy and institution fit',
-				body:
-					'Senior guidance on whether the target licence or programme path fits the institution before work begins.',
-			},
-			{
-				title: 'Application operations',
-				role: 'Documents and project follow-up',
-				body:
-					'Day-to-day tracking of missing inputs, project owners, reminders, next steps, and external communication.',
-			},
-			{
-				title: 'School readiness coordination',
-				role: 'Public materials and evidence',
-				body:
-					'Practical support to make public-facing materials match the institution’s staff structure and operational reality.',
 			},
 		],
 	},
@@ -234,15 +149,6 @@ export const en: Messages = {
 			},
 		],
 	},
-	office: {
-		heading: 'Visit our office',
-		intro: 'We meet institutions in person in Tashkent — book a time and we will host you.',
-		addressLabel: 'Address',
-		address:
-			'Tashkent, Mirzo Ulugbek district, Sayram neighbourhood, Sayram street, 7th lane, house 21',
-		directions: 'Open in Yandex Maps',
-		mapTitle: 'Edu License office on Yandex Maps',
-	},
 	ctaBand: {
 		heading: 'Request an institution assessment',
 		sub: 'Share your school name, city, current licence status, and target timeline. We will reply with the right next step.',
@@ -261,8 +167,11 @@ export const en: Messages = {
 		telegram: 'Telegram',
 		privacy: 'Privacy',
 		rights: 'All rights reserved.',
-		addressLine:
+		addressLabel: 'Visit us',
+		address:
 			'Tashkent, Mirzo Ulugbek district, Sayram neighbourhood, Sayram street, 7th lane, house 21',
+		directions: 'Get directions',
+		mapTitle: 'Edu License office on Yandex Maps',
 		creditPhoto: 'Classroom photo: Unsplash',
 	},
 	privacy: {

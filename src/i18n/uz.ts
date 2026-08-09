@@ -11,15 +11,10 @@ export const uz: Messages = {
 	brandLegal: 'Edu License LLC',
 	nav: {
 		services: 'Xizmatlar',
-		audience: 'Kimlarga',
-		proof: 'Dalillar',
-		why: 'Nega biz',
 		process: 'Jarayon',
-		team: 'Jamoa',
 		partners: 'Hamkorlarimiz',
 		engagement: 'Hamkorlik',
 		faq: 'Savollar',
-		office: 'Ofis',
 		contact: 'Contact us',
 		language: 'Til',
 		switchToEn: 'English',
@@ -67,66 +62,6 @@ export const uz: Messages = {
 			},
 		],
 	},
-	audience: {
-		heading: 'Kim bilan ishlaymiz',
-		intro:
-			'Maktab yoki universitet g‘oyadan dalillarga tayyor arizagacha aniq yo‘lga muhtoj bo‘lsa, biz eng foydali bo‘lamiz.',
-		items: [
-			'Xalqaro dastur vakolatini olishga tayyorlanayotgan xususiy maktablar.',
-			'Xalqaro hamkorlik uchun institutsional dalillarini tayyorlayotgan universitetlar va ta’lim guruhlari.',
-			'Cambridge, IBga yaqin, American yoki dual-diploma yo‘nalishlarini qo‘shayotgan muassasalar.',
-			'O‘zbekiston kontekstini xalqaro dalil standartlariga moslashtirishi kerak bo‘lgan rahbariyat jamoalari.',
-		],
-	},
-	proof: {
-		heading: 'Umumiy va’dalar emas, dalillar',
-		intro:
-			'Litsenziya ishlari mas’uliyatli. Shuning uchun maxfiy mijoz ishlarini oshkor qilmasdan, tayyorgarlik dalillariga e’tibor beramiz.',
-		stats: [
-			{ value: 'Tizimli', label: 'katta litsenziya qarorlaridan oldingi tayyorgarlik ko‘rigi' },
-			{ value: 'Mahalliy', label: 'O‘zbekiston konteksti va xalqaro dalil standartlari birga ko‘riladi' },
-			{ value: 'Aniq', label: 'bitta loyiha egasi, timeline va mas’uliyat xaritasi' },
-		],
-		items: [
-			{
-				title: 'Tayyorgarlikdan boshlanadigan jarayon',
-				body:
-					'Rasmiy litsenziya yo‘liga kirishdan oldin muassasa tayyorgarligi, ochiq dalillar, loyiha egaligi va bo‘shliqlarni ko‘rib chiqamiz.',
-			},
-			{
-				title: 'Ochiq dalillar tekshiruvi',
-				body:
-					'Muassasaning ochiq materiallari hamkorlar, ota-onalar va ko‘rib chiquvchi tashkilotlar uchun ishonchli hikoya berishini tekshiramiz.',
-			},
-			{
-				title: 'Maxfiy mijoz ishlari',
-				body:
-					'Ko‘p litsenziya va tayyorgarlik loyihalarini ochiq nomlash mumkin emas. Tavsiyalar malakali suhbatda muhokama qilinadi.',
-			},
-		],
-	},
-	why: {
-		heading: 'Nega Edu License',
-		body:
-			'Biz O‘zbekistondagi mahalliy ijroni xalqaro tashkilotlar kutadigan hujjat intizomi bilan birlashtiramiz.',
-		items: [
-			{
-				title: 'Mahalliy dalil nazorati',
-				body:
-					'Rasmiy ko‘rib chiqishdan oldin mahalliy faktlar, ochiq materiallar va operatsion dalillarni moslashtirishga yordam beramiz.',
-			},
-			{
-				title: 'Ariza egasi aniq',
-				body:
-					'Bitta mas’ul shaxs timeline, yetishmayotgan hujjatlar, ariza bosqichlari va follow-upni kuzatadi.',
-			},
-			{
-				title: 'Operatsion tayyorgarlik',
-				body:
-					'Ish faqat forma to‘ldirish bilan tugamaydi. Jamoa, jadval, dalillar va kommunikatsiyalarni ham moslaymiz.',
-			},
-		],
-	},
 	process: {
 		heading: 'Qanday ishlaydi',
 		steps: [
@@ -154,6 +89,11 @@ export const uz: Messages = {
 			'Maktab asoschilari va universitet jamoalari boshlashdan oldin ko‘p so‘raydigan savollar.',
 		items: [
 			{
+				question: 'Kim bilan ishlaysiz?',
+				answer:
+					'Xalqaro dastur vakolatini olishga tayyorlanayotgan xususiy maktablar, xalqaro hamkorlik uchun institutsional dalillarini tayyorlayotgan universitetlar va ta’lim guruhlari, hamda Cambridge, IBga yaqin, American yoki dual-diploma yo‘nalishlarini qo‘shayotgan muassasalar. O‘zbekiston kontekstini xalqaro dalil standartlariga moslashtirish kerak bo‘lganda eng foydali bo‘lamiz.',
+			},
+			{
 				question: 'Litsenziya kafolati bormi?',
 				answer:
 					"Yo'q — yakuniy qarorni imtihon markazi yoki tashkilot qiladi. Biz talablarga moslashtiramiz va kuchli, izchil topshiriq uchun tayyorlaymiz.",
@@ -177,31 +117,6 @@ export const uz: Messages = {
 				question: 'Qanday boshlaymiz?',
 				answer:
 					'Muassasa nomi, shahar, hozirgi litsenziya holati, maqsadli dastur va muddatni yuboring. Biz umumiy paket emas, to‘g‘ri keyingi qadamni aytamiz.',
-			},
-		],
-	},
-	team: {
-		heading: 'Loyiha atrofidagi amaliy jamoa',
-		intro:
-			'Konsalting shablonlar bilan emas, odamlar bilan bajariladi. Quyidagi model loyiha davomida kim mas’ul ekanini ko‘rsatadi.',
-		items: [
-			{
-				title: 'Founder-led advisory',
-				role: 'Strategiya va muassasa mosligi',
-				body:
-					'Ish boshlanishidan oldin maqsadli litsenziya yoki dastur yo‘li muassasaga mosligini baholash.',
-			},
-			{
-				title: 'Application operations',
-				role: 'Hujjatlar va loyiha follow-up',
-				body:
-					'Yetishmayotgan ma’lumotlar, loyiha egalari, eslatmalar, keyingi qadamlar va tashqi kommunikatsiyani kundalik kuzatish.',
-			},
-			{
-				title: 'School readiness coordination',
-				role: 'Ochiq materiallar va dalillar',
-				body:
-					'Ochiq materiallar xodimlar tuzilmasi va haqiqiy operatsiyaga mos bo‘lishini ta’minlash.',
 			},
 		],
 	},
@@ -235,16 +150,6 @@ export const uz: Messages = {
 			},
 		],
 	},
-	office: {
-		heading: 'Ofisimizga tashrif buyuring',
-		intro:
-			'Muassasalar bilan Toshkentda yuzma-yuz uchrashamiz — vaqt kelishing va sizni kutib olamiz.',
-		addressLabel: 'Manzil',
-		address:
-			'Toshkent shahri, Mirzo Ulug‘bek tumani, Sayram MFY, Sayram ko‘chasi, 7-tor ko‘chasi, 21-uy',
-		directions: 'Yandex Xaritada ochish',
-		mapTitle: 'Edu License ofisi Yandex Xaritada',
-	},
 	ctaBand: {
 		heading: 'Muassasa baholashini so‘rang',
 		sub: 'Maktab nomi, shahar, litsenziya holati va maqsadli muddatni yuboring. Keyingi to‘g‘ri qadam bilan javob beramiz.',
@@ -263,8 +168,11 @@ export const uz: Messages = {
 		telegram: 'Telegram',
 		privacy: 'Maxfiylik',
 		rights: 'Barcha huquqlar himoyalangan.',
-		addressLine:
+		addressLabel: 'Bizga tashrif buyuring',
+		address:
 			'Toshkent shahri, Mirzo Ulug‘bek tumani, Sayram MFY, Sayram ko‘chasi, 7-tor ko‘chasi, 21-uy',
+		directions: 'Yo‘lni ko‘rsatish',
+		mapTitle: 'Edu License ofisi Yandex Xaritada',
 		creditPhoto: 'Rasm: Unsplash',
 	},
 	privacy: {

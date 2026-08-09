@@ -11,15 +11,10 @@ export interface Messages {
 	brandLegal: string;
 	nav: {
 		services: string;
-		audience: string;
-		proof: string;
-		why: string;
 		process: string;
-		team: string;
 		partners: string;
 		engagement: string;
 		faq: string;
-		office: string;
 		contact: string;
 		language: string;
 		switchToEn: string;
@@ -45,22 +40,6 @@ export interface Messages {
 		intro: string;
 		items: Array<{ title: string; tagline: string; icon: PillarIcon }>;
 	};
-	audience: {
-		heading: string;
-		intro: string;
-		items: string[];
-	};
-	proof: {
-		heading: string;
-		intro: string;
-		stats: Array<{ value: string; label: string }>;
-		items: Array<{ title: string; body: string; href?: string; linkLabel?: string }>;
-	};
-	why: {
-		heading: string;
-		body: string;
-		items: Array<{ title: string; body: string }>;
-	};
 	process: {
 		heading: string;
 		steps: Array<{ title: string; body: string }>;
@@ -70,11 +49,6 @@ export interface Messages {
 		intro: string;
 		items: Array<{ question: string; answer: string }>;
 	};
-	team: {
-		heading: string;
-		intro: string;
-		items: Array<{ title: string; role: string; body: string }>;
-	};
 	partners: {
 		heading: string;
 		intro: string;
@@ -83,14 +57,6 @@ export interface Messages {
 		heading: string;
 		intro: string;
 		items: Array<{ title: string; price: string; body: string }>;
-	};
-	office: {
-		heading: string;
-		intro: string;
-		addressLabel: string;
-		address: string;
-		directions: string;
-		mapTitle: string;
 	};
 	ctaBand: {
 		heading: string;
@@ -108,7 +74,10 @@ export interface Messages {
 		telegram: string;
 		privacy: string;
 		rights: string;
-		addressLine: string;
+		addressLabel: string;
+		address: string;
+		directions: string;
+		mapTitle: string;
 		creditPhoto: string;
 	};
 	privacy: {

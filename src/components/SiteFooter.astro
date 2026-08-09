@@ -1,6 +1,13 @@
 ---
 import type { Messages } from '../i18n/types';
-import { CONTACT_EMAIL, telegramEnabled, telegramUrl, whatsappUrl } from '../i18n/contact';
+import {
+	CONTACT_EMAIL,
+	OFFICE_MAP_URL,
+	officeMapEmbedUrl,
+	telegramEnabled,
+	telegramUrl,
+	whatsappUrl,
+} from '../i18n/contact';
 
 interface Props {
 	messages: Messages;
@@ -13,30 +20,44 @@ const tg = telegramUrl();
 const showTg = telegramEnabled();
 const homePath = messages.lang === 'uz' ? '/uz' : '/';
 const privacyPath = messages.lang === 'uz' ? '/uz/privacy' : '/privacy';
+const mapEmbed = officeMapEmbedUrl(messages.lang === 'uz' ? 'uz_UZ' : 'en_US');
 ---
 
 <footer class="site-footer">
 	<div class="wrap site-footer__grid">
-		<div>
+		<div class="site-footer__contact">
 			<div class="site-footer__brand">{messages.brandShort}</div>
-			<p style="margin: 0.5rem 0 0; max-width: 28rem;">{messages.footer.tagline}</p>
-			<p class="muted" style="margin: 0.75rem 0 0;">{messages.footer.addressLine}</p>
-			<p class="muted" style="margin: 0.35rem 0 0;">{CONTACT_EMAIL}</p>
-			<p class="muted" style="margin: 0.35rem 0 0; font-size: 0.85rem;">{messages.brandLegal}</p>
+			<p class="site-footer__tagline">{messages.footer.tagline}</p>
+
+			<p class="site-footer__label">{messages.footer.addressLabel}</p>
+			<address class="site-footer__address">{messages.footer.address}</address>
+			<a class="site-footer__directions" href={OFFICE_MAP_URL} rel="noopener noreferrer" target="_blank">
+				{messages.footer.directions}
+			</a>
+
+			<div class="site-footer__links">
+				<a href={wa} rel="noopener noreferrer" target="_blank">{messages.footer.whatsapp}</a>
+				<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+				{showTg && (
+					<a href={tg} rel="noopener noreferrer" target="_blank">
+						{messages.footer.telegram}
+					</a>
+				)}
+				<a href={privacyPath}>{messages.footer.privacy}</a>
+				<a href={`${homePath}#main`}>{messages.lang === 'uz' ? 'Yuqoriga' : 'Top'}</a>
+			</div>
 		</div>
-		<div class="site-footer__links">
-			<a href={wa} rel="noopener noreferrer" target="_blank">{messages.footer.whatsapp}</a>
-			<a href={`mailto:${CONTACT_EMAIL}`}>{messages.footer.email}</a>
-			{showTg && (
-				<a href={tg} rel="noopener noreferrer" target="_blank">
-					{messages.footer.telegram}
-				</a>
-			)}
-			<a href={privacyPath}>{messages.footer.privacy}</a>
-			<a href={`${homePath}#main`}>{messages.lang === 'uz' ? 'Yuqoriga' : 'Top'}</a>
+
+		<div class="site-footer__map">
+			<iframe
+				src={mapEmbed}
+				title={messages.footer.mapTitle}
+				loading="lazy"
+				referrerpolicy="no-referrer-when-downgrade"
+				allowfullscreen></iframe>
 		</div>
 	</div>
 	<div class="wrap site-footer__bottom">
-		© {new Date().getFullYear()} {messages.brandShort}. {messages.footer.rights}
+		<span>© {new Date().getFullYear()} {messages.brandLegal}. {messages.footer.rights}</span>
 	</div>
 </footer>
