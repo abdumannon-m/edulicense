@@ -123,6 +123,7 @@ export const uz: Messages = {
 		heading: 'Biz hamkorlik qiladigan tashkilotlar',
 		intro:
 			'Ishlarni dastur tashkilotlari, maktablar va sifat standartlarimizni baham ko‘radigan xizmat hamkorlari bilan birga olib boramiz.',
+		newTab: 'yangi oynada ochiladi',
 	},
 	engagement: {
 		heading: 'Hamkorlik modeli',

@@ -51,6 +51,7 @@ export interface Messages {
 	partners: {
 		heading: string;
 		intro: string;
+		newTab: string;
 	};
 	engagement: {
 		heading: string;

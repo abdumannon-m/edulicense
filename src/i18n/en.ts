@@ -122,6 +122,7 @@ export const en: Messages = {
 		heading: 'Institutions and organisations we work with',
 		intro:
 			'We deliver alongside programme bodies, schools, and service partners who share our standards for quality.',
+		newTab: 'opens in a new tab',
 	},
 	engagement: {
 		heading: 'Engagement model',

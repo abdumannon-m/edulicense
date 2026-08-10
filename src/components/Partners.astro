@@ -39,7 +39,13 @@ const partners = PARTNERS;
 								.join(' ') || undefined}
 						>
 							{partner.href ? (
-								<a class="partner-tile__link" href={partner.href} rel="noopener noreferrer" target="_blank">
+								<a
+									class="partner-tile__link"
+									href={partner.href}
+									rel="noopener noreferrer"
+									target="_blank"
+									aria-label={`${partner.name} — ${messages.partners.newTab}`}
+								>
 									<img class="partner-tile__logo" src={partner.logo} alt={partner.name} loading="lazy" decoding="async" />
 								</a>
 							) : (

@@ -39,22 +39,26 @@ export interface Partner {
 export const PARTNERS: Partner[] = [
 	{
 		name: 'Oriental Universiteti',
+		href: 'https://orientaluniversity.uz',
 		logo: '/partners/oriental-university.png',
 		// White wordmark on a transparent canvas — needs a dark tile to be legible.
 		background: '#15211c',
 	},
 	{
 		name: 'Cambridge Unit School',
+		href: 'https://cambridge-school.uz',
 		logo: '/partners/cambridge-unit-school.png',
 	},
 	{
 		name: 'Karshi International University',
+		href: 'https://kiu.uz/en/main/',
 		// Official mark from kiu.uz. Swap in the full horizontal lockup (mark +
 		// wordmark) if the university supplies it.
 		logo: '/partners/karshi-international-university.png',
 	},
 	{
 		name: 'Salam International School',
+		href: 'https://salamschool.uz',
 		logo: '/partners/salam-international-school.jpg',
 		// Artwork is a blue gradient square with no transparency; let it fill the
 		// tile rather than float as a coloured block inside it.
@@ -63,8 +67,16 @@ export const PARTNERS: Partner[] = [
 	},
 	{
 		name: "Yakubov's School",
+		href: 'https://yakubovs.uz/en/',
 		// Cropped to the wordmark; the source export sat on a large white canvas
 		// that would have rendered the logo a third the size of its neighbours.
 		logo: '/partners/yakubovs-school.png',
+	},
+	{
+		name: 'The British School of Tashkent',
+		href: 'https://www.nordangliaeducation.com/bst-tashkent',
+		// Cropped to the lockup; the source sat on a square canvas with deep
+		// top and bottom margins.
+		logo: '/partners/british-school-of-tashkent.png',
 	},
 ];
