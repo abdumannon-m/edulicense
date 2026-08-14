@@ -75,6 +75,12 @@ The repository also includes `api/app.go` and `vercel.json` so Vercel can route 
 
 If those variables are missing, `/admin/login` will stop returning 404 but will show a runtime configuration error until the environment is completed and migrations are run.
 
+`vercel.json` pins `regions` so the function runs beside the database. Admin pages
+make several sequential queries — `/admin/overview` makes nine — so distance between
+function and database is multiplied by nine. Keep the two in the same region, and
+change the region only alongside the database. See
+[docs/region-migration.md](docs/region-migration.md) for the move to Frankfurt.
+
 ## Checks
 
 ```sh
