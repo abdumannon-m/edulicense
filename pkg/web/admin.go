@@ -383,21 +383,13 @@ func (s *Server) crmMoveDeal(w http.ResponseWriter, r *http.Request) {
 		redirectWithError(w, r, "/admin/crm", errors.New("invalid CRM stage"))
 		return
 	}
-	deal, err := s.store.DealByID(r.Context(), id)
+	_, err := s.store.DealByID(r.Context(), id)
 	if err != nil {
 		if wantsJSON {
 			writeJSONError(w, http.StatusNotFound, err.Error())
 			return
 		}
 		redirectWithError(w, r, "/admin/crm", err)
-		return
-	}
-	if user.Role == app.RoleSales && deal.AssignedSalesAgentID != user.ID && deal.CreatedBy != user.ID {
-		if wantsJSON {
-			writeJSONError(w, http.StatusForbidden, "forbidden")
-			return
-		}
-		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
 	updated, err := s.store.UpdateDealStage(r.Context(), id, stage, user.ID)
@@ -434,21 +426,13 @@ func (s *Server) crmDeleteDeal(w http.ResponseWriter, r *http.Request) {
 
 	user, _ := httpx.CurrentUser(r)
 	id := chi.URLParam(r, "id")
-	deal, err := s.store.DealByID(r.Context(), id)
+	_, err := s.store.DealByID(r.Context(), id)
 	if err != nil {
 		if wantsJSON {
 			writeJSONError(w, http.StatusNotFound, err.Error())
 			return
 		}
 		redirectWithError(w, r, "/admin/crm", err)
-		return
-	}
-	if user.Role == app.RoleSales && deal.AssignedSalesAgentID != user.ID && deal.CreatedBy != user.ID {
-		if wantsJSON {
-			writeJSONError(w, http.StatusForbidden, "forbidden")
-			return
-		}
-		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
 
