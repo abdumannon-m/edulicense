@@ -1,0 +1,929 @@
+{{define "finance_tabs"}}
+			<nav class="fin-tabs" aria-label="Finance sections">
+				<a href="/admin/finance" {{if eq .Tab "dashboard"}}aria-current="page"{{end}}>Dashboard</a>
+				<a href="/admin/finance/transactions" {{if eq .Tab "transactions"}}aria-current="page"{{end}}>Transactions</a>
+				<a href="/admin/finance/contracts" {{if eq .Tab "contracts"}}aria-current="page"{{end}}>Schools &amp; work done</a>
+				<a href="/admin/finance/payables" {{if eq .Tab "payables"}}aria-current="page"{{end}}>Who we owe</a>
+				<a href="/admin/finance/pnl" {{if eq .Tab "pnl"}}aria-current="page"{{end}}>P&amp;L</a>
+				<a href="/admin/finance/forecast" {{if eq .Tab "forecast"}}aria-current="page"{{end}}>Forecast</a>
+				<a href="/admin/finance/settings" {{if eq .Tab "settings"}}aria-current="page"{{end}}>Settings</a>
+			</nav>
+{{end}}
+
+{{define "finance_rate_note"}}
+	{{if .Rate}}<p class="fin-rate">1 $ = {{num .Rate}} so'm <span>CBU · {{shortDate .RateDate}}</span></p>{{end}}
+{{end}}
+
+{{define "finance_dashboard"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		{{$f := .Fin}}{{$d := .Fin.Dashboard}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Finance</p>
+					<h1>Money overview</h1>
+				</div>
+				<div class="fin-head-actions">
+					{{template "finance_rate_note" $f}}
+					<a class="admin-button" href="/admin/finance/transactions">Add transaction</a>
+				</div>
+			</div>
+			{{template "finance_tabs" $f}}
+			{{template "admin_alerts" .}}
+
+			<section class="stats-grid fin-kpis">
+				<div class="stat-card">
+					<span>Cash now</span>
+					<strong>{{moneyShort $d.Cash.TotalUZS "UZS"}}</strong>
+					<small>{{uzs $d.Cash.TotalUZS}} · {{usd $d.Cash.TotalUSD}}</small>
+				</div>
+				<div class="stat-card {{if isNeg $d.FreeCashUZS}}stat-card--danger{{end}}">
+					<span>Free to spend</span>
+					<strong>{{moneyShort $d.FreeCashUZS "UZS"}}</strong>
+					<small>{{moneyShort $d.BlockedUZS "UZS"}} locked until school steps are done</small>
+				</div>
+				<div class="stat-card">
+					<span>Unpaid salaries &amp; bills</span>
+					<strong>{{moneyShort $d.PayablesUZS "UZS"}}</strong>
+					<small><a href="/admin/finance/payables">See who is owed</a></small>
+				</div>
+				<div class="stat-card {{if isNeg $d.YearProfitUSD}}stat-card--danger{{end}}">
+					<span>Profit {{$f.Today.Year}}</span>
+					<strong>{{usd $d.YearProfitUSD}}</strong>
+					<small>This month {{usd $d.MonthProfitUSD}}</small>
+				</div>
+			</section>
+
+			{{if $d.Alerts}}
+			<section class="fin-alerts">
+				{{range $d.Alerts}}<a class="fin-alert fin-alert--{{.Tone}}" href="{{.Link}}">{{.Message}}</a>{{end}}
+			</section>
+			{{end}}
+
+			<div class="admin-grid fin-grid">
+				<section class="admin-panel">
+					<div class="fin-panel-head">
+						<h2>Income vs expenses</h2>
+						<div class="fin-legend"><span class="fin-legend__income">Income</span><span class="fin-legend__expense">Expenses</span></div>
+					</div>
+					{{index $f.Charts "pl"}}
+					<p class="fin-note">Income is work done for schools in that month, not the day money arrived.</p>
+				</section>
+				<section class="admin-panel">
+					<div class="fin-panel-head">
+						<h2>Cash by month</h2>
+						<div class="fin-legend"><span class="fin-legend__line">Actual</span><span class="fin-legend__dashed">Forecast</span></div>
+					</div>
+					{{index $f.Charts "cash"}}
+					<p class="fin-note">Forecast uses monthly fixed costs and expected school payments. <a href="/admin/finance/forecast">Edit</a></p>
+				</section>
+				<section class="admin-panel">
+					<h2>Money by account</h2>
+					<div class="simple-list fin-list">
+						{{range $d.Cash.Accounts}}{{if or .Count (not (isZero .Balance))}}
+						<div><strong>{{.Account.Label}}</strong><span class="fin-num {{if isNeg .Balance}}fin-neg{{end}}">{{money .Balance .Account.Currency}}</span></div>
+						{{end}}{{end}}
+						<div class="fin-list__total"><strong>Total</strong><span class="fin-num">{{uzs $d.Cash.TotalUZS}}</span></div>
+					</div>
+				</section>
+				<section class="admin-panel">
+					<h2>Where the money goes ({{$f.Today.Year}})</h2>
+					<div class="fin-hbars">
+						{{range $d.ExpenseMix}}
+						<div class="fin-hbar">
+							<div class="fin-hbar__label"><span>{{.Label}}</span><strong>{{usd .Value}}</strong></div>
+							<div class="fin-bar"><span style="width: {{pctWidth (mul .Share 100)}}%"></span></div>
+						</div>
+						{{else}}<p class="muted">No expenses yet.</p>{{end}}
+					</div>
+				</section>
+				<section class="admin-panel">
+					<div class="fin-panel-head">
+						<h2>Schools</h2>
+						<a class="fin-link" href="/admin/finance/contracts">All contracts</a>
+					</div>
+					<div class="fin-schools">
+						{{range $d.Contracts.Contracts}}{{if eq .Contract.Status "active"}}
+						<a class="fin-school" href="/admin/finance/contracts/{{.Contract.ID}}">
+							<div class="fin-school__head"><strong>{{.Contract.CounterpartyName}}</strong><span>{{money .Contract.Amount .Contract.Currency}}</span></div>
+							<div class="fin-bar fin-bar--double"><span class="fin-bar__paid" style="width: {{pctWidth .PaidPercent}}%"></span><span class="fin-bar__done" style="width: {{pctWidth .DonePercent}}%"></span></div>
+							<div class="fin-school__meta"><span>Work done {{pctWidth .DonePercent}}%</span><span>Paid {{money .Paid .Contract.Currency}}</span></div>
+						</a>
+						{{end}}{{else}}<p class="muted">No contracts yet.</p>{{end}}
+					</div>
+					<p class="fin-note">Schools owe us {{usd $d.ReceivableUSD}} for work done · Prepaid for future work {{usd $d.AdvanceUSD}}</p>
+				</section>
+				<section class="admin-panel">
+					<div class="fin-panel-head">
+						<h2>Founders &amp; loans</h2>
+						<a class="fin-link" href="/admin/finance/payables">Details</a>
+					</div>
+					<div class="simple-list fin-list">
+						{{range $d.Founders}}
+						<div><strong>{{.Counterparty.Name}}</strong><span class="fin-num">{{if isNeg .Balance}}<span class="fin-neg">owes company {{uzs (abs .Balance)}}</span>{{else if isZero .Balance}}<span class="muted">settled</span>{{else}}{{uzs .Balance}}{{end}}</span></div>
+						{{end}}
+						{{range $d.Lenders}}{{if not (isZero .Balance)}}
+						<div><strong>{{.Counterparty.Name}}</strong><span class="fin-num">{{if isNeg .Balance}}<span class="fin-neg">owes company {{uzs (abs .Balance)}}</span>{{else if isZero .Balance}}<span class="muted">settled</span>{{else}}{{uzs .Balance}}{{end}}</span></div>
+						{{end}}{{end}}
+						{{if not (isZero $d.LoansToFoundersUZS)}}<div><strong>Loans taken by founders</strong><span class="fin-num">{{uzs $d.LoansToFoundersUZS}}</span></div>{{end}}
+					</div>
+					<p class="fin-note">Amounts are what the company owes each person.</p>
+				</section>
+			</div>
+		</main>
+	</body>
+</html>
+{{end}}
+
+
+{{define "finance_txn_fields"}}
+	{{$f := .Fin}}{{$t := .Txn}}
+	<label>Date<input type="date" name="date" value="{{if $t.ID}}{{formatDateInput $t.Date}}{{else}}{{formatDateInput $f.Today}}{{end}}" required></label>
+	<label>Account
+		<select name="account" required>
+			{{range finAccounts}}<option value="{{.Code}}" {{selected $t.Account .Code}}>{{.Label}}</option>{{end}}
+		</select>
+	</label>
+	<label>Money
+		<select name="direction">
+			<option value="out" {{selected $t.Direction "out"}}>Out</option>
+			<option value="in" {{selected $t.Direction "in"}}>In</option>
+		</select>
+	</label>
+	<label>Amount<input name="amount" inputmode="decimal" placeholder="1 200 000" value="{{if $t.ID}}{{plain $t.Amount}}{{end}}" required></label>
+	<label>Category
+		<select name="category" required>
+			<option value="">Choose…</option>
+			{{range $f.CategoryGroups}}{{if ne .Kind "transfer"}}<optgroup label="{{.Label}}">{{range .Categories}}<option value="{{.Code}}" {{selected $t.CategoryCode .Code}}>{{.Name}}</option>{{end}}</optgroup>{{end}}{{end}}
+		</select>
+	</label>
+	<label>Who<input name="counterparty" list="fin-people" value="{{$t.CounterpartyName}}" placeholder="Person, school or company" autocomplete="off"></label>
+	<label>School contract
+		<select name="contract_id">
+			<option value="">None</option>
+			{{range $f.ActiveContracts}}<option value="{{.ID}}" {{selected $t.ContractID .ID}}>{{.Label}}</option>{{end}}
+		</select>
+	</label>
+	<label>Counts toward contract<input name="settles_amount" inputmode="decimal" value="{{ptrFloat $t.SettlesAmount}}" placeholder="Optional, e.g. 6000"></label>
+	<label class="fin-span-2">Note<input name="description" value="{{$t.Description}}" placeholder="What was it for?"></label>
+	<label class="fin-check fin-span-2"><input type="checkbox" name="create_accrual" value="1" {{if or $t.HasAccrual (not $t.ID)}}checked{{end}}><span>Salary or bill for this month<small>Untick when paying an amount already listed under Who we owe</small></span></label>
+	<datalist id="fin-people">{{range $f.Data.Counterparties}}{{if .Active}}<option value="{{.Name}}"></option>{{end}}{{end}}</datalist>
+{{end}}
+
+{{define "finance_transactions"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		{{$f := .Fin}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Finance</p>
+					<h1>Transactions</h1>
+				</div>
+				{{template "finance_rate_note" $f}}
+			</div>
+			{{template "finance_tabs" $f}}
+			{{template "admin_alerts" .}}
+
+			<section class="fin-accounts">
+				{{range $f.Cash.Accounts}}{{if or .Count (not (isZero .Balance))}}
+				<a class="fin-account {{if eq $f.Filter.Account .Account.Code}}is-active{{end}}" href="/admin/finance/transactions?account={{.Account.Code}}">
+					<span>{{.Account.Label}}</span><strong class="{{if isNeg .Balance}}fin-neg{{end}}">{{money .Balance .Account.Currency}}</strong>
+				</a>
+				{{end}}{{end}}
+				<div class="fin-account fin-account--total"><span>Total</span><strong>{{uzs $f.Cash.TotalUZS}}</strong></div>
+			</section>
+
+			<section class="admin-panel fin-entry">
+				<div class="fin-panel-head">
+					<h2>Add money in or out</h2>
+					<p class="fin-hint">Amount is in the account's currency. The CBU rate for the date is applied automatically.</p>
+				</div>
+				<form class="fin-form" method="post" action="/admin/finance/transactions">
+					<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+					<input type="hidden" name="back" value="/admin/finance/transactions">
+					{{template "finance_txn_fields" (dict "Fin" $f "Txn" $f.Txn)}}
+					<div class="fin-form__actions"><button class="admin-button" type="submit">Save</button></div>
+				</form>
+				<details class="fin-more">
+					<summary>Move money between our accounts</summary>
+					<form class="fin-form fin-form--transfer" method="post" action="/admin/finance/transactions">
+						<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+						<input type="hidden" name="back" value="/admin/finance/transactions">
+						<label>Date<input type="date" name="date" value="{{formatDateInput $f.Today}}" required></label>
+						<label>From<select name="account">{{range finAccounts}}<option value="{{.Code}}">{{.Label}}</option>{{end}}</select></label>
+						<label>Amount sent<input name="amount" inputmode="decimal" required></label>
+						<label>To<select name="to_account">{{range finAccounts}}<option value="{{.Code}}" {{selected "cash_uzs" .Code}}>{{.Label}}</option>{{end}}</select></label>
+						<label>Amount received<input name="to_amount" inputmode="decimal" placeholder="Only when currency changes"></label>
+						<label>Note<input name="description" placeholder="e.g. cash withdrawn from bank"></label>
+						<div class="fin-form__actions"><button class="admin-button admin-button--secondary" type="submit">Save transfer</button></div>
+					</form>
+				</details>
+			</section>
+
+			<form class="filter-row fin-filter" method="get" action="/admin/finance/transactions">
+				<select name="month" aria-label="Month">
+					<option value="">All months</option>
+					{{range $f.Ledger.Months}}<option value="{{.}}" {{selected $f.Filter.Month .}}>{{monthKeyLabel .}}</option>{{end}}
+				</select>
+				<select name="account" aria-label="Account">
+					<option value="">All accounts</option>
+					{{range finAccounts}}<option value="{{.Code}}" {{selected $f.Filter.Account .Code}}>{{.Label}}</option>{{end}}
+				</select>
+				<select name="category" aria-label="Category">
+					<option value="">All categories</option>
+					{{range $f.CategoryGroups}}<optgroup label="{{.Label}}">{{range .Categories}}<option value="{{.Code}}" {{selected $f.Filter.Category .Code}}>{{.Name}}</option>{{end}}</optgroup>{{end}}
+				</select>
+				<input name="q" value="{{$f.Filter.Query}}" placeholder="Search note or name" aria-label="Search">
+				<input type="hidden" name="all" value="1">
+				<button class="admin-button admin-button--secondary" type="submit">Filter</button>
+			</form>
+
+			<section class="admin-panel fin-table-panel">
+				<div class="fin-table-summary">
+					<span>{{len $f.Ledger.Rows}} of {{$f.Ledger.Total}} transactions</span>
+					<span>In <strong class="fin-pos">{{uzs $f.Ledger.InUZS}}</strong></span>
+					<span>Out <strong class="fin-neg">{{uzs $f.Ledger.OutUZS}}</strong></span>
+				</div>
+				<div class="fin-table-wrap">
+					<table class="fin-table">
+						<thead><tr><th>Date</th><th>Category · who</th><th>Account</th><th class="fin-num">In</th><th class="fin-num">Out</th><th></th></tr></thead>
+						<tbody>
+							{{range $f.Ledger.Rows}}
+							<tr>
+								<td class="fin-nowrap">{{shortDate .Txn.Date}}</td>
+								<td class="fin-desc">
+									<strong>{{.Category.Name}}{{if .Txn.CounterpartyName}} · {{.Txn.CounterpartyName}}{{end}}</strong>
+									{{if .Txn.Description}}<span>{{.Txn.Description}}</span>{{end}}
+								</td>
+								<td class="fin-nowrap muted">{{accountLabel .Txn.Account}}</td>
+								<td class="fin-num fin-pos">{{if .In}}{{money .In .Txn.Currency}}{{end}}</td>
+								<td class="fin-num fin-neg">{{if .Out}}{{money .Out .Txn.Currency}}{{end}}</td>
+								<td class="fin-actions"><a href="/admin/finance/transactions/{{.Txn.ID}}">Edit</a></td>
+							</tr>
+							{{else}}
+							<tr><td colspan="6" class="fin-empty">No transactions for this filter.</td></tr>
+							{{end}}
+						</tbody>
+					</table>
+				</div>
+			</section>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "finance_transaction_edit"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		{{$f := .Fin}}{{$t := .Fin.Txn}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker"><a href="/admin/finance/transactions?month={{monthKey $t.Date}}">Transactions</a></p>
+					<h1>{{if $t.TransferGroup}}Transfer{{else}}Edit transaction{{end}}</h1>
+				</div>
+			</div>
+			{{template "finance_tabs" $f}}
+			{{template "admin_alerts" .}}
+			{{if $t.TransferGroup}}
+			<section class="admin-panel">
+				<h2>Money moved between our accounts</h2>
+				<div class="simple-list fin-list">
+					{{range $f.TxnTransfer}}<div><strong>{{if eq .Direction "out"}}From{{else}}To{{end}} {{accountLabel .Account}}</strong><span class="fin-num">{{money .Amount .Currency}}</span></div>{{end}}
+				</div>
+				<p class="fin-note">{{shortDate $t.Date}}{{if $t.Description}} · {{$t.Description}}{{end}}. To change a transfer, delete it and add it again.</p>
+			</section>
+			{{else}}
+			<section class="admin-panel">
+				<form class="fin-form" method="post" action="/admin/finance/transactions/{{$t.ID}}">
+					<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+					<input type="hidden" name="back" value="/admin/finance/transactions?month={{monthKey $t.Date}}">
+					{{template "finance_txn_fields" (dict "Fin" $f "Txn" $t)}}
+					<label>Exchange rate<input name="fx_rate" inputmode="decimal" value="{{plain $t.FxRate}}"></label>
+					<div class="fin-form__actions"><button class="admin-button" type="submit">Save changes</button></div>
+				</form>
+				<p class="fin-note">Recorded at 1 $ = {{num $t.FxRate}} so'm: {{uzs $t.AmountUZS}} · {{usd $t.AmountUSD}}.</p>
+			</section>
+			{{end}}
+			<section class="danger-zone">
+				<form method="post" action="/admin/finance/transactions/{{$t.ID}}/delete" onsubmit="return confirm('Delete this transaction?')">
+					<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+					<input type="hidden" name="back" value="/admin/finance/transactions?month={{monthKey $t.Date}}">
+					<button type="submit">Delete {{if $t.TransferGroup}}transfer{{else}}transaction{{end}}</button>
+				</form>
+			</section>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "finance_contract_status"}}<span class="fin-badge fin-badge--{{.}}">{{if eq . "active"}}In progress{{else if eq . "completed"}}Completed{{else}}Cancelled{{end}}</span>{{end}}
+
+{{define "finance_contracts"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		{{$f := .Fin}}{{$c := .Fin.Contracts}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Finance</p>
+					<h1>Schools &amp; work done</h1>
+				</div>
+				{{template "finance_rate_note" $f}}
+			</div>
+			{{template "finance_tabs" $f}}
+			{{template "admin_alerts" .}}
+
+			<section class="stats-grid fin-kpis">
+				<div class="stat-card"><span>Signed contracts</span><strong>{{usd $c.AmountUSD}}</strong><small>{{len $c.Contracts}} schools</small></div>
+				<div class="stat-card"><span>Work done</span><strong>{{usd $c.Recognized}}</strong><small>Counted as revenue in the month it was done</small></div>
+				<div class="stat-card"><span>Paid by schools</span><strong>{{usd $c.Paid}}</strong><small>Still to collect {{usd $c.Unpaid}}</small></div>
+				<div class="stat-card"><span>Prepaid, work not done yet</span><strong>{{usd $c.Advance}}</strong><small>Schools owe us {{usd $c.Receivable}}</small></div>
+			</section>
+
+			<section class="admin-panel fin-table-panel">
+				<div class="fin-table-wrap">
+					<table class="fin-table">
+						<thead><tr><th>School</th><th>Status</th><th class="fin-num">Contract</th><th class="fin-col-progress">Work done / paid</th><th class="fin-num">Balance</th><th>Steps</th></tr></thead>
+						<tbody>
+							{{range $c.Contracts}}
+							<tr>
+								<td class="fin-desc"><a href="/admin/finance/contracts/{{.Contract.ID}}"><strong>{{.Contract.CounterpartyName}}</strong></a><span>Signed {{shortDate .Contract.SignedOn}}{{if .Contract.Title}} · {{.Contract.Title}}{{end}}</span></td>
+								<td>{{template "finance_contract_status" .Contract.Status}}</td>
+								<td class="fin-num">{{money .Contract.Amount .Contract.Currency}}</td>
+								<td class="fin-col-progress">
+									<div class="fin-bar fin-bar--double"><span class="fin-bar__paid" style="width: {{pctWidth .PaidPercent}}%"></span><span class="fin-bar__done" style="width: {{pctWidth .DonePercent}}%"></span></div>
+									<div class="fin-school__meta"><span>Done {{money .Recognized .Contract.Currency}}</span><span>Paid {{money .Paid .Contract.Currency}}</span></div>
+								</td>
+								<td class="fin-num">{{if isPos .Receivable}}<span class="fin-neg">owes {{money .Receivable .Contract.Currency}}</span>{{else if isPos .Advance}}<span class="muted">prepaid {{money .Advance .Contract.Currency}}</span>{{else}}<span class="muted">settled</span>{{end}}</td>
+								<td><div class="fin-dots">{{range .Milestones}}<span class="{{if .Done}}is-done{{end}}" title="{{.Label}}"></span>{{end}}</div></td>
+							</tr>
+							{{else}}
+							<tr><td colspan="6" class="fin-empty">No contracts yet.</td></tr>
+							{{end}}
+						</tbody>
+					</table>
+				</div>
+				<div class="fin-legend fin-legend--table"><span class="fin-legend__done">Work done</span><span class="fin-legend__paid">Paid</span></div>
+			</section>
+
+			<div class="admin-grid fin-grid">
+				<section class="admin-panel">
+					<h2>Add contract</h2>
+					<form class="fin-form fin-form--two" method="post" action="/admin/finance/contracts">
+						<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+						<label class="fin-span-2">School<input name="school" list="fin-schools" required autocomplete="off"></label>
+						<label>Amount<input name="amount" inputmode="decimal" required placeholder="15000"></label>
+						<label>Currency<select name="currency"><option value="USD">USD</option><option value="UZS">UZS</option></select></label>
+						<label>Signed on<input type="date" name="signed_on" value="{{formatDateInput $f.Today}}" required></label>
+						<label>Application
+							<select name="application_id"><option value="">Not linked</option>{{range $f.Data.Applications}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select>
+						</label>
+						<fieldset class="fin-weights fin-span-2">
+							<legend>Share of payment unlocked at each step (%)</legend>
+							{{range finMilestones}}<label>{{.Label}}<input name="w{{.Number}}" inputmode="decimal" value="{{if eq .Number 1}}15{{else if eq .Number 2}}25{{else if eq .Number 3}}20{{else}}40{{end}}"></label>{{end}}
+						</fieldset>
+						<div class="fin-form__actions"><button class="admin-button" type="submit">Add contract</button></div>
+						<datalist id="fin-schools">{{range $f.Data.Counterparties}}{{if eq .Kind "school"}}<option value="{{.Name}}"></option>{{end}}{{end}}</datalist>
+					</form>
+				</section>
+				<section class="admin-panel" id="unallocated">
+					<h2>School payments without a contract</h2>
+					<div class="simple-list fin-list">
+						{{range $c.Unallocated}}
+						<div><strong>{{shortDate .Date}} · {{if .CounterpartyName}}{{.CounterpartyName}}{{else}}{{.Description}}{{end}}</strong><span class="fin-num"><a href="/admin/finance/transactions/{{.ID}}">{{money .Amount .Currency}}</a></span></div>
+						{{else}}<p class="muted">All school payments are linked to a contract.</p>{{end}}
+					</div>
+					<p class="fin-note">Open a payment and choose its contract so it counts toward that school.</p>
+				</section>
+			</div>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "finance_contract"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		{{$f := .Fin}}{{$s := .Fin.Contract}}{{$k := .Fin.Contract.Contract}}{{$csrf := .CSRFToken}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker"><a href="/admin/finance/contracts">Schools &amp; work done</a></p>
+					<h1>{{$k.CounterpartyName}}</h1>
+					<div class="admin-page-head__badges">{{template "finance_contract_status" $k.Status}}{{if $k.ApplicationName}}<span class="stage-badge stage-badge--{{$k.ApplicationStage}}">{{stageLabel $k.ApplicationStage}}</span>{{end}}</div>
+				</div>
+			</div>
+			{{template "finance_tabs" $f}}
+			{{template "admin_alerts" .}}
+
+			<section class="stats-grid fin-kpis">
+				<div class="stat-card"><span>Contract</span><strong>{{money $k.Amount $k.Currency}}</strong><small>Signed {{shortDate $k.SignedOn}}</small></div>
+				<div class="stat-card"><span>Work done</span><strong>{{money $s.Recognized $k.Currency}}</strong><small>{{pctWidth $s.DonePercent}}% of contract</small></div>
+				<div class="stat-card"><span>Paid</span><strong>{{money $s.Paid $k.Currency}}</strong><small>{{uzs $s.PaidUZS}}</small></div>
+				<div class="stat-card {{if isPos $s.BlockedUZS}}stat-card--warning{{end}}"><span>{{if isPos $s.Receivable}}School owes us{{else}}Prepaid, not yet earned{{end}}</span><strong>{{if isPos $s.Receivable}}{{money $s.Receivable $k.Currency}}{{else}}{{money $s.Advance $k.Currency}}{{end}}</strong><small>Locked cash {{moneyShort $s.BlockedUZS "UZS"}} · unlocked {{percent $s.Unlocked}}</small></div>
+			</section>
+
+			<div class="admin-grid fin-grid">
+				<section class="admin-panel">
+					<h2>Steps</h2>
+					<div class="fin-steps">
+						{{range $s.Milestones}}
+						<form class="fin-step {{if .Done}}is-done{{end}}" method="post" action="/admin/finance/contracts/{{$k.ID}}/steps/{{.Number}}">
+							<input type="hidden" name="csrf_token" value="{{$csrf}}">
+							<div class="fin-step__label">
+								<span class="fin-step__num">{{.Number}}</span>
+								<div><strong>{{.Label}}</strong><small>{{plain .Weight}}% · {{money (weightAmount $k .Number) $k.Currency}}{{if .FromApp}} · reached in application{{end}}</small></div>
+							</div>
+							<input type="date" name="date" value="{{ptrDate .On}}" aria-label="Date reached">
+							<label class="fin-check fin-check--compact"><input type="checkbox" name="record_work" value="1" checked><span>Book as work done</span></label>
+							<div class="fin-step__buttons">
+								<button class="admin-button admin-button--secondary" type="submit">Save</button>
+								{{if .On}}<button class="admin-link-button" type="submit" name="clear" value="1">Clear</button>{{end}}
+							</div>
+						</form>
+						{{end}}
+					</div>
+					<p class="fin-note">Saving a date books that step's share as work done in that month, once.</p>
+				</section>
+
+				<section class="admin-panel">
+					<h2>Work done by month</h2>
+					<div class="simple-list fin-list">
+						{{range $s.Revenue}}
+						<div>
+							<strong>{{monthLabel .Date}}{{if .Milestone}} · {{milestoneLabel .Milestone}}{{end}}{{if .Note}} · {{.Note}}{{end}}</strong>
+							<span class="fin-row-actions"><span class="fin-num">{{money .Amount $k.Currency}}</span>
+								<form method="post" action="/admin/finance/work/{{.ID}}/delete" onsubmit="return confirm('Remove this line?')"><input type="hidden" name="csrf_token" value="{{$csrf}}"><input type="hidden" name="back" value="/admin/finance/contracts/{{$k.ID}}"><button class="fin-x" type="submit" aria-label="Remove">×</button></form>
+							</span>
+						</div>
+						{{else}}<p class="muted">No work booked yet.</p>{{end}}
+					</div>
+					<form class="fin-form fin-form--inline" method="post" action="/admin/finance/contracts/{{$k.ID}}/work">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<label>Month<input type="month" name="month" value="{{monthKey $f.Today}}" required></label>
+						<label>Amount ({{$k.Currency}})<input name="amount" inputmode="decimal" required></label>
+						<label>Step<select name="step"><option value="0">Other</option>{{range finMilestones}}<option value="{{.Number}}">{{.Label}}</option>{{end}}</select></label>
+						<div class="fin-form__actions"><button class="admin-button admin-button--secondary" type="submit">Add</button></div>
+					</form>
+				</section>
+
+				<section class="admin-panel">
+					<h2>Payments received</h2>
+					<div class="simple-list fin-list">
+						{{range $s.Payments}}
+						<div><strong><a href="/admin/finance/transactions/{{.ID}}">{{shortDate .Date}}</a> · {{accountLabel .Account}}</strong><span class="fin-num">{{money .Amount .Currency}}{{if .SettlesAmount}} <small class="muted">counts {{money (settles .) $k.Currency}}</small>{{end}}</span></div>
+						{{else}}<p class="muted">No payments linked yet. Choose this contract when adding a transaction.</p>{{end}}
+					</div>
+				</section>
+
+				<section class="admin-panel">
+					<h2>Contract details</h2>
+					<form class="fin-form fin-form--two" method="post" action="/admin/finance/contracts/{{$k.ID}}">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<label class="fin-span-2">School<input name="school" value="{{$k.CounterpartyName}}" required></label>
+						<label>Amount<input name="amount" inputmode="decimal" value="{{plain $k.Amount}}" required></label>
+						<label>Currency<select name="currency"><option value="USD" {{selected $k.Currency "USD"}}>USD</option><option value="UZS" {{selected $k.Currency "UZS"}}>UZS</option></select></label>
+						<label>Signed on<input type="date" name="signed_on" value="{{formatDateInput $k.SignedOn}}" required></label>
+						<label>Status
+							<select name="status">
+								<option value="active" {{selected $k.Status "active"}}>In progress</option>
+								<option value="completed" {{selected $k.Status "completed"}}>Completed</option>
+								<option value="cancelled" {{selected $k.Status "cancelled"}}>Cancelled</option>
+							</select>
+						</label>
+						<label class="fin-span-2">Application
+							<select name="application_id"><option value="">Not linked</option>{{range $f.Data.Applications}}<option value="{{.ID}}" {{selected $k.ApplicationID .ID}}>{{.Name}}</option>{{end}}</select>
+						</label>
+						<fieldset class="fin-weights fin-span-2">
+							<legend>Share unlocked at each step (%)</legend>
+							{{range $s.Milestones}}<label>{{.Label}}<input name="w{{.Number}}" inputmode="decimal" value="{{plain .Weight}}"></label>{{end}}
+						</fieldset>
+						<label class="fin-span-2">Title<input name="title" value="{{$k.Title}}" placeholder="Optional, e.g. 2026 season"></label>
+						<label class="fin-span-2">Notes<textarea name="notes" rows="2">{{$k.Notes}}</textarea></label>
+						<div class="fin-form__actions"><button class="admin-button" type="submit">Save contract</button></div>
+					</form>
+				</section>
+			</div>
+
+			<section class="danger-zone">
+				<form method="post" action="/admin/finance/contracts/{{$k.ID}}/delete" onsubmit="return confirm('Delete this contract? Only a contract with no payments or work done can be deleted.')">
+					<input type="hidden" name="csrf_token" value="{{$csrf}}">
+					<button type="submit">Delete contract</button>
+				</form>
+			</section>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "finance_party_balance"}}
+	<div>
+		<strong>{{.Counterparty.Name}}{{if .Opening}}<small>from {{uzs .Opening.AmountUZS}} on {{shortDate .Opening.AsOf}}</small>{{end}}</strong>
+		<span class="fin-num">{{if isNeg .Balance}}<span class="fin-neg">owes company {{uzs (abs .Balance)}}</span>{{else if isZero .Balance}}<span class="muted">settled</span>{{else}}{{uzs .Balance}}{{end}}</span>
+	</div>
+{{end}}
+
+{{define "finance_payables"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		{{$f := .Fin}}{{$csrf := .CSRFToken}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Finance</p>
+					<h1>Who we owe</h1>
+				</div>
+				{{template "finance_rate_note" $f}}
+			</div>
+			{{template "finance_tabs" $f}}
+			{{template "admin_alerts" .}}
+
+			<section class="admin-panel fin-table-panel">
+				<div class="fin-panel-head">
+					<h2>Salaries, bonuses &amp; bills</h2>
+					<p class="fin-hint">Owed = amounts added for each month. Paid = transactions in the same category for that person.</p>
+				</div>
+				<div class="fin-table-wrap">
+					<table class="fin-table">
+						<thead><tr><th>Who</th><th>For</th><th class="fin-num">Owed so far</th><th class="fin-num">Paid</th><th class="fin-num">Still to pay</th></tr></thead>
+						<tbody>
+							{{range $f.Payables}}
+							<tr>
+								<td class="fin-desc"><a href="/admin/finance/transactions?counterparty={{.CounterpartyID}}&amp;all=1"><strong>{{.CounterpartyName}}</strong></a></td>
+								<td class="muted">{{range $i, $c := .Categories}}{{if $i}}, {{end}}{{$c}}{{end}}</td>
+								<td class="fin-num">{{money .Accrued .Currency}}</td>
+								<td class="fin-num">{{money .Paid .Currency}}</td>
+								<td class="fin-num">{{if isPos .Balance}}<strong class="fin-neg">{{money .Balance .Currency}}</strong>{{else if isNeg .Balance}}<span class="muted">overpaid {{money (abs .Balance) .Currency}}</span>{{else}}<span class="muted">—</span>{{end}}</td>
+							</tr>
+							{{else}}<tr><td colspan="5" class="fin-empty">Nothing owed.</td></tr>{{end}}
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<div class="admin-grid fin-grid">
+				<section class="admin-panel">
+					<h2>Add amount owed</h2>
+					<p class="fin-hint fin-hint--block">Use this when a salary or bill belongs to a month but is paid later, e.g. rent for September paid in October.</p>
+					<form class="fin-form fin-form--two" method="post" action="/admin/finance/accruals">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<label>Month<input type="month" name="month" value="{{monthKey $f.Today}}" required></label>
+						<label>Category
+							<select name="category" required>
+								{{range $f.CategoryGroups}}{{range .Categories}}{{if .AccrualBased}}<option value="{{.Code}}">{{.Name}}</option>{{end}}{{end}}{{end}}
+							</select>
+						</label>
+						<label class="fin-span-2">Who<input name="counterparty" list="fin-people" required autocomplete="off"></label>
+						<label>Amount<input name="amount" inputmode="decimal" required></label>
+						<label>Currency<select name="currency"><option value="UZS">UZS</option><option value="USD">USD</option></select></label>
+						<label class="fin-span-2">Note<input name="note"></label>
+						<div class="fin-form__actions"><button class="admin-button admin-button--secondary" type="submit">Add</button></div>
+					</form>
+					<datalist id="fin-people">{{range $f.Data.Counterparties}}{{if .Active}}<option value="{{.Name}}"></option>{{end}}{{end}}</datalist>
+				</section>
+				<section class="admin-panel">
+					<h2>Recently added</h2>
+					<div class="simple-list fin-list">
+						{{range $f.RecentAccruals}}
+						<div>
+							<strong>{{monthLabel .Date}} · {{.CounterpartyName}}<small>{{($f.Data.Category .CategoryCode).Name}}{{if .Note}} · {{.Note}}{{end}}</small></strong>
+							<span class="fin-row-actions"><span class="fin-num">{{money .Amount .Currency}}</span>
+								<form method="post" action="/admin/finance/accruals/{{.ID}}/delete" onsubmit="return confirm('Remove this amount owed?')"><input type="hidden" name="csrf_token" value="{{$csrf}}"><button class="fin-x" type="submit" aria-label="Remove">×</button></form>
+							</span>
+						</div>
+						{{else}}<p class="muted">Nothing added by hand yet.</p>{{end}}
+					</div>
+				</section>
+
+				<section class="admin-panel">
+					<h2>Founders</h2>
+					<div class="simple-list fin-list">
+						{{range $f.Founders}}{{template "finance_party_balance" .}}{{if not (isZero .LoansOutstanding)}}<div class="fin-list__sub"><strong>Loan taken from company</strong><span class="fin-num">{{uzs .LoansOutstanding}}</span></div>{{end}}{{else}}<p class="muted">No founders set up.</p>{{end}}
+					</div>
+					<p class="fin-note">Starts from the saved balance, then every founder draw (Divident) is subtracted.</p>
+				</section>
+				<section class="admin-panel">
+					<h2>Lenders &amp; partners</h2>
+					<div class="simple-list fin-list">
+						{{range $f.Lenders}}{{template "finance_party_balance" .}}{{else}}<p class="muted">No loans.</p>{{end}}
+					</div>
+					<p class="fin-note">Loans received add to the balance, repayments reduce it.</p>
+				</section>
+
+				<section class="admin-panel">
+					<h2>Set a starting balance</h2>
+					<form class="fin-form fin-form--two" method="post" action="/admin/finance/openings">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<label class="fin-span-2">Person or company<input name="counterparty" list="fin-people" required autocomplete="off"></label>
+						<label>Type<select name="kind"><option value="founder">Founder</option><option value="lender">Lender / partner</option><option value="employee">Employee</option></select></label>
+						<label>As of<input type="date" name="as_of" value="{{formatDateInput $f.Today}}" required></label>
+						<label>Amount (so'm)<input name="amount" inputmode="decimal" required></label>
+						<label>Direction<select name="direction"><option value="we_owe">Company owes them</option><option value="they_owe">They owe the company</option></select></label>
+						<label class="fin-span-2">Note<input name="note"></label>
+						<div class="fin-form__actions"><button class="admin-button admin-button--secondary" type="submit">Save balance</button></div>
+					</form>
+				</section>
+				<section class="admin-panel">
+					<h2>Saved starting balances</h2>
+					<div class="simple-list fin-list">
+						{{range $f.Data.Openings}}
+						<div>
+							<strong>{{.CounterpartyName}}<small>{{shortDate .AsOf}}{{if .Note}} · {{.Note}}{{end}}</small></strong>
+							<span class="fin-row-actions"><span class="fin-num">{{uzs .AmountUZS}}</span>
+								<form method="post" action="/admin/finance/openings/{{.ID}}/delete" onsubmit="return confirm('Remove this starting balance?')"><input type="hidden" name="csrf_token" value="{{$csrf}}"><button class="fin-x" type="submit" aria-label="Remove">×</button></form>
+							</span>
+						</div>
+						{{else}}<p class="muted">None yet.</p>{{end}}
+					</div>
+				</section>
+			</div>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "finance_pl_row"}}
+	<tr class="{{if .Row.Strong}}fin-row--strong{{end}} {{if .Row.Muted}}fin-row--muted{{end}} {{.Class}}">
+		<th scope="row">{{.Row.Label}}</th>
+		{{$row := .Row}}{{$cur := .Currency}}
+		{{range .Months}}{{$v := monthValue $row.Values .}}<td class="fin-num {{if isNeg $v}}fin-neg{{end}}">{{if isZero $v}}<span class="fin-dash">–</span>{{else}}{{money $v $cur}}{{end}}</td>{{end}}
+		<td class="fin-num fin-col-total {{if isNeg $row.Total}}fin-neg{{end}}">{{if isZero $row.Total}}<span class="fin-dash">–</span>{{else}}{{money $row.Total $cur}}{{end}}</td>
+	</tr>
+{{end}}
+
+{{define "finance_pnl"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		{{$f := .Fin}}{{$pl := .Fin.PL}}{{$months := .Fin.PLMonths}}{{$cur := .Fin.Currency}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Finance</p>
+					<h1>Profit &amp; loss {{$f.Year}}</h1>
+				</div>
+				<form class="fin-toggle" method="get" action="/admin/finance/pnl">
+					<select name="year" aria-label="Year" onchange="this.form.submit()">{{range $f.Years}}<option value="{{.}}" {{selected (printf "%d" $f.Year) (printf "%d" .)}}>{{.}}</option>{{end}}</select>
+					<div class="fin-segmented">
+						<button type="submit" name="currency" value="USD" {{if eq $cur "USD"}}aria-pressed="true"{{end}}>$</button>
+						<button type="submit" name="currency" value="UZS" {{if eq $cur "UZS"}}aria-pressed="true"{{end}}>so'm</button>
+					</div>
+				</form>
+			</div>
+			{{template "finance_tabs" $f}}
+			{{template "admin_alerts" .}}
+
+			<section class="admin-panel fin-table-panel">
+				<div class="fin-table-wrap">
+					<table class="fin-table fin-table--report">
+						<thead><tr><th></th>{{range $months}}<th class="fin-num">{{shortMonth (monthOf $pl .)}}</th>{{end}}<th class="fin-num fin-col-total">Total</th></tr></thead>
+						<tbody>
+							{{template "finance_pl_row" (dict "Row" $pl.Revenue "Months" $months "Currency" $cur)}}
+							{{if not $pl.OtherIncome.IsZero}}{{template "finance_pl_row" (dict "Row" $pl.OtherIncome "Months" $months "Currency" $cur)}}{{end}}
+							{{template "finance_pl_row" (dict "Row" $pl.TotalIncome "Months" $months "Currency" $cur "Class" "fin-row--total")}}
+							{{range $pl.Sections}}
+								<tr class="fin-row--section"><th scope="row" colspan="{{addi (len $months) 2}}">{{.Label}}</th></tr>
+								{{range .Rows}}{{template "finance_pl_row" (dict "Row" . "Months" $months "Currency" $cur "Class" "fin-row--indent")}}{{end}}
+							{{end}}
+							{{template "finance_pl_row" (dict "Row" $pl.TotalExpenses "Months" $months "Currency" $cur "Class" "fin-row--total")}}
+							{{template "finance_pl_row" (dict "Row" $pl.NetProfit "Months" $months "Currency" $cur "Class" "fin-row--result")}}
+							{{if not $pl.Draws.IsZero}}{{template "finance_pl_row" (dict "Row" $pl.Draws "Months" $months "Currency" $cur)}}{{end}}
+							{{if not $pl.Capex.IsZero}}{{template "finance_pl_row" (dict "Row" $pl.Capex "Months" $months "Currency" $cur)}}{{end}}
+						</tbody>
+					</table>
+				</div>
+				<p class="fin-note">Revenue is work done for schools in each month. Salaries, bonuses, rent and legal services count in the month they are for; other costs count when paid. Founder draws and equipment are shown below the line.</p>
+			</section>
+
+			<section class="admin-panel fin-table-panel">
+				<h2>Cash flow {{$f.Year}} (so'm)</h2>
+				<div class="fin-table-wrap">
+					<table class="fin-table fin-table--report">
+						<thead><tr><th></th>{{range $months}}<th class="fin-num">{{shortMonth (monthOf $pl .)}}</th>{{end}}</tr></thead>
+						<tbody>
+							<tr class="fin-row--muted"><th scope="row">Start of month</th>{{range $months}}{{$v := (index $f.CashFlow .).Opening}}<td class="fin-num">{{if isZero $v}}<span class="fin-dash">–</span>{{else}}{{uzs $v}}{{end}}</td>{{end}}</tr>
+							<tr><th scope="row">Money in from work</th>{{range $months}}{{$v := (index $f.CashFlow .).OperatingIn}}<td class="fin-num">{{if isZero $v}}<span class="fin-dash">–</span>{{else}}{{uzs $v}}{{end}}</td>{{end}}</tr>
+							<tr><th scope="row">Money out for work</th>{{range $months}}{{$v := (index $f.CashFlow .).OperatingOut}}<td class="fin-num">{{if isZero $v}}<span class="fin-dash">–</span>{{else}}{{uzs $v}}{{end}}</td>{{end}}</tr>
+							<tr><th scope="row">Equipment</th>{{range $months}}{{$v := (index $f.CashFlow .).Investing}}<td class="fin-num">{{if isZero $v}}<span class="fin-dash">–</span>{{else}}{{uzs $v}}{{end}}</td>{{end}}</tr>
+							<tr><th scope="row">Founders &amp; loans in</th>{{range $months}}{{$v := (index $f.CashFlow .).FinancingIn}}<td class="fin-num">{{if isZero $v}}<span class="fin-dash">–</span>{{else}}{{uzs $v}}{{end}}</td>{{end}}</tr>
+							<tr><th scope="row">Founders &amp; loans out</th>{{range $months}}{{$v := (index $f.CashFlow .).FinancingOut}}<td class="fin-num">{{if isZero $v}}<span class="fin-dash">–</span>{{else}}{{uzs $v}}{{end}}</td>{{end}}</tr>
+							<tr class="fin-row--result"><th scope="row">End of month</th>{{range $months}}{{$v := (index $f.CashFlow .).Closing}}<td class="fin-num {{if isNeg $v}}fin-neg{{end}}">{{uzs $v}}</td>{{end}}</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "finance_forecast"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		{{$f := .Fin}}{{$csrf := .CSRFToken}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Finance</p>
+					<h1>Forecast</h1>
+				</div>
+				{{template "finance_rate_note" $f}}
+			</div>
+			{{template "finance_tabs" $f}}
+			{{template "admin_alerts" .}}
+
+			<section class="stats-grid fin-kpis fin-kpis--three">
+				<div class="stat-card"><span>Cash now</span><strong>{{moneyShort $f.Cash.TotalUZS "UZS"}}</strong><small>{{uzs $f.Cash.TotalUZS}}</small></div>
+				<div class="stat-card"><span>Fixed costs per month</span><strong>{{moneyShort $f.MonthlyFixed "UZS"}}</strong><small>{{uzs $f.MonthlyFixed}}</small></div>
+				<div class="stat-card {{if isNeg $f.ForecastEnd.Closing}}stat-card--danger{{end}}"><span>Expected cash end of {{monthLabel $f.ForecastEnd.Month}}</span><strong>{{moneyShort $f.ForecastEnd.Closing "UZS"}}</strong><small>{{uzs $f.ForecastEnd.Closing}}</small></div>
+			</section>
+
+			<section class="admin-panel">
+				<div class="fin-panel-head">
+					<h2>Cash at the end of each month</h2>
+					<div class="fin-legend"><span class="fin-legend__dashed">Forecast</span></div>
+				</div>
+				{{index $f.Charts "forecast"}}
+			</section>
+
+			<section class="admin-panel fin-table-panel">
+				<div class="fin-table-wrap">
+					<table class="fin-table fin-table--report">
+						<thead><tr><th>Month</th><th class="fin-num">Start</th><th class="fin-num">Expected in</th><th class="fin-num">Unpaid now</th><th class="fin-num">Fixed costs</th><th class="fin-num">Other out</th><th class="fin-num">End</th></tr></thead>
+						<tbody>
+							{{range $f.Forecast}}
+							<tr>
+								<th scope="row">{{monthLabel .Month}}{{range .Items}}<small class="fin-item">{{if eq .Direction "in"}}+{{else}}−{{end}} {{.Label}} {{money .Amount .Currency}}</small>{{end}}</th>
+								<td class="fin-num muted">{{uzs .Opening}}</td>
+								<td class="fin-num fin-pos">{{if isZero .Inflows}}<span class="fin-dash">–</span>{{else}}{{uzs .Inflows}}{{end}}</td>
+								<td class="fin-num">{{if isZero .Payables}}<span class="fin-dash">–</span>{{else}}{{uzs .Payables}}{{end}}</td>
+								<td class="fin-num">{{if isZero .Recurring}}<span class="fin-dash">–</span>{{else}}{{uzs .Recurring}}{{end}}</td>
+								<td class="fin-num">{{if isZero .Other}}<span class="fin-dash">–</span>{{else}}{{uzs .Other}}{{end}}</td>
+								<td class="fin-num {{if isNeg .Closing}}fin-neg{{end}}"><strong>{{uzs .Closing}}</strong></td>
+							</tr>
+							{{end}}
+						</tbody>
+					</table>
+				</div>
+				<p class="fin-note">This month pays what is owed today (Who we owe). Later months pay the fixed costs below. Dollar items use today's rate.</p>
+			</section>
+
+			<div class="admin-grid fin-grid">
+				<section class="admin-panel">
+					<h2>Fixed monthly costs</h2>
+					<div class="fin-edit-list">
+						{{range $f.Data.Recurring}}
+						<form class="fin-edit-row" method="post" action="/admin/finance/recurring/{{.ID}}">
+							<input type="hidden" name="csrf_token" value="{{$csrf}}">
+							<input name="label" value="{{.Label}}" aria-label="Name" required>
+							<input name="amount" value="{{plain .Amount}}" inputmode="decimal" aria-label="Amount" required>
+							<select name="currency" aria-label="Currency"><option value="UZS" {{selected .Currency "UZS"}}>so'm</option><option value="USD" {{selected .Currency "USD"}}>$</option></select>
+							<select name="active" aria-label="Active"><option value="1" {{if .Active}}selected{{end}}>On</option><option value="0" {{if not .Active}}selected{{end}}>Off</option></select>
+							<button class="admin-button admin-button--secondary" type="submit">Save</button>
+							<button class="fin-x" type="submit" formaction="/admin/finance/recurring/{{.ID}}/delete" onclick="return confirm('Remove this cost?')" aria-label="Remove">×</button>
+						</form>
+						{{end}}
+						<form class="fin-edit-row fin-edit-row--new" method="post" action="/admin/finance/recurring">
+							<input type="hidden" name="csrf_token" value="{{$csrf}}">
+							<input name="label" placeholder="e.g. Office rent" aria-label="Name" required>
+							<input name="amount" placeholder="Amount" inputmode="decimal" aria-label="Amount" required>
+							<select name="currency" aria-label="Currency"><option value="UZS">so'm</option><option value="USD">$</option></select>
+							<input type="hidden" name="active" value="1">
+							<span></span>
+							<button class="admin-button" type="submit">Add</button>
+							<span></span>
+						</form>
+					</div>
+				</section>
+				<section class="admin-panel">
+					<h2>Expected payments &amp; one-off costs</h2>
+					<div class="simple-list fin-list">
+						{{range $f.UpcomingItems}}
+						<div>
+							<strong>{{monthLabel .Month}} · {{.Label}}</strong>
+							<span class="fin-row-actions"><span class="fin-num {{if eq .Direction "in"}}fin-pos{{else}}fin-neg{{end}}">{{if eq .Direction "in"}}+{{else}}−{{end}}{{money .Amount .Currency}}</span>
+								<form method="post" action="/admin/finance/forecast-items/{{.ID}}/delete"><input type="hidden" name="csrf_token" value="{{$csrf}}"><button class="fin-x" type="submit" aria-label="Remove">×</button></form>
+							</span>
+						</div>
+						{{else}}<p class="muted">Nothing planned.</p>{{end}}
+					</div>
+					<form class="fin-form fin-form--two" method="post" action="/admin/finance/forecast-items">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<label>Month<input type="month" name="month" value="{{monthKey $f.Today}}" required></label>
+						<label>Type<select name="direction"><option value="in">Money in</option><option value="out">Money out</option></select></label>
+						<label class="fin-span-2">What<input name="label" placeholder="e.g. Turon second payment" required></label>
+						<label>Amount<input name="amount" inputmode="decimal" required></label>
+						<label>Currency<select name="currency"><option value="USD">USD</option><option value="UZS">UZS</option></select></label>
+						<div class="fin-form__actions"><button class="admin-button admin-button--secondary" type="submit">Add to forecast</button></div>
+					</form>
+				</section>
+			</div>
+		</main>
+	</body>
+</html>
+{{end}}
+
+{{define "finance_settings"}}
+{{template "admin_head" .}}
+{{template "admin_nav" .}}
+		{{$f := .Fin}}{{$csrf := .CSRFToken}}
+		<main class="admin-main">
+			<div class="admin-page-head">
+				<div>
+					<p class="admin-kicker">Finance</p>
+					<h1>Settings</h1>
+				</div>
+			</div>
+			{{template "finance_tabs" $f}}
+			{{template "admin_alerts" .}}
+
+			<div class="admin-grid fin-grid">
+				<section class="admin-panel" id="rates">
+					<div class="fin-panel-head">
+						<h2>Dollar rate (CBU)</h2>
+						<form method="post" action="/admin/finance/rates/fetch">
+							<input type="hidden" name="csrf_token" value="{{$csrf}}">
+							<input type="hidden" name="days" value="14">
+							<button class="admin-button admin-button--secondary" type="submit">Update from cbu.uz</button>
+						</form>
+					</div>
+					<div class="simple-list fin-list">
+						{{range $f.RecentRates}}<div><strong>{{shortDate .Date}}<small>{{.Source}}</small></strong><span class="fin-num">{{num .Rate}} so'm</span></div>{{else}}<p class="muted">No rates saved.</p>{{end}}
+					</div>
+					<form class="fin-form fin-form--inline" method="post" action="/admin/finance/rates">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<label>Date<input type="date" name="date" value="{{formatDateInput $f.Today}}" required></label>
+						<label>So'm per $<input name="rate" inputmode="decimal" required></label>
+						<div class="fin-form__actions"><button class="admin-button admin-button--secondary" type="submit">Save rate</button></div>
+					</form>
+					<p class="fin-note">New transactions fetch the CBU rate for their date automatically. Enter a rate here only if cbu.uz is down.</p>
+				</section>
+
+				<section class="admin-panel">
+					<h2>Add category</h2>
+					<form class="fin-form fin-form--two" method="post" action="/admin/finance/categories">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<label>Name<input name="name" required placeholder="e.g. Reklama"></label>
+						<label>Code<input name="code" required pattern="[a-z0-9_]+" placeholder="reklama"></label>
+						<label>Type<select name="kind">{{range finKinds}}<option value="{{.}}" {{selected "expense" .}}>{{kindLabel .}}</option>{{end}}</select></label>
+						<label>P&amp;L line<select name="pl_group">{{range finPLGroups}}<option value="{{.}}" {{selected "operating" .}}>{{plGroupLabel .}}</option>{{end}}</select></label>
+						<label class="fin-check fin-span-2"><input type="checkbox" name="accrual_based" value="1"><span>Track as owed per month<small>For salaries, bonuses, rent and contracts paid monthly</small></span></label>
+						<input type="hidden" name="sort_order" value="100">
+						<div class="fin-form__actions"><button class="admin-button admin-button--secondary" type="submit">Add category</button></div>
+					</form>
+				</section>
+			</div>
+
+			<section class="admin-panel">
+				<h2>Categories</h2>
+				<div class="fin-edit-list fin-edit-list--categories">
+					<div class="fin-edit-head"><span>Name</span><span>Type</span><span>P&amp;L line</span><span>Monthly</span><span>Shown</span><span></span></div>
+					{{range $f.Data.Categories}}
+					<form class="fin-edit-row" method="post" action="/admin/finance/categories">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<input type="hidden" name="code" value="{{.Code}}">
+						<input type="hidden" name="sort_order" value="{{.SortOrder}}">
+						<input name="name" value="{{.Name}}" aria-label="Name" required>
+						{{$kind := .Kind}}{{$group := .PLGroup}}
+						<select name="kind" aria-label="Type">{{range finKinds}}<option value="{{.}}" {{selected $kind .}}>{{kindLabel .}}</option>{{end}}</select>
+						<select name="pl_group" aria-label="P&amp;L line">{{range finPLGroups}}<option value="{{.}}" {{selected $group .}}>{{plGroupLabel .}}</option>{{end}}</select>
+						<select name="accrual_based" aria-label="Tracked monthly"><option value="0">No</option><option value="1" {{if .AccrualBased}}selected{{end}}>Yes</option></select>
+						<select name="active" aria-label="Shown"><option value="1">Yes</option><option value="0" {{if not .Active}}selected{{end}}>No</option></select>
+						<button class="admin-button admin-button--secondary" type="submit">Save</button>
+					</form>
+					{{end}}
+				</div>
+			</section>
+
+			<section class="admin-panel">
+				<h2>People &amp; companies</h2>
+				<div class="fin-edit-list fin-edit-list--people">
+					<div class="fin-edit-head"><span>Name</span><span>Type</span><span>Linked application</span><span>Shown</span><span></span></div>
+					{{range $f.Data.Counterparties}}
+					<form class="fin-edit-row" method="post" action="/admin/finance/counterparties/{{.ID}}">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<input type="hidden" name="notes" value="{{.Notes}}">
+						<input name="name" value="{{.Name}}" aria-label="Name" required>
+						{{$kind := .Kind}}{{$app := .ApplicationID}}
+						<select name="kind" aria-label="Type">{{range finPartyKinds}}<option value="{{.}}" {{selected $kind .}}>{{cpKindLabel .}}</option>{{end}}</select>
+						<select name="application_id" aria-label="Application"><option value="">—</option>{{range $f.Data.Applications}}<option value="{{.ID}}" {{selected $app .ID}}>{{.Name}}</option>{{end}}</select>
+						<select name="active" aria-label="Shown"><option value="1">Yes</option><option value="0" {{if not .Active}}selected{{end}}>No</option></select>
+						<button class="admin-button admin-button--secondary" type="submit">Save</button>
+					</form>
+					{{end}}
+					<form class="fin-edit-row fin-edit-row--new" method="post" action="/admin/finance/counterparties">
+						<input type="hidden" name="csrf_token" value="{{$csrf}}">
+						<input name="name" placeholder="New name" aria-label="Name" required>
+						<select name="kind" aria-label="Type">{{range finPartyKinds}}<option value="{{.}}">{{cpKindLabel .}}</option>{{end}}</select>
+						<select name="application_id" aria-label="Application"><option value="">—</option>{{range $f.Data.Applications}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select>
+						<input type="hidden" name="active" value="1"><span></span>
+						<button class="admin-button" type="submit">Add</button>
+					</form>
+				</div>
+			</section>
+		</main>
+	</body>
+</html>
+{{end}}

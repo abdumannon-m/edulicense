@@ -50,6 +50,18 @@ go run ./cmd/server reminders
 
 The job scans reminders due in `APP_TIMEZONE`, posts to `TELEGRAM_OPERATIONS_CHAT_ID`, and marks each sent.
 
+### Finance
+
+`/admin/finance` (super admins only) replaces the finance tabs of the SAT 1111 sheet: the ledger of every account, school contracts with work done booked by month, salaries and bills owed, founder and lender balances, a monthly P&L and cash flow, and a cash forecast. Every amount keeps its original currency plus its so'm and dollar value at that day's CBU rate, which is fetched from cbu.uz automatically.
+
+Load the sheet's history once, after `migrate`:
+
+```sh
+go run ./cmd/server finance-import
+```
+
+The import refuses to run when the finance ledger already has transactions or contracts.
+
 ## Deployment
 
 Use the included `Dockerfile` on a managed PaaS with a managed Postgres database. Typical release steps:

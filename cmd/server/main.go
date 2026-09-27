@@ -16,6 +16,7 @@ import (
 	"edu-license/pkg/notify"
 	"edu-license/pkg/storage"
 	"edu-license/pkg/store"
+	"edu-license/pkg/store/financeseed"
 	"edu-license/pkg/web"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
@@ -61,8 +62,12 @@ func main() {
 		if err := seedAdmin(ctx, cfg); err != nil {
 			log.Fatal(err)
 		}
+	case "finance-import":
+		if err := financeImport(ctx, cfg); err != nil {
+			log.Fatal(err)
+		}
 	default:
-		log.Fatalf("unknown command %q; use serve, migrate, reminders, or seed-admin", command)
+		log.Fatalf("unknown command %q; use serve, migrate, reminders, seed-admin, or finance-import", command)
 	}
 }
 
@@ -125,5 +130,26 @@ func seedAdmin(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 	log.Printf("created super admin %s <%s>", user.Name, user.Email)
+	return nil
+}
+
+// financeImport loads the SAT 1111 sheet history into an empty finance ledger.
+func financeImport(ctx context.Context, cfg config.Config) error {
+	st, err := store.Open(ctx, cfg.DatabaseURL)
+	if err != nil {
+		return err
+	}
+	defer st.Close()
+	empty, err := st.FinanceIsEmpty(ctx)
+	if err != nil {
+		return err
+	}
+	if !empty {
+		return fmt.Errorf("finance tables already have transactions or contracts; import skipped")
+	}
+	if err := st.ExecScript(ctx, financeseed.SQL); err != nil {
+		return err
+	}
+	log.Printf("imported finance history from the SAT 1111 sheet")
 	return nil
 }

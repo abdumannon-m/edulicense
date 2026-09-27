@@ -19,6 +19,7 @@
 				{{if eq .CurrentUser.Role "super_admin"}}<a href="/admin/overview">Overview</a>{{end}}
 				{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "admin")}}<a href="/admin/applications">Applications</a>{{end}}
 				{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "sales")}}<a href="/admin/crm">Sales CRM</a>{{end}}
+				{{if eq .CurrentUser.Role "super_admin"}}<a href="/admin/finance">Finance</a>{{end}}
 			</nav>
 			<form class="admin-logout" method="post" action="/admin/logout">
 				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">

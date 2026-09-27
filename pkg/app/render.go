@@ -98,6 +98,9 @@ func newRenderer(parse func(*template.Template) (*template.Template, error), nam
 		},
 	}
 
+	for key, fn := range FinTemplateFuncs() {
+		funcs[key] = fn
+	}
 	t := template.New(filepath.Base(name)).Funcs(funcs)
 	parsed, err := parse(t)
 	if err != nil {
@@ -144,4 +147,5 @@ type AdminPageData struct {
 	PaymentOptions       []string
 	ChecklistItems       []ChecklistItem
 	DocumentTypes        []ChecklistItem
+	Fin                  *FinPage
 }
