@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"edu-license/pkg/app"
@@ -98,6 +99,7 @@ func (s *Server) Routes() http.Handler {
 		admin.Post("/admin/crm/deals", s.requireArea("crm", s.crmCreateDeal))
 		admin.Post("/admin/crm/deals/{id}/stage", s.requireArea("crm", s.crmMoveDeal))
 		admin.Post("/admin/crm/deals/{id}/delete", s.requireArea("crm", s.crmDeleteDeal))
+		s.financeRoutes(admin)
 	})
 
 	return r
@@ -179,12 +181,19 @@ func redirectWithError(w http.ResponseWriter, r *http.Request, target string, er
 	if target == "" {
 		target = "/admin"
 	}
-	http.Redirect(w, r, fmt.Sprintf("%s?error=%s", target, urlQuery(err.Error())), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("%s%serror=%s", target, querySeparator(target), urlQuery(err.Error())), http.StatusSeeOther)
 }
 
 func redirectWithSuccess(w http.ResponseWriter, r *http.Request, target, message string) {
 	if target == "" {
 		target = "/admin"
 	}
-	http.Redirect(w, r, fmt.Sprintf("%s?success=%s", target, urlQuery(message)), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("%s%ssuccess=%s", target, querySeparator(target), urlQuery(message)), http.StatusSeeOther)
+}
+
+func querySeparator(target string) string {
+	if strings.Contains(target, "?") {
+		return "&"
+	}
+	return "?"
 }
