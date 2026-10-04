@@ -281,7 +281,8 @@ func (c FinContract) MilestoneDone(n int) bool {
 	return ApplicationStageReached(c.ApplicationStage, FinMilestones[n-1].Stage)
 }
 
-// UnlockedShare is the fraction (0-1) of money received that may be spent.
+// UnlockedShare is the fraction (0-1) of the contract amount earned by the
+// steps done; money received up to that value may be spent.
 func (c FinContract) UnlockedShare() float64 {
 	if c.Status == "completed" || c.Status == "cancelled" {
 		return 1

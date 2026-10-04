@@ -105,10 +105,20 @@ func TestContractSummaryAndBlockedCash(t *testing.T) {
 	near(t, "recognized", summary.Recognized, 2250)
 	near(t, "advance", summary.Advance, 3750)
 	near(t, "unlocked", summary.Unlocked, 0.15)
-	near(t, "blocked", summary.BlockedUZS, 6000*0.85*12000)
+	// Paid $6,000; step 1 unlocks 15% of $15,000 = $2,250, so $3,750 stays locked.
+	near(t, "blocked", summary.BlockedUZS, 3750*12000)
 	if !summary.Milestones[0].Done || summary.Milestones[1].Done {
 		t.Fatalf("milestones wrong: %+v", summary.Milestones)
 	}
+	// Step 2 done: 40% of $15,000 = $6,000 unlocked, exactly what was paid.
+	m2 := day("2026-09-27")
+	data.Contracts[0].MilestoneOn[1] = &m2
+	near(t, "blocked after step 2", data.ContractSummary(data.Contracts[0]).BlockedUZS, 0)
+	data.Contracts[0].MilestoneOn[1] = nil
+	// A full prepayment still locks the share of the steps not done yet.
+	full := data.Contracts[0]
+	full.Amount = 6000
+	near(t, "full prepay blocked", data.ContractSummary(full).BlockedUZS, 6000*0.85*12000)
 	// Application stage implies milestone 2.
 	data.Contracts[0].ApplicationStage = "got_ceeb"
 	near(t, "unlocked via app", data.Contracts[0].UnlockedShare(), 0.40)
@@ -172,7 +182,7 @@ func TestForecast(t *testing.T) {
 func TestDashboard(t *testing.T) {
 	data := sampleData()
 	dash := data.Dashboard()
-	near(t, "free cash", dash.FreeCashUZS, dash.Cash.TotalUZS-6000*0.85*12000)
+	near(t, "free cash", dash.FreeCashUZS, dash.Cash.TotalUZS-3750*12000)
 	if dash.MonthlyBurnUZS != 16200000 {
 		t.Fatalf("burn = %v", dash.MonthlyBurnUZS)
 	}
