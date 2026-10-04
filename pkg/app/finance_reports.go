@@ -153,8 +153,10 @@ func (d *FinData) ContractSummary(contract FinContract) FinContractSummary {
 		status.Unlocked = math.Min(1, cumulative/100)
 		summary.Milestones = append(summary.Milestones, status)
 	}
+	// Money received beyond the value of the steps already done stays locked.
+	// A school that paid exactly for its finished steps has nothing locked.
 	if summary.Paid > 0 && summary.Unlocked < 1 {
-		locked := summary.Paid * (1 - summary.Unlocked)
+		locked := math.Max(0, summary.Paid-contract.Amount*summary.Unlocked)
 		if contract.Currency == "USD" {
 			summary.BlockedUZS = Round2(locked * rate)
 		} else {
