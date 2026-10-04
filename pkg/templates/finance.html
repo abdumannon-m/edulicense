@@ -382,7 +382,7 @@
 							<select name="application_id"><option value="">Not linked</option>{{range $f.Data.Applications}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select>
 						</label>
 						<fieldset class="fin-weights fin-span-2">
-							<legend>Share of payment unlocked at each step (%)</legend>
+							<legend>Share of the contract earned at each step (%)</legend>
 							{{range finMilestones}}<label>{{.Label}}<input name="w{{.Number}}" inputmode="decimal" value="{{if eq .Number 1}}15{{else if eq .Number 2}}25{{else if eq .Number 3}}20{{else}}40{{end}}"></label>{{end}}
 						</fieldset>
 						<div class="fin-form__actions"><button class="admin-button" type="submit">Add contract</button></div>
@@ -437,11 +437,11 @@
 								<span class="fin-step__num">{{.Number}}</span>
 								<div><strong>{{.Label}}</strong><small>{{plain .Weight}}% · {{money (weightAmount $k .Number) $k.Currency}}{{if .FromApp}} · reached in application{{end}}</small></div>
 							</div>
-							<input type="date" name="date" value="{{ptrDate .On}}" aria-label="Date reached">
+							<input type="date" name="date" value="{{ptrDate .On}}" max="{{formatDateInput $f.Today}}" aria-label="Date reached">
 							<label class="fin-check fin-check--compact"><input type="checkbox" name="record_work" value="1" checked><span>Book as work done</span></label>
 							<div class="fin-step__buttons">
 								<button class="admin-button admin-button--secondary" type="submit">Save</button>
-								{{if .On}}<button class="admin-link-button" type="submit" name="clear" value="1">Clear</button>{{end}}
+								{{if .On}}<button class="admin-link-button" type="submit" name="clear" value="1" formnovalidate>Clear</button>{{end}}
 							</div>
 						</form>
 						{{end}}
@@ -498,7 +498,7 @@
 							<select name="application_id"><option value="">Not linked</option>{{range $f.Data.Applications}}<option value="{{.ID}}" {{selected $k.ApplicationID .ID}}>{{.Name}}</option>{{end}}</select>
 						</label>
 						<fieldset class="fin-weights fin-span-2">
-							<legend>Share unlocked at each step (%)</legend>
+							<legend>Share of the contract earned at each step (%)</legend>
 							{{range $s.Milestones}}<label>{{.Label}}<input name="w{{.Number}}" inputmode="decimal" value="{{plain .Weight}}"></label>{{end}}
 						</fieldset>
 						<label class="fin-span-2">Title<input name="title" value="{{$k.Title}}" placeholder="Optional, e.g. 2026 season"></label>

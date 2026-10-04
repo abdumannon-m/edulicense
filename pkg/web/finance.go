@@ -510,6 +510,15 @@ func (s *Server) financeContractDelete(w http.ResponseWriter, r *http.Request) {
 	redirectWithSuccess(w, r, "/admin/finance/contracts", "Contract deleted.")
 }
 
+// validateStepDate rejects a step dated after today: a step counts as done,
+// and unlocks cash, from the moment its date is saved.
+func validateStepDate(date, today time.Time) error {
+	if app.DateOnly(date).After(app.DateOnly(today)) {
+		return errors.New("A step can't be dated in the future. Choose today or an earlier date.")
+	}
+	return nil
+}
+
 // financeMilestone records the day a step was reached and, by default, books
 // that step's share of the contract as work done in that month.
 func (s *Server) financeMilestone(w http.ResponseWriter, r *http.Request) {
@@ -529,6 +538,10 @@ func (s *Server) financeMilestone(w http.ResponseWriter, r *http.Request) {
 		parsed, err := time.Parse("2006-01-02", raw)
 		if err != nil {
 			redirectWithError(w, r, target, errors.New("Choose a valid date."))
+			return
+		}
+		if err := validateStepDate(parsed, s.finToday()); err != nil {
+			redirectWithError(w, r, target, err)
 			return
 		}
 		date = &parsed
