@@ -51,3 +51,15 @@ func TestEditedRate(t *testing.T) {
 		}
 	}
 }
+
+func TestValidateStepDate(t *testing.T) {
+	today := time.Date(2026, 10, 4, 0, 0, 0, 0, time.UTC)
+	for _, ok := range []time.Time{today, today.AddDate(0, 0, -1), time.Date(2026, 10, 4, 23, 59, 0, 0, time.UTC)} {
+		if err := validateStepDate(ok, today); err != nil {
+			t.Fatalf("validateStepDate(%v) = %v, want nil", ok, err)
+		}
+	}
+	if err := validateStepDate(today.AddDate(0, 0, 15), today); err == nil {
+		t.Fatal("validateStepDate accepted a date 15 days ahead")
+	}
+}
