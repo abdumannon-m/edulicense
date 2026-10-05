@@ -1,29 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import Hero from '../components/Hero.astro';
-import Pillars from '../components/Pillars.astro';
-import Process from '../components/Process.astro';
-import Partners from '../components/Partners.astro';
-import Engagement from '../components/Engagement.astro';
-import Faq from '../components/Faq.astro';
-import CtaBand from '../components/CtaBand.astro';
+import Landing from '../components/Landing.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import WhatsAppFab from '../components/WhatsAppFab.astro';
 import { en } from '../i18n/en';
 ---
 
 <BaseLayout messages={en}>
-	<SiteHeader messages={en} whatsappPrefill={en.hero.whatsappPrefill} />
+	<SiteHeader messages={en} overHero />
 	<main id="main">
-		<Hero messages={en} />
-		<Pillars messages={en} />
-		<Process messages={en} />
-		<Partners messages={en} />
-		<Engagement messages={en} />
-		<Faq messages={en} />
-		<CtaBand messages={en} />
+		<Landing messages={en} />
 	</main>
-	<SiteFooter messages={en} heroPrefill={en.hero.whatsappPrefill} />
-	<WhatsAppFab label={en.hero.cta} prefill={en.hero.whatsappPrefill} />
+	<SiteFooter messages={en} />
 </BaseLayout>

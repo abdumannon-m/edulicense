@@ -68,7 +68,7 @@ func TestAdminCRMTemplateRendersDragBoard(t *testing.T) {
 		`data-delete-form`,
 		`Delete lead`,
 		`draggable="true"`,
-		`crm-board--dnd-ready`,
+		`board--dnd-ready`,
 	} {
 		if !strings.Contains(body, want) {
 			t.Fatalf("rendered CRM template missing %q", want)

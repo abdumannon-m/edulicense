@@ -10,11 +10,11 @@ import { en } from '../i18n/en';
 	title={`${en.privacy.title} · ${en.brandShort}`}
 	description={en.metaDescription}
 >
-	<SiteHeader messages={en} whatsappPrefill={en.hero.whatsappPrefill} />
+	<SiteHeader messages={en} />
 	<main id="main" class="wrap privacy-page">
-		<h1 class="heading-lg">{en.privacy.title}</h1>
+		<h1 class="title">{en.privacy.title}</h1>
 		<p>{en.privacy.body}</p>
 		<p><a href="/">{en.privacy.back}</a></p>
 	</main>
-	<SiteFooter messages={en} heroPrefill={en.hero.whatsappPrefill} />
+	<SiteFooter messages={en} />
 </BaseLayout>

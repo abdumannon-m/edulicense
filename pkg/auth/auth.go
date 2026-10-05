@@ -73,12 +73,29 @@ func (s *Service) Login(ctx context.Context, email, password string) (string, ti
 	if bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)) != nil {
 		return "", time.Time{}, fmt.Errorf("invalid email or password")
 	}
+	return s.startSession(ctx, user.ID)
+}
+
+// DevLogin starts a session for an active user without checking a password.
+// Only the local dev auto-login calls it, behind config.LocalDevLogin.
+func (s *Service) DevLogin(ctx context.Context, email string) (string, time.Time, error) {
+	user, err := s.store.UserByEmail(ctx, strings.ToLower(strings.TrimSpace(email)))
+	if err != nil {
+		return "", time.Time{}, fmt.Errorf("no user %q for dev login", email)
+	}
+	if !user.Active {
+		return "", time.Time{}, fmt.Errorf("account is inactive")
+	}
+	return s.startSession(ctx, user.ID)
+}
+
+func (s *Service) startSession(ctx context.Context, userID string) (string, time.Time, error) {
 	token, err := randomToken()
 	if err != nil {
 		return "", time.Time{}, err
 	}
 	expiresAt := time.Now().Add(s.sessionTTL)
-	if err := s.store.CreateSession(ctx, user.ID, tokenHash(token), expiresAt); err != nil {
+	if err := s.store.CreateSession(ctx, userID, tokenHash(token), expiresAt); err != nil {
 		return "", time.Time{}, err
 	}
 	return s.sign(token, s.sessionKey), expiresAt, nil

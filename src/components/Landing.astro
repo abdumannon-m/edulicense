@@ -1,0 +1,223 @@
+---
+import type { Messages } from '../i18n/types';
+import { emailUrl, whatsappUrl } from '../i18n/contact';
+import { PARTNERS } from '../data/partners';
+import StatusCard from './StatusCard.astro';
+import Ridges from './Ridges.astro';
+
+interface Props {
+	messages: Messages;
+}
+
+const { messages: m } = Astro.props;
+const heroMail = emailUrl(m.hero.emailSubject, m.hero.emailBody);
+const heroWa = whatsappUrl(m.hero.whatsappPrefill);
+const ctaMail = emailUrl(m.cta.emailSubject, m.cta.emailBody);
+const ctaWa = whatsappUrl(m.cta.whatsappPrefill);
+const doneSteps = m.roadmap.steps.filter((step) => step.state === 'done').length;
+const progress = Math.round((doneSteps / m.roadmap.steps.length) * 100);
+---
+
+<section class="hero" aria-labelledby="hero-title">
+	<div class="hero__sky" aria-hidden="true"></div>
+	<Ridges class="hero__ridges" id="hero-ridge" />
+	<div class="wrap hero__copy">
+		<h1 id="hero-title" class="display">{m.hero.title}</h1>
+		<p class="hero__lead">{m.hero.subtitle}</p>
+		<div class="hero__actions">
+			<a class="btn btn--light btn--large" href={heroMail}>
+				<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
+				{m.hero.cta}
+			</a>
+			<a class="btn btn--glass btn--large" href={heroWa} rel="noopener noreferrer" target="_blank">{m.hero.secondaryCta}</a>
+		</div>
+	</div>
+
+	<div class="wrap hero__stage">
+		<figure class="roadmap" aria-label={`${m.roadmap.title}, ${m.roadmap.example}`}>
+			<div class="roadmap__head">
+				<div>
+					<span class="roadmap__title">{m.roadmap.title}</span>
+					<span class="roadmap__school">{m.roadmap.school}</span>
+				</div>
+				<span class="pill">{m.roadmap.example}</span>
+			</div>
+			<div class="roadmap__progress">
+				<span class="meter" aria-hidden="true"><span style={`width: ${progress}%`}></span></span>
+				<span class="roadmap__count">{m.roadmap.progress}</span>
+			</div>
+			<ol class="roadmap__steps">
+				{
+					m.roadmap.steps.map((step) => (
+						<li class={`roadmap__step is-${step.state}`}>
+							<span class="state" aria-hidden="true" />
+							<span class="roadmap__label">{step.label}</span>
+							<span class="roadmap__value">
+								{step.value}
+								<span class="sr">({m.stateLabels[step.state]})</span>
+							</span>
+						</li>
+					))
+				}
+			</ol>
+			<div class="roadmap__next">
+				<span class="roadmap__next-label">{m.roadmap.nextLabel}</span>
+				<span>{m.roadmap.next}</span>
+			</div>
+		</figure>
+	</div>
+</section>
+
+<section class="section" id="how" aria-labelledby="how-title">
+	<div class="wrap">
+		<div class="section__head">
+			<h2 id="how-title" class="title">{m.how.heading}</h2>
+			<p class="lead">{m.how.intro}</p>
+		</div>
+		<ol class="steps">
+			{
+				m.how.items.map((item) => (
+					<li class="step">
+						<div class="step__copy">
+							<span class="step__num">{item.step}</span>
+							<h3 class="step__title">{item.title}</h3>
+							<p class="step__body">{item.body}</p>
+						</div>
+						<div class="step__visual">
+							<StatusCard title={item.cardTitle} rows={item.rows} stateLabels={m.stateLabels} tag={m.roadmap.example} />
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
+
+<section class="section section--tint" id="services" aria-labelledby="services-title">
+	<div class="wrap">
+		<div class="section__head">
+			<h2 id="services-title" class="title">{m.services.heading}</h2>
+			<p class="lead">{m.services.intro}</p>
+		</div>
+		<ul class="services" role="list">
+			{
+				m.services.items.map((item) => (
+					<li class:list={['service', item.option && 'service--option']}>
+						<div class="service__head">
+							<h3 class="service__title">{item.title}</h3>
+							{item.option && <span class="pill">{m.services.optionTag}</span>}
+						</div>
+						<p class="service__body">{item.body}</p>
+						<ul class="chips" role="list">
+							{item.chips.map((chip) => <li>{chip}</li>)}
+						</ul>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+{
+	PARTNERS.length > 0 && (
+		<section class="section section--compact" id="partners" aria-labelledby="partners-title">
+			<div class="wrap">
+				<h2 id="partners-title" class="logos__title">{m.partners.heading}</h2>
+				<ul class="logos" role="list">
+					{PARTNERS.map((partner) => (
+						<li
+							class:list={['logo', partner.bleed && 'logo--bleed']}
+							style={[
+								partner.background && `--logo-bg: ${partner.background};`,
+								partner.scale && `--logo-scale: ${partner.scale};`,
+							]
+								.filter(Boolean)
+								.join(' ') || undefined}
+						>
+							{partner.href ? (
+								<a href={partner.href} rel="noopener noreferrer" target="_blank" aria-label={`${partner.name}, ${m.partners.newTab}`}>
+									<img src={partner.logo} alt={partner.name} loading="lazy" decoding="async" />
+								</a>
+							) : (
+								<img src={partner.logo} alt={partner.name} loading="lazy" decoding="async" />
+							)}
+						</li>
+					))}
+				</ul>
+			</div>
+		</section>
+	)
+}
+
+<section class="section section--compact" aria-labelledby="stats-title">
+	<div class="wrap">
+		<h2 id="stats-title" class="sr">{m.stats.heading}</h2>
+		<dl class="stats">
+			{
+				m.stats.items.map((item) => (
+					<div class="stat">
+						<dt class="stat__label">{item.label}</dt>
+						<dd class="stat__value">{item.value}</dd>
+						<dd class="stat__body">{item.body}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</div>
+</section>
+
+<section class="section" id="pricing" aria-labelledby="pricing-title">
+	<div class="wrap">
+		<div class="section__head">
+			<h2 id="pricing-title" class="title">{m.engagement.heading}</h2>
+			<p class="lead">{m.engagement.intro}</p>
+		</div>
+		<ul class="plans" role="list">
+			{
+				m.engagement.items.map((item) => (
+					<li class="plan">
+						<span class="plan__price">{item.price}</span>
+						<h3 class="plan__title">{item.title}</h3>
+						<p class="plan__body">{item.body}</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<section class="section section--tint" id="faq" aria-labelledby="faq-title">
+	<div class="wrap faq">
+		<h2 id="faq-title" class="title">{m.faq.heading}</h2>
+		<div class="faq__list">
+			{
+				m.faq.items.map((item) => (
+					<details class="faq__item">
+						<summary>
+							{item.question}
+							<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+						</summary>
+						<p>{item.answer}</p>
+					</details>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<section class="section section--cta" aria-labelledby="cta-title">
+	<div class="wrap">
+		<div class="cta">
+			<div class="cta__sky" aria-hidden="true"></div>
+			<Ridges class="cta__ridges" id="cta-ridge" />
+			<div class="cta__copy">
+				<h2 id="cta-title" class="title title--light">{m.cta.heading}</h2>
+				<p class="cta__sub">{m.cta.sub}</p>
+				<div class="hero__actions">
+					<a class="btn btn--light btn--large" href={ctaMail}>{m.cta.button}</a>
+					<a class="btn btn--glass btn--large" href={ctaWa} rel="noopener noreferrer" target="_blank">{m.cta.secondaryButton}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,37 @@
+---
+/**
+ * The Chimgan ridge east of Tashkent, drawn as three soft layers. The nearest
+ * layer is the page's own paper colour, so the mountains rise out of the page.
+ */
+interface Props {
+	class?: string;
+	id: string;
+}
+
+const { class: className, id } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 1440 360" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+	<defs>
+		<linearGradient id={`${id}-far`} x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" style="stop-color: var(--ridge-far-top)" />
+			<stop offset="0.55" style="stop-color: var(--ridge-far)" />
+		</linearGradient>
+		<linearGradient id={`${id}-mid`} x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" style="stop-color: var(--ridge-mid-top)" />
+			<stop offset="1" style="stop-color: var(--ridge-mid)" />
+		</linearGradient>
+	</defs>
+	<path
+		fill={`url(#${id}-far)`}
+		d="M0 214 L64 198 L118 206 L176 176 L228 186 L290 142 L332 156 L396 104 L436 122 L470 112 L528 146 L590 128 L652 150 L716 118 L770 132 L842 86 L884 108 L930 98 L992 132 L1058 116 L1120 146 L1186 122 L1240 140 L1306 120 L1372 150 L1440 136 V360 H0 Z"
+	></path>
+	<path
+		fill={`url(#${id}-mid)`}
+		d="M0 262 L86 236 L160 248 L238 216 L310 238 L382 206 L452 228 L534 214 L612 242 L700 210 L780 232 L860 222 L948 250 L1034 220 L1118 240 L1200 226 L1290 252 L1364 236 L1440 246 V360 H0 Z"
+	></path>
+	<path
+		style="fill: var(--paper)"
+		d="M0 316 C 180 288 330 296 500 308 C 680 320 820 290 1000 298 C 1170 306 1300 286 1440 300 V360 H0 Z"
+	></path>
+</svg>

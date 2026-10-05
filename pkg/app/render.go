@@ -7,9 +7,13 @@ import (
 	"net/http"
 	"net/url"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
+
+// assetVersion changes on every start, so a deploy busts cached stylesheets.
+var assetVersion = strconv.FormatInt(time.Now().Unix(), 36)
 
 type Renderer struct {
 	templates *template.Template
@@ -30,6 +34,8 @@ func NewRendererFS(fsys fs.FS, pattern string) (*Renderer, error) {
 func newRenderer(parse func(*template.Template) (*template.Template, error), name string) (*Renderer, error) {
 	funcs := template.FuncMap{
 		"year":         func() int { return time.Now().Year() },
+		"assetVersion": func() string { return assetVersion },
+		"roleLabel":    RoleLabel,
 		"stageLabel":   StageLabel,
 		"paymentLabel": PaymentLabel,
 		"whatsapp": func(message string) string {
@@ -148,4 +154,31 @@ type AdminPageData struct {
 	ChecklistItems       []ChecklistItem
 	DocumentTypes        []ChecklistItem
 	Fin                  *FinPage
+}
+
+// Section names the admin area a page belongs to, for the navigation.
+func (d AdminPageData) Section() string {
+	switch {
+	case d.Fin != nil:
+		return "finance"
+	case d.Title == "Overview":
+		return "overview"
+	case d.Title == "Sales CRM":
+		return "crm"
+	default:
+		return "applications"
+	}
+}
+
+// RoleLabel is the role name shown beside the signed-in user.
+func RoleLabel(role Role) string {
+	switch role {
+	case "super_admin":
+		return "Super admin"
+	case "admin":
+		return "Admin"
+	case "sales":
+		return "Sales"
+	}
+	return string(role)
 }

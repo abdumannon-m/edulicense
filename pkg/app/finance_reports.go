@@ -788,6 +788,10 @@ type FinDashboard struct {
 	RunwayMonths       float64
 	HasRunway          bool
 	PL                 FinPL
+	YearProfitUZS      float64
+	MonthProfitUZS     float64
+	LastMonthProfitUZS float64
+	HasLastMonth       bool
 	YearProfitUSD      float64
 	MonthProfitUSD     float64
 	ExpenseMix         []FinExpenseSlice
@@ -829,9 +833,17 @@ func (d *FinData) Dashboard() FinDashboard {
 		dash.RunwayMonths = math.Max(0, dash.FreeCashUZS) / dash.MonthlyBurnUZS
 	}
 	year := d.Today.Year()
-	dash.PL = d.PL(year, "USD")
-	dash.YearProfitUSD = Round2(dash.PL.NetProfit.Total)
-	dash.MonthProfitUSD = Round2(dash.PL.NetProfit.Values[int(d.Today.Month())-1])
+	month := int(d.Today.Month()) - 1
+	plUSD := d.PL(year, "USD")
+	dash.YearProfitUSD = Round2(plUSD.NetProfit.Total)
+	dash.MonthProfitUSD = Round2(plUSD.NetProfit.Values[month])
+	dash.PL = d.PL(year, "UZS")
+	dash.YearProfitUZS = Round2(dash.PL.NetProfit.Total)
+	dash.MonthProfitUZS = Round2(dash.PL.NetProfit.Values[month])
+	if month > 0 {
+		dash.HasLastMonth = true
+		dash.LastMonthProfitUZS = Round2(dash.PL.NetProfit.Values[month-1])
+	}
 	totalExpenses := 0.0
 	for _, section := range dash.PL.Sections {
 		if section.Subtotal.Total > 0 {
@@ -949,6 +961,9 @@ func (d *FinData) Ledger(filter FinTxnFilter) FinLedger {
 		}
 		return a.CreatedAt.After(b.CreatedAt)
 	})
+	if filter.Month != "" {
+		seenMonths[filter.Month] = true
+	}
 	for month := range seenMonths {
 		ledger.Months = append(ledger.Months, month)
 	}

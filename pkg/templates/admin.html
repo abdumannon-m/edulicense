@@ -3,47 +3,177 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 		<meta name="robots" content="noindex,nofollow">
 		<title>{{.Title}} · Edu License Admin</title>
-		<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-		<link rel="stylesheet" href="/static/css/admin.css">
+		<link rel="icon" type="image/png" href="/static/favicon.png">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+		<link rel="stylesheet" href="/static/css/admin.css?v={{assetVersion}}">
+		<script>
+			// Apply the saved theme before first paint so pages never flash.
+			try {
+				const theme = localStorage.getItem('admin-theme');
+				if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+			} catch (error) {}
+		</script>
 	</head>
 	<body class="admin-body">
+		<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+			<symbol id="i-overview" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></symbol>
+			<symbol id="i-apps" viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="m9 15 2 2 4-4"/></symbol>
+			<symbol id="i-crm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path d="M15 4v10"/></symbol>
+			<symbol id="i-finance" viewBox="0 0 24 24"><path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7V6a2 2 0 0 1 2-2h10v3"/><path d="M16 13.5h.01"/></symbol>
+			<symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+			<symbol id="i-more" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3"/></symbol>
+			<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+			<symbol id="i-back" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+			<symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+			<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+			<symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></symbol>
+			<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+			<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+			<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+			<symbol id="i-system" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+			<symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4"/><path d="M3 8h14"/><path d="m17 20 4-4-4-4"/><path d="M21 16H7"/></symbol>
+		</svg>
+{{end}}
+
+{{define "admin_navlinks"}}
+	{{$s := .Section}}
+	{{if eq .CurrentUser.Role "super_admin"}}<a class="nav__item" href="/admin/overview" {{if eq $s "overview"}}aria-current="page"{{end}}><svg class="i"><use href="#i-overview"/></svg><span>Overview</span></a>{{end}}
+	{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "admin")}}<a class="nav__item" href="/admin/applications" {{if eq $s "applications"}}aria-current="page"{{end}}><svg class="i"><use href="#i-apps"/></svg><span>Applications</span></a>{{end}}
+	{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "sales")}}<a class="nav__item" href="/admin/crm" {{if eq $s "crm"}}aria-current="page"{{end}}><svg class="i"><use href="#i-crm"/></svg><span>Sales CRM</span></a>{{end}}
+	{{if eq .CurrentUser.Role "super_admin"}}<a class="nav__item" href="/admin/finance" {{if eq $s "finance"}}aria-current="page"{{end}}><svg class="i"><use href="#i-finance"/></svg><span>Finance</span></a>{{end}}
+{{end}}
+
+{{define "admin_theme_switch"}}
+	<div class="theme-switch" role="group" aria-label="Theme" data-theme-switch>
+		<button type="button" data-theme-value="light" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-sun"/></svg>Light</button>
+		<button type="button" data-theme-value="dark" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-moon"/></svg>Dark</button>
+		<button type="button" data-theme-value="system" aria-pressed="true"><svg class="i" aria-hidden="true"><use href="#i-system"/></svg>Auto</button>
+	</div>
 {{end}}
 
 {{define "admin_nav"}}
-		<header class="admin-topbar">
-			<a class="admin-brand" href="/admin">Edu License Admin</a>
-			<nav class="admin-nav" aria-label="Admin navigation">
-				{{if eq .CurrentUser.Role "super_admin"}}<a href="/admin/overview">Overview</a>{{end}}
-				{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "admin")}}<a href="/admin/applications">Applications</a>{{end}}
-				{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "sales")}}<a href="/admin/crm">Sales CRM</a>{{end}}
-				{{if eq .CurrentUser.Role "super_admin"}}<a href="/admin/finance">Finance</a>{{end}}
-			</nav>
-			<form class="admin-logout" method="post" action="/admin/logout">
+		<div class="shell">
+			<aside class="sidebar">
+				<a class="brand" href="/admin"><span class="brand__mark" aria-hidden="true"><img src="/static/logo.png" alt="" width="22" height="22"></span><span><strong>Edu License</strong><small>Admin</small></span></a>
+				<nav class="nav" aria-label="Admin navigation">
+					<p class="nav__label">Workspace</p>
+					{{template "admin_navlinks" .}}
+				</nav>
+				{{template "admin_theme_switch"}}
+				<div class="account">
+					<span class="avatar" aria-hidden="true">{{initial .CurrentUser.Name}}</span>
+					<span class="account__who"><strong>{{.CurrentUser.Name}}</strong><small>{{roleLabel .CurrentUser.Role}}</small></span>
+					<form method="post" action="/admin/logout">
+						<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+						<button class="icon-btn" type="submit" aria-label="Log out" title="Log out"><svg class="i"><use href="#i-logout"/></svg></button>
+					</form>
+				</div>
+			</aside>
+			<div class="shell__main">
+				<header class="topbar">
+					<a class="brand" href="/admin"><span class="brand__mark" aria-hidden="true"><img src="/static/logo.png" alt="" width="22" height="22"></span><span><strong>Edu License</strong></span></a>
+					<button class="icon-btn" type="button" aria-label="Account" data-sheet-open><span class="avatar" aria-hidden="true">{{initial .CurrentUser.Name}}</span></button>
+				</header>
+{{end}}
+
+{{define "admin_foot"}}
+			</div>
+		</div>
+		<nav class="tabbar" aria-label="Sections">
+			{{$s := .Section}}
+			{{if eq .CurrentUser.Role "super_admin"}}<a href="/admin/overview" {{if eq $s "overview"}}aria-current="page"{{end}}><svg class="i"><use href="#i-overview"/></svg>Overview</a>{{end}}
+			{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "admin")}}<a href="/admin/applications" {{if eq $s "applications"}}aria-current="page"{{end}}><svg class="i"><use href="#i-apps"/></svg>Applications</a>{{end}}
+			{{if or (eq .CurrentUser.Role "super_admin") (eq .CurrentUser.Role "sales")}}<a href="/admin/crm" {{if eq $s "crm"}}aria-current="page"{{end}}><svg class="i"><use href="#i-crm"/></svg>CRM</a>{{end}}
+			{{if eq .CurrentUser.Role "super_admin"}}<a href="/admin/finance" {{if eq $s "finance"}}aria-current="page"{{end}}><svg class="i"><use href="#i-finance"/></svg>Finance</a>{{end}}
+			<button type="button" data-sheet-open><svg class="i"><use href="#i-more"/></svg>More</button>
+		</nav>
+		<dialog class="sheet" data-sheet aria-label="Account">
+			<div class="sheet__grip" aria-hidden="true"></div>
+			<div class="sheet__who">
+				<span class="avatar" aria-hidden="true">{{initial .CurrentUser.Name}}</span>
+				<span class="account__who"><strong>{{.CurrentUser.Name}}</strong><small>{{.CurrentUser.Email}} · {{roleLabel .CurrentUser.Role}}</small></span>
+			</div>
+			<div class="sheet__section">
+				<span class="sheet__label">Appearance</span>
+				{{template "admin_theme_switch"}}
+			</div>
+			<form method="post" action="/admin/logout">
 				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-				<button class="admin-link-button" type="submit">Log out</button>
+				<button class="sheet__item" type="submit"><svg class="i"><use href="#i-logout"/></svg>Log out</button>
 			</form>
-		</header>
+			<form method="dialog"><button class="sheet__item" type="submit"><svg class="i"><use href="#i-x"/></svg>Close</button></form>
+		</dialog>
+		<script>
+			(() => {
+				const sheet = document.querySelector('[data-sheet]');
+				document.querySelectorAll('[data-sheet-open]').forEach((button) => {
+					button.addEventListener('click', () => sheet && sheet.showModal());
+				});
+				sheet?.addEventListener('click', (event) => {
+					if (event.target === sheet) sheet.close();
+				});
+				// Theme: light, dark, or follow the system. Saved per browser.
+				const applyTheme = (choice) => {
+					const root = document.documentElement;
+					if (choice === 'light' || choice === 'dark') {
+						root.dataset.theme = choice;
+					} else {
+						delete root.dataset.theme;
+					}
+					document.querySelectorAll('[data-theme-value]').forEach((button) => {
+						button.setAttribute('aria-pressed', String(button.dataset.themeValue === choice));
+					});
+				};
+				let savedTheme = 'system';
+				try { savedTheme = localStorage.getItem('admin-theme') || 'system'; } catch (error) {}
+				applyTheme(savedTheme);
+				document.querySelectorAll('[data-theme-value]').forEach((button) => {
+					button.addEventListener('click', () => {
+						const choice = button.dataset.themeValue;
+						try {
+							if (choice === 'system') localStorage.removeItem('admin-theme');
+							else localStorage.setItem('admin-theme', choice);
+						} catch (error) {}
+						applyTheme(choice);
+					});
+				});
+				// Keep the current section tab in view when the tab strip scrolls.
+				document.querySelector('.tabs [aria-current="page"]')?.scrollIntoView({ block: 'nearest', inline: 'center' });
+				// Name the item in every confirm so a delete says what it removes.
+				document.addEventListener('submit', (event) => {
+					const message = event.submitter?.dataset.confirm || event.target.dataset.confirm;
+					if (message && !window.confirm(message)) event.preventDefault();
+				}, true);
+			})();
+		</script>
+	</body>
+</html>
 {{end}}
 
 {{define "admin_alerts"}}
-	{{if .Error}}<div class="admin-alert admin-alert--error">{{.Error}}</div>{{end}}
-	{{if .Success}}<div class="admin-alert admin-alert--success">{{.Success}}</div>{{end}}
+	{{if .Error}}<div class="alert alert--error" role="alert"><svg class="i" aria-hidden="true"><use href="#i-alert"/></svg><span>{{.Error}}</span></div>{{end}}
+	{{if .Success}}<div class="alert alert--success" role="status"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>{{.Success}}</span></div>{{end}}
 {{end}}
 
 {{define "admin_login"}}
 {{template "admin_head" .}}
-		<main class="login-page">
-			<form class="login-card" method="post" action="/admin/login">
+		<main class="login">
+			<form class="login__card" method="post" action="/admin/login">
 				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-				<p class="admin-kicker">Private dashboard</p>
-				<h1>Admin login</h1>
+				<span class="brand__mark" aria-hidden="true"><img src="/static/logo.png" alt="" width="22" height="22"></span>
+				<div>
+					<h1>Sign in to Edu License</h1>
+					<p class="page-head__sub">The private dashboard for applications, sales and finance.</p>
+				</div>
 				{{template "admin_alerts" .}}
-				<label>Email<input name="email" type="email" autocomplete="email" required></label>
-				<label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-				<button class="admin-button" type="submit">Log in</button>
+				<label class="field"><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
+				<label class="field"><span>Password</span><input name="password" type="password" autocomplete="current-password" required></label>
+				<button class="btn btn--solid btn--lg" type="submit">Log in</button>
 			</form>
 		</main>
 	</body>
@@ -53,587 +183,586 @@
 {{define "admin_overview"}}
 {{template "admin_head" .}}
 {{template "admin_nav" .}}
-		<main class="admin-main">
-			<div class="admin-page-head">
-				<div>
-					<p class="admin-kicker">Super admin</p>
-					<h1>Company overview</h1>
+			<main class="content">
+				<div class="page-head">
+					<div>
+						<h1>Company overview</h1>
+						<p class="page-head__sub">Applications, sales and the team in one place.</p>
+					</div>
 				</div>
-			</div>
-			{{template "admin_alerts" .}}
-			<section class="stats-grid">
-				<div class="stat-card"><span>Active users</span><strong>{{.Stats.ActiveUsers}}</strong></div>
-				<div class="stat-card"><span>Won deals</span><strong>{{.Stats.WonDeals}}</strong></div>
-				<div class="stat-card"><span>Converted deals</span><strong>{{.Stats.ConvertedDeals}}</strong></div>
-				<div class="stat-card"><span>Overdue reminders</span><strong>{{.Stats.OverdueReminders}}</strong></div>
-			</section>
-			<div class="admin-grid">
-				<section class="admin-panel">
-					<h2>Applications by stage</h2>
-					<div class="stage-list">
-						{{range .ApplicationStages}}<div><span>{{stageLabel .}}</span><strong>{{index $.Stats.ApplicationCounts .}}</strong></div>{{end}}
+				{{template "admin_alerts" .}}
+				<section class="summary" aria-label="Key figures">
+					<div class="summary__item"><span class="summary__label">Active users</span><span class="summary__value">{{.Stats.ActiveUsers}}</span></div>
+					<div class="summary__item"><span class="summary__label">Won deals</span><span class="summary__value">{{.Stats.WonDeals}}</span></div>
+					<div class="summary__item"><span class="summary__label">Converted deals</span><span class="summary__value">{{.Stats.ConvertedDeals}}</span></div>
+					<div class="summary__item {{if .Stats.OverdueReminders}}summary__item--warning{{end}}"><span class="summary__label">Overdue reminders</span><span class="summary__value">{{.Stats.OverdueReminders}}</span></div>
+				</section>
+				<div class="grid grid--rail">
+					<div class="stack">
+						<div class="grid">
+							<section class="panel">
+								<div class="panel__head"><h2>Applications by stage</h2><a class="panel__meta" href="/admin/applications">All</a></div>
+								<ul class="rows">
+									{{range .ApplicationStages}}<li class="row"><span class="badge stage--{{.}}">{{stageLabel .}}</span><span class="num">{{index $.Stats.ApplicationCounts .}}</span></li>{{end}}
+								</ul>
+							</section>
+							<section class="panel">
+								<div class="panel__head"><h2>CRM by stage</h2><a class="panel__meta" href="/admin/crm">Board</a></div>
+								<ul class="rows">
+									{{range .SalesStages}}<li class="row"><span class="badge stage--{{.}}">{{stageLabel .}}</span><span class="num">{{index $.Stats.DealCounts .}}</span></li>{{end}}
+								</ul>
+							</section>
+						</div>
+						<section class="panel">
+							<div class="panel__head"><h2>Upcoming reminders</h2></div>
+							{{if .Stats.DueReminders}}
+							<ul class="rows">
+								{{range .Stats.DueReminders}}<li class="row"><span><span class="row__title">{{.Title}}</span><span class="row__line">{{.EntityName}}</span></span><span class="num muted">{{formatTime .DueAt}}</span></li>{{end}}
+							</ul>
+							{{else}}<div class="empty empty--quiet"><strong>No open reminders</strong><p>Reminders added on an application show up here when they are due.</p></div>{{end}}
+						</section>
+						<section class="panel">
+							<div class="panel__head"><h2>Recent activity</h2></div>
+							{{if .Stats.RecentActivity}}
+							<ul class="rows">
+								{{range .Stats.RecentActivity}}<li class="row"><span><span class="row__title row__title--plain">{{.Summary}}</span><span class="row__line">{{.UserName}}</span></span><span class="num muted">{{formatTime .CreatedAt}}</span></li>{{end}}
+							</ul>
+							{{else}}<div class="empty empty--quiet"><strong>No activity yet</strong><p>Changes to applications and deals are listed here.</p></div>{{end}}
+						</section>
 					</div>
-				</section>
-				<section class="admin-panel">
-					<h2>CRM by stage</h2>
-					<div class="stage-list">
-						{{range .SalesStages}}<div><span>{{stageLabel .}}</span><strong>{{index $.Stats.DealCounts .}}</strong></div>{{end}}
+					<div class="stack">
+						<section class="panel">
+							<div class="panel__head"><h2>Team</h2><span class="count">{{len .Users}}</span></div>
+							<ul class="rows">
+								{{range .Users}}<li class="row row--lead"><span class="avatar" aria-hidden="true">{{initial .Name}}</span><span><span class="row__title">{{.Name}}</span><span class="row__line">{{.Email}}</span></span><span class="badge badge--plain">{{roleLabel .Role}}</span></li>{{else}}<li class="row muted">No users yet.</li>{{end}}
+							</ul>
+						</section>
+						<details class="panel disclosure">
+							<summary><svg class="i i--chev" aria-hidden="true"><use href="#i-chev"/></svg>Add a team member</summary>
+							<form class="panel__body form-grid" method="post" action="/admin/users">
+								<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+								<label class="field span-all"><span>Full name</span><input name="name" autocomplete="off" required></label>
+								<label class="field span-all"><span>Email</span><input name="email" type="email" autocomplete="off" required></label>
+								<label class="field span-all"><span>Role</span>
+									<select name="role">
+										<option value="admin">Admin</option>
+										<option value="sales">Sales</option>
+										<option value="super_admin">Super admin</option>
+									</select>
+								</label>
+								<label class="field span-all"><span>Temporary password</span><input name="password" type="password" autocomplete="new-password" required><span class="field__hint">Share it privately; they can sign in with it right away.</span></label>
+								<div class="form-actions"><button class="btn btn--solid" type="submit">Create user</button></div>
+							</form>
+						</details>
 					</div>
-				</section>
-				<section class="admin-panel">
-					<h2>Upcoming reminders</h2>
-					<div class="simple-list">
-						{{range .Stats.DueReminders}}
-							<div><strong>{{.Title}}</strong><span>{{.EntityName}} · {{formatTime .DueAt}}</span></div>
-						{{else}}<p class="muted">No open reminders.</p>{{end}}
-					</div>
-				</section>
-				<section class="admin-panel">
-					<h2>Recent activity</h2>
-					<div class="simple-list">
-						{{range .Stats.RecentActivity}}
-							<div><strong>{{.Summary}}</strong><span>{{.UserName}} · {{formatTime .CreatedAt}}</span></div>
-						{{else}}<p class="muted">No activity yet.</p>{{end}}
-					</div>
-				</section>
-				<section class="admin-panel">
-					<h2>Create user</h2>
-					<form class="stack-form" method="post" action="/admin/users">
-						<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-						<input name="name" placeholder="Full name" required>
-						<input name="email" type="email" placeholder="Email" required>
-						<select name="role">
-							<option value="admin">Admin</option>
-							<option value="sales">Sales</option>
-							<option value="super_admin">Super admin</option>
-						</select>
-						<input name="password" type="password" placeholder="Temporary password" required>
-						<button class="admin-button admin-button--secondary" type="submit">Create user</button>
-					</form>
-				</section>
-				<section class="admin-panel">
-					<h2>Users</h2>
-					<div class="simple-list">
-						{{range .Users}}
-							<div><strong>{{.Name}}</strong><span>{{.Email}} · {{.Role}}</span></div>
-						{{else}}<p class="muted">No users yet.</p>{{end}}
-					</div>
-				</section>
-			</div>
-		</main>
-	</body>
-</html>
+				</div>
+			</main>
+{{template "admin_foot" .}}
 {{end}}
 
 {{define "admin_applications"}}
 {{template "admin_head" .}}
 {{template "admin_nav" .}}
-		<main class="admin-main">
-			<div class="admin-page-head">
-				<div>
-					<p class="admin-kicker">Operations</p>
-					<h1>SAT test center applications</h1>
+			<main class="content">
+				<div class="page-head">
+					<div>
+						<h1>SAT test center applications</h1>
+						<p class="page-head__sub">{{len .Applications}} institutions from first call to the College Board list.</p>
+					</div>
+					<div class="page-head__actions"><a class="btn btn--solid" href="/admin/applications/new"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>New application</a></div>
 				</div>
-				<a class="admin-button" href="/admin/applications/new">New application</a>
-			</div>
-			{{template "admin_alerts" .}}
-			<form class="filter-row filter-row--applications" method="get" action="/admin/applications" data-application-filters>
-				<select name="stage"><option value="">All stages</option>{{range .ApplicationStages}}<option value="{{.}}">{{stageLabel .}}</option>{{end}}</select>
-				<select name="admin"><option value="">All admins</option>{{range .Users}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select>
-				<input name="location" placeholder="Location">
-				<button class="admin-button admin-button--secondary" type="submit">Filter</button>
-				<button class="admin-button admin-button--secondary" type="button" data-clear-filters>Clear</button>
-				<p class="filter-count"><span data-visible-count>{{len .Applications}}</span> / <span data-total-count>{{len .Applications}}</span> shown</p>
-			</form>
-			<section class="application-list" data-application-list>
-				{{range .Applications}}
-					<article class="application-card" data-application-card data-stage="{{.Stage}}" data-admin="{{.AssignedAdminID}}" data-location="{{lower .Location}}">
-						<div class="application-card__main">
-							<div class="application-card__head">
-								<span class="stage-badge stage-badge--{{.Stage}}">{{stageLabel .Stage}}</span>
-								{{if .CertificateSlug}}<span class="certificate-chip">Certificate generated</span>{{end}}
-							</div>
-							<h2><a href="/admin/applications/{{.ID}}">{{.InstitutionName}}</a></h2>
-							<p>{{.Location}} {{if .Website}}· <a href="{{.Website}}" target="_blank" rel="noopener">{{.Website}}</a>{{end}}</p>
+				{{template "admin_alerts" .}}
+				<form class="filters" method="get" action="/admin/applications" data-application-filters>
+					<select name="stage" aria-label="Stage"><option value="">All stages</option>{{range .ApplicationStages}}<option value="{{.}}">{{stageLabel .}}</option>{{end}}</select>
+					<select name="admin" aria-label="Admin"><option value="">All admins</option>{{range .Users}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select>
+					<input name="location" type="search" placeholder="Search location" aria-label="Location">
+					<button class="btn btn--ghost" type="button" data-clear-filters>Clear</button>
+					<p class="filters__count" aria-live="polite"><span data-visible-count class="num">{{len .Applications}}</span> of <span data-total-count class="num">{{len .Applications}}</span> shown</p>
+				</form>
+				<section class="panel" data-application-list>
+					{{if .Applications}}
+					<div class="app-head" aria-hidden="true"><span>Institution</span><span>Contact</span><span>Commercials</span><span></span></div>
+					{{range .Applications}}
+					<article class="app-row" data-application-card data-stage="{{.Stage}}" data-admin="{{.AssignedAdminID}}" data-location="{{lower .Location}}">
+						<div>
+							<h2 class="row__title"><a class="cell-title" href="/admin/applications/{{.ID}}"><span class="cell-title">{{.InstitutionName}}</span></a></h2>
+							<span class="row__line">{{.Location}}{{if .Website}} · <a href="{{.Website}}" target="_blank" rel="noopener">{{.Website}}</a>{{end}}</span>
+							<div class="app-row__badges"><span class="badge stage--{{.Stage}}">{{stageLabel .Stage}}</span>{{if .CertificateSlug}}<span class="badge badge--info">Certificate issued</span>{{end}}</div>
 						</div>
-						<dl class="application-card__meta">
-							<div><dt>Responsible</dt><dd>{{.ResponsiblePerson}}</dd></div>
-							<div><dt>Phone</dt><dd>{{.Phone}}</dd></div>
-							<div><dt>Admin</dt><dd>{{.AssignedAdminName}}</dd></div>
-							<div><dt>Payment</dt><dd>{{paymentLabel .PaymentOption}} {{ptrString .PaymentAmount}} {{.PaymentCurrency}}</dd></div>
-							<div><dt>Profit share</dt><dd>{{.ProfitSharing}}</dd></div>
-						</dl>
-						{{if eq .Stage "in_test_center_list"}}
-							<div class="application-card__actions">
-								<span class="application-card__action-label">Certificate</span>
+						<div class="app-row__meta">{{if .ResponsiblePerson}}{{.ResponsiblePerson}}{{else}}<span class="muted">No contact</span>{{end}}<small>{{if .Phone}}<span class="num">{{.Phone}}</span> · {{end}}{{if .AssignedAdminName}}{{.AssignedAdminName}}{{else}}Unassigned{{end}}</small></div>
+						<div class="app-row__meta">{{paymentLabel .PaymentOption}}<small><span class="num">{{ptrString .PaymentAmount}} {{.PaymentCurrency}}</span>{{if .ProfitSharing}} · share {{.ProfitSharing}}{{end}}</small></div>
+						<div class="app-row__end">
+							{{if eq .Stage "in_test_center_list"}}
 								{{if .CertificateSlug}}
-									<a class="admin-button" href="/verify/{{.CertificateSlug}}" target="_blank" rel="noopener">View certificate</a>
+									<a class="btn btn--sm" href="/verify/{{.CertificateSlug}}" target="_blank" rel="noopener">View certificate</a>
 								{{else}}
 									<form method="post" action="/admin/applications/{{.ID}}/certificate">
 										<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
-										<button class="admin-button" type="submit">Generate certificate</button>
+										<button class="btn btn--sm btn--solid" type="submit">Generate certificate</button>
 									</form>
 								{{end}}
-							</div>
-						{{end}}
+							{{else}}
+								<a class="btn btn--sm btn--ghost" href="/admin/applications/{{.ID}}">Open<span class="sr"> {{.InstitutionName}}</span></a>
+							{{end}}
+						</div>
 					</article>
-				{{else}}
-					<p class="empty-state">No applications yet.</p>
-				{{end}}
-				<p class="empty-state" data-filter-empty hidden>No applications match these filters.</p>
-			</section>
-			<script>
-				(() => {
-					const form = document.querySelector('[data-application-filters]');
-					const cards = Array.from(document.querySelectorAll('[data-application-card]'));
-					const empty = document.querySelector('[data-filter-empty]');
-					const visibleCount = document.querySelector('[data-visible-count]');
-					const totalCount = document.querySelector('[data-total-count]');
-					if (!form || !cards.length) return;
-					const stage = form.elements.namedItem('stage');
-					const admin = form.elements.namedItem('admin');
-					const location = form.elements.namedItem('location');
-					const params = new URLSearchParams(window.location.search);
-					if (params.has('stage')) stage.value = params.get('stage');
-					if (params.has('admin')) admin.value = params.get('admin');
-					if (params.has('location')) location.value = params.get('location');
-					const applyFilters = () => {
-						const stageValue = stage.value;
-						const adminValue = admin.value;
-						const locationValue = location.value.trim().toLowerCase();
-						let shown = 0;
-						for (const card of cards) {
-							const matchesStage = !stageValue || card.dataset.stage === stageValue;
-							const matchesAdmin = !adminValue || card.dataset.admin === adminValue;
-							const matchesLocation = !locationValue || (card.dataset.location || '').includes(locationValue);
-							const visible = matchesStage && matchesAdmin && matchesLocation;
-							card.hidden = !visible;
-							if (visible) shown += 1;
-						}
-						if (visibleCount) visibleCount.textContent = String(shown);
-						if (totalCount) totalCount.textContent = String(cards.length);
-						if (empty) empty.hidden = shown !== 0;
-						const next = new URLSearchParams();
-						if (stageValue) next.set('stage', stageValue);
-						if (adminValue) next.set('admin', adminValue);
-						if (locationValue) next.set('location', location.value.trim());
-						const query = next.toString();
-						window.history.replaceState(null, '', query ? `${window.location.pathname}?${query}` : window.location.pathname);
-					};
-					form.addEventListener('input', applyFilters);
-					form.addEventListener('change', applyFilters);
-					form.addEventListener('submit', (event) => {
-						event.preventDefault();
+					{{end}}
+					{{else}}
+					<div class="empty"><strong>No applications yet</strong><p>Add the first institution to start tracking its documents and stages.</p><div class="empty__actions"><a class="btn btn--solid" href="/admin/applications/new">New application</a></div></div>
+					{{end}}
+					<div class="empty" data-filter-empty hidden><strong>No applications match these filters</strong><p>Try another stage or clear the search.</p></div>
+				</section>
+				<script>
+					(() => {
+						const form = document.querySelector('[data-application-filters]');
+						const cards = Array.from(document.querySelectorAll('[data-application-card]'));
+						const empty = document.querySelector('[data-filter-empty]');
+						const visibleCount = document.querySelector('[data-visible-count]');
+						const totalCount = document.querySelector('[data-total-count]');
+						if (!form || !cards.length) return;
+						const stage = form.elements.namedItem('stage');
+						const admin = form.elements.namedItem('admin');
+						const location = form.elements.namedItem('location');
+						const params = new URLSearchParams(window.location.search);
+						if (params.has('stage')) stage.value = params.get('stage');
+						if (params.has('admin')) admin.value = params.get('admin');
+						if (params.has('location')) location.value = params.get('location');
+						const applyFilters = () => {
+							const stageValue = stage.value;
+							const adminValue = admin.value;
+							const locationValue = location.value.trim().toLowerCase();
+							let shown = 0;
+							for (const card of cards) {
+								const matchesStage = !stageValue || card.dataset.stage === stageValue;
+								const matchesAdmin = !adminValue || card.dataset.admin === adminValue;
+								const matchesLocation = !locationValue || (card.dataset.location || '').includes(locationValue);
+								const visible = matchesStage && matchesAdmin && matchesLocation;
+								card.hidden = !visible;
+								if (visible) shown += 1;
+							}
+							if (visibleCount) visibleCount.textContent = String(shown);
+							if (totalCount) totalCount.textContent = String(cards.length);
+							if (empty) empty.hidden = shown !== 0;
+							const next = new URLSearchParams();
+							if (stageValue) next.set('stage', stageValue);
+							if (adminValue) next.set('admin', adminValue);
+							if (locationValue) next.set('location', location.value.trim());
+							const query = next.toString();
+							window.history.replaceState(null, '', query ? `${window.location.pathname}?${query}` : window.location.pathname);
+						};
+						form.addEventListener('input', applyFilters);
+						form.addEventListener('change', applyFilters);
+						form.addEventListener('submit', (event) => {
+							event.preventDefault();
+							applyFilters();
+						});
+						form.querySelector('[data-clear-filters]')?.addEventListener('click', () => {
+							stage.value = '';
+							admin.value = '';
+							location.value = '';
+							applyFilters();
+						});
 						applyFilters();
-					});
-					form.querySelector('[data-clear-filters]')?.addEventListener('click', () => {
-						stage.value = '';
-						admin.value = '';
-						location.value = '';
-						applyFilters();
-					});
-					applyFilters();
-				})();
-			</script>
-		</main>
-	</body>
-</html>
+					})();
+				</script>
+			</main>
+{{template "admin_foot" .}}
 {{end}}
 
 {{define "admin_application_form"}}
 {{template "admin_head" .}}
 {{template "admin_nav" .}}
-		<main class="admin-main">
-			<div class="admin-page-head">
-				<div>
-					<p class="admin-kicker">Operations</p>
-					<h1>{{if .Application.ID}}Edit application{{else}}New application{{end}}</h1>
-					{{if .Application.ID}}<div class="admin-page-head__badges"><span class="stage-badge stage-badge--{{.Application.Stage}}">{{stageLabel .Application.Stage}}</span>{{if .Application.CertificateSlug}}<span class="certificate-chip">Certificate generated</span>{{end}}</div>{{end}}
-				</div>
-				<a class="admin-button admin-button--secondary" href="/admin/applications">Back</a>
-			</div>
-			{{template "admin_alerts" .}}
-			{{if .Application.ID}}
-				<section class="admin-panel certificate-panel">
+			<main class="content">
+				<a class="back" href="/admin/applications"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg>Applications</a>
+				<div class="page-head">
 					<div>
-						<p class="admin-kicker">Certificate</p>
-						<h2>Generate certificate</h2>
-						<p class="muted">Create a public verification certificate with a QR code for this application.</p>
-						{{if .Application.VerificationID}}<p class="muted">Certificate ID: {{.Application.VerificationID}}</p>{{end}}
+						<h1>{{if .Application.ID}}{{.Application.InstitutionName}}{{else}}New application{{end}}</h1>
+						{{if .Application.ID}}<div class="page-head__badges"><span class="badge stage--{{.Application.Stage}}">{{stageLabel .Application.Stage}}</span>{{if .Application.CertificateSlug}}<span class="badge badge--info">Certificate issued</span>{{end}}</div>{{end}}
 					</div>
-					<div class="certificate-panel__actions">
-						{{if .Application.CertificateSlug}}
-							<a class="admin-button" href="/verify/{{.Application.CertificateSlug}}" target="_blank" rel="noopener">View certificate</a>
-						{{else if eq .Application.Stage "in_test_center_list"}}
-							<form method="post" action="/admin/applications/{{.Application.ID}}/certificate">
+				</div>
+				{{template "admin_alerts" .}}
+				<div class="{{if .Application.ID}}grid grid--rail{{else}}form-page form-page--wide{{end}}">
+					<form class="stack" method="post" action="{{if .Application.ID}}/admin/applications/{{.Application.ID}}{{else}}/admin/applications{{end}}">
+						<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+						<section class="panel">
+							<div class="panel__head"><h2>Institution</h2></div>
+							<div class="panel__body form-grid">
+								<label class="field span-all"><span>Name</span><input name="institution_name" value="{{.Application.InstitutionName}}" required></label>
+								<label class="field"><span>Type</span><input name="institution_type" value="{{.Application.InstitutionType}}" placeholder="School, university, learning centre"></label>
+								<label class="field"><span>Location</span><input name="location" value="{{.Application.Location}}"></label>
+								<label class="field span-all"><span>Website</span><input name="website" type="url" value="{{.Application.Website}}" placeholder="https://"></label>
+								<label class="field"><span>Responsible person</span><input name="responsible_person" value="{{.Application.ResponsiblePerson}}"></label>
+								<label class="field"><span>Phone</span><input name="phone" type="tel" value="{{.Application.Phone}}"></label>
+								<label class="field"><span>Director phone</span><input name="director_phone" type="tel" value="{{.Application.DirectorPhone}}"></label>
+							</div>
+						</section>
+						<section class="panel">
+							<div class="panel__head"><h2>Process</h2></div>
+							<div class="panel__body form-grid form-grid--3">
+								<label class="field"><span>Stage</span><select name="stage">{{range .ApplicationStages}}<option value="{{.}}" {{selected $.Application.Stage .}}>{{stageLabel .}}</option>{{end}}</select></label>
+								<label class="field"><span>Assigned admin</span><select name="assigned_admin_id"><option value="">Unassigned</option>{{range .Users}}<option value="{{.ID}}" {{selected $.Application.AssignedAdminID .ID}}>{{.Name}}</option>{{end}}</select></label>
+								<label class="field"><span>CEEB code</span><input name="ceeb_code" value="{{.Application.CEEBCode}}" inputmode="numeric"></label>
+							</div>
+						</section>
+						<section class="panel">
+							<div class="panel__head"><h2>Commercials</h2></div>
+							<div class="panel__body form-grid form-grid--4">
+								<label class="field"><span>Payment option</span><select name="payment_option">{{range .PaymentOptions}}<option value="{{.}}" {{selected $.Application.PaymentOption .}}>{{paymentLabel .}}</option>{{end}}</select></label>
+								<label class="field"><span>Amount</span><input name="payment_amount" value="{{ptrString .Application.PaymentAmount}}" inputmode="decimal"></label>
+								<label class="field"><span>Currency</span><select name="payment_currency"><option value="USD" {{selected .Application.PaymentCurrency "USD"}}>USD</option><option value="UZS" {{selected .Application.PaymentCurrency "UZS"}}>UZS</option></select></label>
+								<label class="field"><span>Profit sharing</span><select name="profit_sharing"><option value="">None</option>{{range .ProfitSharingOptions}}<option value="{{.}}" {{selected $.Application.ProfitSharing .}}>{{.}}</option>{{end}}</select></label>
+							</div>
+						</section>
+						<section class="panel">
+							<div class="panel__head"><h2>Document checklist</h2></div>
+							<div class="panel__body checklist">
+								{{range .ChecklistItems}}<label class="check"><input type="checkbox" name="checklist_{{.Key}}" {{checked $.Application.ChecklistStatus .Key}}><span>{{.Label}}</span></label>{{end}}
+							</div>
+						</section>
+						<div class="sticky-actions">
+							<a class="btn btn--ghost" href="/admin/applications">Cancel</a>
+							<button class="btn btn--solid" type="submit">{{if .Application.ID}}Save changes{{else}}Create application{{end}}</button>
+						</div>
+					</form>
+					{{if .Application.ID}}
+					<div class="stack">
+						<section class="panel">
+							<div class="panel__head"><h2>Certificate</h2>{{if .Application.VerificationID}}<span class="panel__meta num">{{.Application.VerificationID}}</span>{{end}}</div>
+							<div class="panel__body stack">
+								<p class="muted">A public verification page with a QR code, issued once the school is on the test center list.</p>
+								{{if .Application.CertificateSlug}}
+									<a class="btn" href="/verify/{{.Application.CertificateSlug}}" target="_blank" rel="noopener">View certificate</a>
+								{{else if eq .Application.Stage "in_test_center_list"}}
+									<form method="post" action="/admin/applications/{{.Application.ID}}/certificate">
+										<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+										<button class="btn btn--solid" type="submit">Generate certificate</button>
+									</form>
+								{{else}}
+									<button class="btn" type="button" disabled>Generate certificate</button>
+									<p class="field__hint">Available once the stage is “In the test center list”.</p>
+								{{end}}
+							</div>
+						</section>
+						<section class="panel">
+							<div class="panel__head"><h2>Documents</h2><span class="count">{{len .Application.Documents}}</span></div>
+							{{if .Application.Documents}}
+							<ul class="rows">{{range .Application.Documents}}<li class="row"><span><span class="row__title row__title--plain">{{.OriginalFilename}}</span><span class="row__line">{{.DocType}} · {{formatTime .CreatedAt}}</span></span></li>{{end}}</ul>
+							{{end}}
+							<form class="panel__body form-grid" method="post" action="/admin/applications/{{.Application.ID}}/documents" enctype="multipart/form-data">
 								<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-								<button class="admin-button" type="submit">Generate certificate</button>
+								<label class="field span-all"><span>Document type</span><select name="doc_type">{{range .DocumentTypes}}<option value="{{.Key}}">{{.Label}}</option>{{end}}</select></label>
+								<label class="field span-all"><span>File</span><input type="file" name="file" required></label>
+								<div class="form-actions"><button class="btn" type="submit">Upload</button></div>
 							</form>
-						{{else}}
-							<button class="admin-button" type="button" disabled>Generate certificate</button>
-							<p class="certificate-panel__hint">Available after status becomes “In the test center list”.</p>
-						{{end}}
+						</section>
+						<section class="panel">
+							<div class="panel__head"><h2>Reminders</h2><span class="count">{{len .Application.Reminders}}</span></div>
+							{{if .Application.Reminders}}
+							<ul class="rows">{{range .Application.Reminders}}<li class="row"><span><span class="row__title row__title--plain">{{.Title}}</span>{{if .Note}}<span class="row__line">{{.Note}}</span>{{end}}</span><span class="num muted">{{formatTime .DueAt}}</span></li>{{end}}</ul>
+							{{end}}
+							<form class="panel__body form-grid" method="post" action="/admin/reminders">
+								<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+								<input type="hidden" name="entity_type" value="application">
+								<input type="hidden" name="entity_id" value="{{.Application.ID}}">
+								<label class="field span-all"><span>Reminder</span><input name="title" placeholder="Domain registration expected" required></label>
+								<label class="field span-all"><span>Due in days</span><input name="due_days" inputmode="numeric" placeholder="3"></label>
+								<label class="field span-all"><span>Notes</span><textarea name="note" rows="3"></textarea></label>
+								<div class="form-actions"><button class="btn" type="submit">Add reminder</button></div>
+							</form>
+						</section>
 					</div>
-				</section>
-			{{end}}
-			<form class="admin-form" method="post" action="{{if .Application.ID}}/admin/applications/{{.Application.ID}}{{else}}/admin/applications{{end}}">
-				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-				<div class="admin-form__actions admin-form__actions--top">
-					<button class="admin-button" type="submit">{{if .Application.ID}}Save changes{{else}}Create application{{end}}</button>
+					{{end}}
 				</div>
-				<section class="form-section">
-					<h2>Institution</h2>
-					<label>Name<input name="institution_name" value="{{.Application.InstitutionName}}" required></label>
-					<label>Type<input name="institution_type" value="{{.Application.InstitutionType}}"></label>
-					<label>Location<input name="location" value="{{.Application.Location}}"></label>
-					<label>Website<input name="website" value="{{.Application.Website}}"></label>
-					<label>Responsible person<input name="responsible_person" value="{{.Application.ResponsiblePerson}}"></label>
-					<label>Phone<input name="phone" value="{{.Application.Phone}}"></label>
-					<label>Director phone<input name="director_phone" value="{{.Application.DirectorPhone}}"></label>
-				</section>
-				<section class="form-section">
-					<h2>Process</h2>
-					<label>Stage<select name="stage">{{range .ApplicationStages}}<option value="{{.}}" {{selected $.Application.Stage .}}>{{stageLabel .}}</option>{{end}}</select></label>
-					<label>Assigned admin<select name="assigned_admin_id"><option value="">Unassigned</option>{{range .Users}}<option value="{{.ID}}" {{selected $.Application.AssignedAdminID .ID}}>{{.Name}}</option>{{end}}</select></label>
-					<label>CEEB code<input name="ceeb_code" value="{{.Application.CEEBCode}}"></label>
-				</section>
-				<section class="form-section">
-					<h2>Commercials</h2>
-					<label>Payment option<select name="payment_option">{{range .PaymentOptions}}<option value="{{.}}" {{selected $.Application.PaymentOption .}}>{{paymentLabel .}}</option>{{end}}</select></label>
-					<label>Payment amount<input name="payment_amount" value="{{ptrString .Application.PaymentAmount}}" inputmode="decimal"></label>
-					<label>Currency<select name="payment_currency"><option value="USD" {{selected .Application.PaymentCurrency "USD"}}>USD</option><option value="UZS" {{selected .Application.PaymentCurrency "UZS"}}>UZS</option></select></label>
-					<label>Profit sharing<select name="profit_sharing"><option value="">None</option>{{range .ProfitSharingOptions}}<option value="{{.}}" {{selected $.Application.ProfitSharing .}}>{{.}}</option>{{end}}</select></label>
-				</section>
-				<section class="form-section form-section--wide">
-					<h2>Document checklist</h2>
-					<div class="check-grid">
-						{{range .ChecklistItems}}
-							<label class="check-item"><input type="checkbox" name="checklist_{{.Key}}" {{checked $.Application.ChecklistStatus .Key}}> {{.Label}}</label>
-						{{end}}
-					</div>
-				</section>
-				<div class="admin-form__actions admin-form__actions--bottom">
-					<button class="admin-button" type="submit">{{if .Application.ID}}Save changes{{else}}Create application{{end}}</button>
-				</div>
-			</form>
-			{{if .Application.ID}}
-				<div class="admin-grid">
-					<section class="admin-panel">
-						<h2>Documents</h2>
-						<form class="inline-form" method="post" action="/admin/applications/{{.Application.ID}}/documents" enctype="multipart/form-data">
-							<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-							<select name="doc_type">{{range .DocumentTypes}}<option value="{{.Key}}">{{.Label}}</option>{{end}}</select>
-							<input type="file" name="file" required>
-							<button class="admin-button admin-button--secondary" type="submit">Upload</button>
-						</form>
-						<div class="simple-list">
-							{{range .Application.Documents}}<div><strong>{{.OriginalFilename}}</strong><span>{{.DocType}} · {{formatTime .CreatedAt}}</span></div>{{else}}<p class="muted">No uploads yet.</p>{{end}}
-						</div>
-					</section>
-					<section class="admin-panel">
-						<h2>Reminders</h2>
-						<form class="stack-form" method="post" action="/admin/reminders">
-							<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-							<input type="hidden" name="entity_type" value="application">
-							<input type="hidden" name="entity_id" value="{{.Application.ID}}">
-							<input name="title" placeholder="Domain registration expected" required>
-							<input name="due_days" inputmode="numeric" placeholder="Due in days, e.g. 3">
-							<textarea name="note" placeholder="Notes"></textarea>
-							<button class="admin-button admin-button--secondary" type="submit">Add reminder</button>
-						</form>
-						<div class="simple-list">
-							{{range .Application.Reminders}}<div><strong>{{.Title}}</strong><span>{{formatTime .DueAt}} · {{.Note}}</span></div>{{else}}<p class="muted">No reminders.</p>{{end}}
-						</div>
-					</section>
-				</div>
-				<form class="danger-zone" method="post" action="/admin/applications/{{.Application.ID}}/delete">
+				{{if .Application.ID}}
+				<form class="danger" method="post" action="/admin/applications/{{.Application.ID}}/delete" data-confirm="Delete the application for {{.Application.InstitutionName}}? Its documents and reminders go with it.">
 					<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-					<button type="submit">Delete application</button>
+					<div><strong>Delete application</strong><p>Removes {{.Application.InstitutionName}} with its documents and reminders.</p></div>
+					<button class="btn btn--danger" type="submit">Delete application</button>
 				</form>
-			{{end}}
-		</main>
-	</body>
-</html>
+				{{end}}
+			</main>
+{{template "admin_foot" .}}
 {{end}}
 
 {{define "admin_crm"}}
 {{template "admin_head" .}}
 {{template "admin_nav" .}}
-		<main class="admin-main admin-main--wide">
-			<div class="admin-page-head">
-				<div>
-					<p class="admin-kicker">Sales</p>
-					<h1>Sales CRM</h1>
+			<main class="content content--wide">
+				<div class="page-head">
+					<div>
+						<h1>Sales CRM</h1>
+						<p class="page-head__sub">Drag a deal to move it to another stage.</p>
+					</div>
 				</div>
-			</div>
-			{{template "admin_alerts" .}}
-			<form class="crm-create" method="post" action="/admin/crm/deals">
-				<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-				<input name="school_name" placeholder="School or university name" required>
-				<input name="capacity" inputmode="numeric" placeholder="Capacity">
-				<select name="assigned_sales_agent_id"><option value="">Assign agent</option>{{range .Users}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select>
-				<input name="negotiation_price" inputmode="decimal" placeholder="Negotiation price">
-				<select name="profit_sharing"><option value="">Profit share</option>{{range .ProfitSharingOptions}}<option value="{{.}}">{{.}}</option>{{end}}</select>
-				<button class="admin-button" type="submit">Add deal</button>
-			</form>
-			<p class="crm-board-status" data-crm-status aria-live="polite"></p>
-			<section class="crm-board" data-crm-board data-csrf-token="{{.CSRFToken}}">
-				{{range .SalesStages}}
-					{{$stage := .}}
-					{{$deals := index $.DealsByStage $stage}}
-					<div class="crm-column" data-stage-column data-stage="{{$stage}}">
-						<header class="crm-column__head">
-							<h2>{{stageLabel $stage}}</h2>
-							<span data-stage-count>{{len $deals}}</span>
-						</header>
-						<div class="crm-column__dropzone" data-stage-list>
-							<p class="crm-empty" data-stage-empty {{if $deals}}hidden{{end}}>No deals in this stage.</p>
-							{{range $deals}}
-								<article class="deal-card" draggable="true" data-deal-card data-deal-id="{{.ID}}" data-current-stage="{{.Stage}}" data-stage-url="/admin/crm/deals/{{.ID}}/stage">
-									<div class="deal-card__head">
-										<h3>{{.SchoolName}}</h3>
-										<div class="deal-card__actions">
-											<span class="deal-card__drag-handle" aria-hidden="true">Drag</span>
-											<details class="deal-card__menu" data-deal-menu>
-												<summary aria-label="Lead actions">...</summary>
-												<div class="deal-card__menu-panel">
-													<form class="deal-delete-form" method="post" action="/admin/crm/deals/{{.ID}}/delete" data-delete-form onsubmit="return confirm('Delete this lead?')">
+				{{template "admin_alerts" .}}
+				<details class="panel disclosure" {{if not .DealsByStage}}open{{end}}>
+					<summary><svg class="i i--chev" aria-hidden="true"><use href="#i-chev"/></svg>Add a deal</summary>
+					<form class="panel__body crm-create" method="post" action="/admin/crm/deals">
+						<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+						<label class="field"><span>School or university</span><input name="school_name" required></label>
+						<label class="field"><span>Capacity</span><input name="capacity" inputmode="numeric"></label>
+						<label class="field"><span>Agent</span><select name="assigned_sales_agent_id"><option value="">Unassigned</option>{{range .Users}}<option value="{{.ID}}">{{.Name}}</option>{{end}}</select></label>
+						<label class="field"><span>Price</span><input name="negotiation_price" inputmode="decimal"></label>
+						<label class="field"><span>Profit share</span><select name="profit_sharing"><option value="">Not set</option>{{range .ProfitSharingOptions}}<option value="{{.}}">{{.}}</option>{{end}}</select></label>
+						<button class="btn btn--solid" type="submit">Add deal</button>
+					</form>
+				</details>
+				<p class="board-status" data-crm-status role="status" aria-live="polite"></p>
+				<section class="board" data-crm-board data-csrf-token="{{.CSRFToken}}">
+					{{range .SalesStages}}
+						{{$stage := .}}
+						{{$deals := index $.DealsByStage $stage}}
+						<div class="board__col" data-stage-column data-stage="{{$stage}}">
+							<header class="board__head">
+								<h2>{{stageLabel $stage}}</h2>
+								<span class="count" data-stage-count>{{len $deals}}</span>
+							</header>
+							<div class="board__list" data-stage-list>
+								<p class="board__empty" data-stage-empty {{if $deals}}hidden{{end}}>No deals here yet.</p>
+								{{range $deals}}
+									<article class="deal" draggable="true" data-deal-card data-deal-id="{{.ID}}" data-current-stage="{{.Stage}}" data-stage-url="/admin/crm/deals/{{.ID}}/stage">
+										<div class="deal__head">
+											<h3>{{.SchoolName}}</h3>
+											<details class="menu" data-deal-menu>
+												<summary class="icon-btn" aria-label="Actions for {{.SchoolName}}"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></summary>
+												<div class="menu__panel">
+													<form method="post" action="/admin/crm/deals/{{.ID}}/delete" data-delete-form data-confirm="Delete the lead for {{.SchoolName}}?">
 														<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
-														<button class="deal-menu__button deal-menu__button--danger" type="submit">Delete lead</button>
+														<button class="menu__item menu__item--danger" type="submit">Delete lead</button>
 													</form>
 												</div>
 											</details>
 										</div>
-									</div>
-									<dl class="deal-card__meta">
-										<div><dt>Capacity</dt><dd>{{.Capacity}}</dd></div>
-										<div><dt>Agent</dt><dd>{{if .AssignedSalesAgentName}}{{.AssignedSalesAgentName}}{{else}}Unassigned{{end}}</dd></div>
-										<div><dt>Price</dt><dd>{{ptrString .NegotiationPrice}} {{.Currency}}</dd></div>
-										<div><dt>Share</dt><dd>{{if .ProfitSharing}}{{.ProfitSharing}}{{else}}Not set{{end}}</dd></div>
-									</dl>
-									{{$deal := .}}
-									<form class="deal-move-form" method="post" action="/admin/crm/deals/{{.ID}}/stage">
-										<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
-										<select name="stage">{{range $stageOption := $.SalesStages}}<option value="{{$stageOption}}" {{selected $deal.Stage $stageOption}}>{{stageLabel $stageOption}}</option>{{end}}</select>
-										<button type="submit">Move</button>
-									</form>
-								</article>
-							{{end}}
+										<dl class="deal__meta">
+											<div><dt>Capacity</dt><dd class="num">{{.Capacity}}</dd></div>
+											<div><dt>Agent</dt><dd>{{if .AssignedSalesAgentName}}{{.AssignedSalesAgentName}}{{else}}Unassigned{{end}}</dd></div>
+											<div><dt>Price</dt><dd class="num">{{ptrString .NegotiationPrice}} {{.Currency}}</dd></div>
+											<div><dt>Share</dt><dd>{{if .ProfitSharing}}{{.ProfitSharing}}{{else}}Not set{{end}}</dd></div>
+										</dl>
+										{{$deal := .}}
+										<form class="deal__move" method="post" action="/admin/crm/deals/{{.ID}}/stage">
+											<input type="hidden" name="csrf_token" value="{{$.CSRFToken}}">
+											<select name="stage" aria-label="Stage for {{.SchoolName}}">{{range $stageOption := $.SalesStages}}<option value="{{$stageOption}}" {{selected $deal.Stage $stageOption}}>{{stageLabel $stageOption}}</option>{{end}}</select>
+											<button class="btn btn--sm" type="submit">Move</button>
+										</form>
+									</article>
+								{{end}}
+							</div>
 						</div>
-					</div>
-				{{end}}
-			</section>
-			<script>
-				(() => {
-					const board = document.querySelector('[data-crm-board]');
-					if (!board || !('draggable' in document.createElement('span'))) return;
+					{{end}}
+				</section>
+				<script>
+					(() => {
+						const board = document.querySelector('[data-crm-board]');
+						if (!board || !('draggable' in document.createElement('span'))) return;
+						// Touch screens keep the stage select; dragging is for pointers.
+						if (window.matchMedia('(hover: none)').matches) return;
 
-					board.classList.add('crm-board--dnd-ready');
-					const status = document.querySelector('[data-crm-status]');
-					let draggedCard = null;
-					let sourceList = null;
-					let sourceNext = null;
-					let statusTimer = 0;
+						board.classList.add('board--dnd-ready');
+						const status = document.querySelector('[data-crm-status]');
+						let draggedCard = null;
+						let sourceList = null;
+						let sourceNext = null;
+						let statusTimer = 0;
 
-					const showStatus = (message, tone = 'success') => {
-						if (!status) return;
-						window.clearTimeout(statusTimer);
-						status.textContent = message;
-						status.dataset.tone = tone;
-						status.hidden = false;
-						statusTimer = window.setTimeout(() => {
-							status.textContent = '';
-							status.hidden = true;
-						}, tone === 'error' ? 3200 : 1500);
-					};
+						const showStatus = (message, tone = 'success') => {
+							if (!status) return;
+							window.clearTimeout(statusTimer);
+							status.textContent = message;
+							status.dataset.tone = tone;
+							statusTimer = window.setTimeout(() => {
+								status.textContent = '';
+							}, tone === 'error' ? 3200 : 1800);
+						};
 
-					const updateColumn = (column) => {
-						if (!column) return;
-						const count = column.querySelectorAll('[data-deal-card]').length;
-						const countNode = column.querySelector('[data-stage-count]');
-						const empty = column.querySelector('[data-stage-empty]');
-						if (countNode) countNode.textContent = count;
-						if (empty) empty.hidden = count !== 0;
-					};
+						const updateColumn = (column) => {
+							if (!column) return;
+							const count = column.querySelectorAll('[data-deal-card]').length;
+							const countNode = column.querySelector('[data-stage-count]');
+							const empty = column.querySelector('[data-stage-empty]');
+							if (countNode) countNode.textContent = count;
+							if (empty) empty.hidden = count !== 0;
+						};
 
-					const stageLabel = (column) => {
-						const heading = column && column.querySelector('h2');
-						return heading ? heading.textContent.trim() : 'stage';
-					};
+						const stageLabel = (column) => {
+							const heading = column && column.querySelector('h2');
+							return heading ? heading.textContent.trim() : 'stage';
+						};
 
-					const closestInsertTarget = (list, pointerY) => {
-						const cards = Array.from(list.querySelectorAll('[data-deal-card]:not(.is-dragging)'));
-						return cards.reduce((closest, card) => {
-							const box = card.getBoundingClientRect();
-							const offset = pointerY - box.top - box.height / 2;
-							if (offset < 0 && offset > closest.offset) {
-								return { offset, element: card };
+						const closestInsertTarget = (list, pointerY) => {
+							const cards = Array.from(list.querySelectorAll('[data-deal-card]:not(.is-dragging)'));
+							return cards.reduce((closest, card) => {
+								const box = card.getBoundingClientRect();
+								const offset = pointerY - box.top - box.height / 2;
+								if (offset < 0 && offset > closest.offset) {
+									return { offset, element: card };
+								}
+								return closest;
+							}, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+						};
+
+						const insertCardAtPointer = (list, card, pointerY) => {
+							const before = closestInsertTarget(list, pointerY);
+							if (before) {
+								list.insertBefore(card, before);
+							} else {
+								list.appendChild(card);
 							}
-							return closest;
-						}, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
-					};
+						};
 
-					const insertCardAtPointer = (list, card, pointerY) => {
-						const before = closestInsertTarget(list, pointerY);
-						if (before) {
-							list.insertBefore(card, before);
-						} else {
-							list.appendChild(card);
-						}
-					};
+						const revertCard = (card, list, nextNode) => {
+							if (!card || !list) return;
+							if (nextNode && nextNode.parentElement === list) {
+								list.insertBefore(card, nextNode);
+							} else {
+								list.appendChild(card);
+							}
+							updateColumn(list.closest('[data-stage-column]'));
+						};
 
-					const revertCard = (card, list, nextNode) => {
-						if (!card || !list) return;
-						if (nextNode && nextNode.parentElement === list) {
-							list.insertBefore(card, nextNode);
-						} else {
-							list.appendChild(card);
-						}
-						updateColumn(list.closest('[data-stage-column]'));
-					};
+						const clearDragOver = () => board.querySelectorAll('.board__col.is-drag-over').forEach((column) => column.classList.remove('is-drag-over'));
 
-					board.querySelectorAll('[data-stage-column]').forEach(updateColumn);
+						board.querySelectorAll('[data-stage-column]').forEach(updateColumn);
 
-					board.addEventListener('dragstart', (event) => {
-						const card = event.target.closest('[data-deal-card]');
-						if (!card) return;
-						if (event.target.closest('[data-deal-menu]')) {
+						board.addEventListener('dragstart', (event) => {
+							const card = event.target.closest('[data-deal-card]');
+							if (!card) return;
+							if (event.target.closest('[data-deal-menu]')) {
+								event.preventDefault();
+								return;
+							}
+							draggedCard = card;
+							sourceList = card.closest('[data-stage-list]');
+							sourceNext = card.nextElementSibling;
+							card.classList.add('is-dragging');
+							event.dataTransfer.effectAllowed = 'move';
+							event.dataTransfer.setData('text/plain', card.dataset.dealId);
+						});
+
+						board.addEventListener('dragover', (event) => {
+							const list = event.target.closest('[data-stage-list]');
+							if (!list || !draggedCard) return;
 							event.preventDefault();
-							return;
-						}
-						draggedCard = card;
-						sourceList = card.closest('[data-stage-list]');
-						sourceNext = card.nextElementSibling;
-						card.classList.add('is-dragging');
-						event.dataTransfer.effectAllowed = 'move';
-						event.dataTransfer.setData('text/plain', card.dataset.dealId);
-					});
+							insertCardAtPointer(list, draggedCard, event.clientY);
+							clearDragOver();
+							list.closest('[data-stage-column]').classList.add('is-drag-over');
+							event.dataTransfer.dropEffect = 'move';
+						});
 
-					board.addEventListener('dragover', (event) => {
-						const list = event.target.closest('[data-stage-list]');
-						if (!list || !draggedCard) return;
-						event.preventDefault();
-						insertCardAtPointer(list, draggedCard, event.clientY);
-						board.querySelectorAll('.crm-column.is-drag-over').forEach((column) => column.classList.remove('is-drag-over'));
-						list.closest('[data-stage-column]').classList.add('is-drag-over');
-						event.dataTransfer.dropEffect = 'move';
-					});
+						board.addEventListener('drop', async (event) => {
+							const list = event.target.closest('[data-stage-list]');
+							if (!list || !draggedCard) return;
+							event.preventDefault();
 
-					board.addEventListener('drop', async (event) => {
-						const list = event.target.closest('[data-stage-list]');
-						if (!list || !draggedCard) return;
-						event.preventDefault();
+							const card = draggedCard;
+							const previousList = sourceList;
+							const previousNext = sourceNext;
+							const targetColumn = list.closest('[data-stage-column]');
+							const previousStage = card.dataset.currentStage;
+							const targetStage = targetColumn.dataset.stage;
 
-						const card = draggedCard;
-						const previousList = sourceList;
-						const previousNext = sourceNext;
-						const targetColumn = list.closest('[data-stage-column]');
-						const previousStage = card.dataset.currentStage;
-						const targetStage = targetColumn.dataset.stage;
-
-						insertCardAtPointer(list, card, event.clientY);
-						card.classList.remove('is-dragging');
-						card.classList.add('is-saving');
-						board.querySelectorAll('.crm-column.is-drag-over').forEach((column) => column.classList.remove('is-drag-over'));
-						updateColumn(previousList.closest('[data-stage-column]'));
-						updateColumn(targetColumn);
-
-						draggedCard = null;
-
-						if (targetStage === previousStage) {
-							card.classList.remove('is-saving');
-							return;
-						}
-
-						card.dataset.currentStage = targetStage;
-						const select = card.querySelector('select[name="stage"]');
-						if (select) select.value = targetStage;
-
-						const formData = new FormData();
-						formData.append('csrf_token', board.dataset.csrfToken);
-						formData.append('stage', targetStage);
-
-						try {
-							const response = await fetch(card.dataset.stageUrl, {
-								method: 'POST',
-								headers: {
-									'Accept': 'application/json',
-									'X-Requested-With': 'fetch'
-								},
-								body: formData,
-								credentials: 'same-origin'
-							});
-							if (!response.ok) {
-								const error = await response.json().catch(() => ({ error: 'Could not move deal.' }));
-								throw new Error(error.error || 'Could not move deal.');
-							}
-							const payload = await response.json();
-							card.dataset.currentStage = payload.stage;
-							if (select) select.value = payload.stage;
-							showStatus(`Moved to ${stageLabel(targetColumn)}.`);
-						} catch (error) {
-							card.dataset.currentStage = previousStage;
-							if (select) select.value = previousStage;
-							revertCard(card, previousList, previousNext);
+							insertCardAtPointer(list, card, event.clientY);
+							card.classList.remove('is-dragging');
+							card.classList.add('is-saving');
+							clearDragOver();
+							updateColumn(previousList.closest('[data-stage-column]'));
 							updateColumn(targetColumn);
-							showStatus(error.message || 'Could not move deal.', 'error');
-						} finally {
-							card.classList.remove('is-saving');
+
+							draggedCard = null;
+
+							if (targetStage === previousStage) {
+								card.classList.remove('is-saving');
+								return;
+							}
+
+							card.dataset.currentStage = targetStage;
+							const select = card.querySelector('select[name="stage"]');
+							if (select) select.value = targetStage;
+
+							const formData = new FormData();
+							formData.append('csrf_token', board.dataset.csrfToken);
+							formData.append('stage', targetStage);
+
+							try {
+								const response = await fetch(card.dataset.stageUrl, {
+									method: 'POST',
+									headers: {
+										'Accept': 'application/json',
+										'X-Requested-With': 'fetch'
+									},
+									body: formData,
+									credentials: 'same-origin'
+								});
+								if (!response.ok) {
+									const error = await response.json().catch(() => ({ error: 'Could not move deal.' }));
+									throw new Error(error.error || 'Could not move deal.');
+								}
+								const payload = await response.json();
+								card.dataset.currentStage = payload.stage;
+								if (select) select.value = payload.stage;
+								showStatus(`Moved to ${stageLabel(targetColumn)}.`);
+							} catch (error) {
+								card.dataset.currentStage = previousStage;
+								if (select) select.value = previousStage;
+								revertCard(card, previousList, previousNext);
+								updateColumn(targetColumn);
+								showStatus(error.message || 'Could not move deal.', 'error');
+							} finally {
+								card.classList.remove('is-saving');
+								sourceList = null;
+								sourceNext = null;
+							}
+						});
+
+						board.addEventListener('dragend', () => {
+							if (draggedCard) draggedCard.classList.remove('is-dragging', 'is-saving');
+							clearDragOver();
+							draggedCard = null;
 							sourceList = null;
 							sourceNext = null;
-						}
-					});
-
-					board.addEventListener('dragend', () => {
-						if (draggedCard) draggedCard.classList.remove('is-dragging', 'is-saving');
-						board.querySelectorAll('.crm-column.is-drag-over').forEach((column) => column.classList.remove('is-drag-over'));
-						draggedCard = null;
-						sourceList = null;
-						sourceNext = null;
-					});
-
-					board.addEventListener('submit', async (event) => {
-						const form = event.target.closest('[data-delete-form]');
-						if (!form || event.defaultPrevented) return;
-						event.preventDefault();
-
-						const card = form.closest('[data-deal-card]');
-						const column = card && card.closest('[data-stage-column]');
-						if (!card || !column) return;
-						card.classList.add('is-saving');
-
-						try {
-							const response = await fetch(form.action, {
-								method: 'POST',
-								headers: {
-									'Accept': 'application/json',
-									'X-Requested-With': 'fetch'
-								},
-								body: new FormData(form),
-								credentials: 'same-origin'
-							});
-							if (!response.ok) {
-								const error = await response.json().catch(() => ({ error: 'Could not delete lead.' }));
-								throw new Error(error.error || 'Could not delete lead.');
-							}
-							card.remove();
-							updateColumn(column);
-							showStatus('Lead deleted.');
-						} catch (error) {
-							card.classList.remove('is-saving');
-							showStatus(error.message || 'Could not delete lead.', 'error');
-						}
-					});
-
-					document.addEventListener('click', (event) => {
-						if (event.target.closest('[data-deal-menu]')) return;
-						board.querySelectorAll('[data-deal-menu][open]').forEach((menu) => {
-							menu.open = false;
 						});
-					});
-				})();
-			</script>
-		</main>
-	</body>
-</html>
+
+						board.addEventListener('submit', async (event) => {
+							const form = event.target.closest('[data-delete-form]');
+							if (!form || event.defaultPrevented) return;
+							event.preventDefault();
+
+							const card = form.closest('[data-deal-card]');
+							const column = card && card.closest('[data-stage-column]');
+							if (!card || !column) return;
+							card.classList.add('is-saving');
+
+							try {
+								const response = await fetch(form.action, {
+									method: 'POST',
+									headers: {
+										'Accept': 'application/json',
+										'X-Requested-With': 'fetch'
+									},
+									body: new FormData(form),
+									credentials: 'same-origin'
+								});
+								if (!response.ok) {
+									const error = await response.json().catch(() => ({ error: 'Could not delete lead.' }));
+									throw new Error(error.error || 'Could not delete lead.');
+								}
+								card.remove();
+								updateColumn(column);
+								showStatus('Lead deleted.');
+							} catch (error) {
+								card.classList.remove('is-saving');
+								showStatus(error.message || 'Could not delete lead.', 'error');
+							}
+						});
+
+						document.addEventListener('click', (event) => {
+							if (event.target.closest('[data-deal-menu]')) return;
+							board.querySelectorAll('[data-deal-menu][open]').forEach((menu) => {
+								menu.open = false;
+							});
+						});
+					})();
+				</script>
+			</main>
+{{template "admin_foot" .}}
 {{end}}

@@ -1,63 +1,46 @@
 ---
 import type { Messages } from '../i18n/types';
-import {
-	CONTACT_EMAIL,
-	OFFICE_MAP_URL,
-	officeMapEmbedUrl,
-	telegramEnabled,
-	telegramUrl,
-	whatsappUrl,
-} from '../i18n/contact';
+import { CONTACT_EMAIL, OFFICE_MAP_URL, telegramEnabled, telegramUrl, whatsappUrl } from '../i18n/contact';
 
 interface Props {
 	messages: Messages;
-	heroPrefill: string;
 }
 
-const { messages, heroPrefill } = Astro.props;
-const wa = whatsappUrl(heroPrefill);
-const tg = telegramUrl();
-const showTg = telegramEnabled();
-const homePath = messages.lang === 'uz' ? '/uz' : '/';
-const privacyPath = messages.lang === 'uz' ? '/uz/privacy' : '/privacy';
-const mapEmbed = officeMapEmbedUrl(messages.lang === 'uz' ? 'uz_UZ' : 'en_US');
+const { messages: m } = Astro.props;
+const wa = whatsappUrl(m.hero.whatsappPrefill);
+const homePath = m.lang === 'uz' ? '/uz' : '/';
+const privacyPath = m.lang === 'uz' ? '/uz/privacy' : '/privacy';
+const otherHome = m.lang === 'uz' ? '/' : '/uz';
+const otherLang = m.lang === 'uz' ? 'en' : 'uz';
+const otherLabel = m.lang === 'uz' ? m.nav.switchToEn : m.nav.switchToUz;
 ---
 
-<footer class="site-footer">
-	<div class="wrap site-footer__grid">
-		<div class="site-footer__contact">
-			<div class="site-footer__brand">{messages.brandShort}</div>
-			<p class="site-footer__tagline">{messages.footer.tagline}</p>
-
-			<p class="site-footer__label">{messages.footer.addressLabel}</p>
-			<address class="site-footer__address">{messages.footer.address}</address>
-			<a class="site-footer__directions" href={OFFICE_MAP_URL} rel="noopener noreferrer" target="_blank">
-				{messages.footer.directions}
-			</a>
-
-			<div class="site-footer__links">
-				<a href={wa} rel="noopener noreferrer" target="_blank">{messages.footer.whatsapp}</a>
-				<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-				{showTg && (
-					<a href={tg} rel="noopener noreferrer" target="_blank">
-						{messages.footer.telegram}
-					</a>
-				)}
-				<a href={privacyPath}>{messages.footer.privacy}</a>
-				<a href={`${homePath}#main`}>{messages.lang === 'uz' ? 'Yuqoriga' : 'Top'}</a>
-			</div>
+<footer class="footer">
+	<div class="wrap footer__grid">
+		<div class="footer__brand">
+			<a class="nav__brand" href={homePath}><span class="nav__mark" aria-hidden="true"><img src="/logo.png" alt="" width="24" height="24" /></span>{m.brandShort}</a>
+			<p>{m.footer.tagline}</p>
 		</div>
-
-		<div class="site-footer__map">
-			<iframe
-				src={mapEmbed}
-				title={messages.footer.mapTitle}
-				loading="lazy"
-				referrerpolicy="no-referrer-when-downgrade"
-				allowfullscreen></iframe>
+		<div>
+			<h2 class="footer__label">{m.footer.contactLabel}</h2>
+			<ul role="list">
+				<li><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
+				<li><a href={wa} rel="noopener noreferrer" target="_blank">{m.footer.whatsapp}</a></li>
+				{telegramEnabled() && <li><a href={telegramUrl()} rel="noopener noreferrer" target="_blank">{m.footer.telegram}</a></li>}
+			</ul>
+		</div>
+		<div>
+			<h2 class="footer__label">{m.footer.addressLabel}</h2>
+			<address>{m.footer.address}</address>
+			<a href={OFFICE_MAP_URL} rel="noopener noreferrer" target="_blank">{m.footer.directions}</a>
+		</div>
+		<div>
+			<h2 class="footer__label">{m.footer.pagesLabel}</h2>
+			<ul role="list">
+				<li><a href={privacyPath}>{m.footer.privacy}</a></li>
+				<li><a href={otherHome} hreflang={otherLang} lang={otherLang}>{otherLabel}</a></li>
+			</ul>
 		</div>
 	</div>
-	<div class="wrap site-footer__bottom">
-		<span>© {new Date().getFullYear()} {messages.brandLegal}. {messages.footer.rights}</span>
-	</div>
+	<div class="wrap footer__bottom">© {new Date().getFullYear()} {m.brandLegal}. {m.footer.rights}</div>
 </footer>

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -23,6 +24,14 @@ func (s *Server) loginPage(w http.ResponseWriter, r *http.Request) {
 	if _, ok := s.auth.UserFromRequest(r); ok {
 		http.Redirect(w, r, "/admin", http.StatusSeeOther)
 		return
+	}
+	if s.cfg.LocalDevLogin() {
+		session, expiresAt, err := s.auth.DevLogin(r.Context(), os.Getenv("DEV_LOGIN_EMAIL"))
+		if err == nil {
+			s.auth.SetSessionCookie(w, session, expiresAt)
+			http.Redirect(w, r, "/admin", http.StatusSeeOther)
+			return
+		}
 	}
 	data := app.AdminPageData{
 		BaseURL:   s.cfg.AppBaseURL,
