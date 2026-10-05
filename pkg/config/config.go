@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -22,6 +23,9 @@ type Config struct {
 	TelegramOperationsChatID string
 	Timezone                 string
 	SessionTTL               time.Duration
+	// DevAutoLogin signs visitors in as DEV_LOGIN_EMAIL without a password.
+	// It only takes effect when APP_BASE_URL points at localhost; see LocalDevLogin.
+	DevAutoLogin bool
 }
 
 func Load() Config {
@@ -42,6 +46,7 @@ func Load() Config {
 		TelegramOperationsChatID: os.Getenv("TELEGRAM_OPERATIONS_CHAT_ID"),
 		Timezone:                 env("APP_TIMEZONE", "Asia/Tashkent"),
 		SessionTTL:               14 * 24 * time.Hour,
+		DevAutoLogin:             os.Getenv("DEV_AUTO_LOGIN") == "1",
 	}
 	return cfg
 }
@@ -70,4 +75,19 @@ func firstEnv(keys ...string) string {
 		}
 	}
 	return ""
+}
+
+// LocalDevLogin reports whether the login page should sign in automatically:
+// DEV_AUTO_LOGIN=1 and an APP_BASE_URL on localhost, so a production deploy
+// can never skip the password even if the variable leaks into its env.
+func (c Config) LocalDevLogin() bool {
+	if !c.DevAutoLogin {
+		return false
+	}
+	base, err := url.Parse(c.AppBaseURL)
+	if err != nil {
+		return false
+	}
+	host := base.Hostname()
+	return host == "localhost" || host == "127.0.0.1"
 }

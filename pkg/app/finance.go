@@ -481,6 +481,9 @@ func ParseAmount(raw string) (float64, error) {
 		return 0, errors.New("amount is required")
 	}
 	sign := ""
+	if rest, ok := strings.CutPrefix(value, minus); ok {
+		value = "-" + rest
+	}
 	if strings.HasPrefix(value, "-") {
 		sign, value = "-", value[1:]
 	}
@@ -564,21 +567,20 @@ func allDigits(value string) bool {
 }
 
 // FormatMoney renders an amount the way the team writes it: "92 948 931 so'm"
-// or "$7 860".
+// or "$7 860". Both currencies show whole units so report columns line up.
 func FormatMoney(value float64, currency string) string {
-	decimals := 0
-	if currency == "USD" && math.Abs(value) < 1000 && math.Abs(value-math.Round(value)) > 0.004 {
-		decimals = 2
-	}
-	text := GroupDigits(value, decimals)
+	text := GroupDigits(value, 0)
 	if currency == "USD" {
-		if strings.HasPrefix(text, "-") {
-			return "-$" + text[1:]
+		if rest, ok := strings.CutPrefix(text, minus); ok {
+			return minus + "$" + rest
 		}
 		return "$" + text
 	}
 	return text + " so'm"
 }
+
+// minus is the typographic minus sign used for every displayed negative.
+const minus = "−"
 
 // GroupDigits formats a number with spaces between thousands.
 func GroupDigits(value float64, decimals int) string {
@@ -601,7 +603,7 @@ func GroupDigits(value float64, decimals int) string {
 		out += fmt.Sprintf("%.*f", decimals, frac)[1:]
 	}
 	if negative && (whole > 0 || frac > 0) {
-		out = "-" + out
+		out = minus + out
 	}
 	return out
 }

@@ -44,9 +44,20 @@ type FinPage struct {
 
 	Charts map[string]template.HTML
 
+	// LedgerHidden counts ledger rows left off the page; LedgerAllURL shows them.
+	LedgerHidden   int
+	LedgerAllURL   string
+	LedgerFallback string // latest other month with transactions, offered when a month is empty
+
 	CategoryGroups  []FinCategoryGroup
 	ActiveContracts []FinContract
 	RecentRates     []FinRate
+}
+
+// RateStale reports a CBU rate more than three days older than today, which
+// usually means the daily fetch has stopped.
+func (p *FinPage) RateStale() bool {
+	return !p.RateDate.IsZero() && p.Today.Sub(p.RateDate) > 72*time.Hour
 }
 
 type FinCategoryGroup struct {
@@ -211,6 +222,9 @@ func FinTemplateFuncs() template.FuncMap {
 			return FormatNumber(*v)
 		},
 		"plain": FormatNumber,
+		"whole": func(v float64) string { return GroupDigits(v, 0) },
+		"rate":  func(v float64) string { return GroupDigits(v, 2) },
+		"minf":  math.Min,
 		"milestoneLabel": func(n int) string {
 			if n >= 1 && n <= len(FinMilestones) {
 				return FinMilestones[n-1].Label

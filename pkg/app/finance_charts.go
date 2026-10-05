@@ -182,3 +182,13 @@ func LineChart(labels []string, values []float64, dashedFrom int, prefix string,
 	b.WriteString(`</svg>`)
 	return template.HTML(b.String())
 }
+
+// LabelChart gives a chart its accessible name, so screen readers announce
+// what the picture shows instead of an unnamed image.
+func LabelChart(svg template.HTML, label string) template.HTML {
+	if svg == "" {
+		return svg
+	}
+	named := `role="img" aria-label="` + template.HTMLEscapeString(label) + `"`
+	return template.HTML(strings.Replace(string(svg), `role="img"`, named, 1))
+}

@@ -133,10 +133,10 @@ func (s *Server) financeDashboard(w http.ResponseWriter, r *http.Request) {
 		expenses = append(expenses, dash.PL.TotalExpenses.Values[m])
 		cash = append(cash, dash.CashFlow[m].Closing)
 	}
-	page.Charts["pl"] = app.BarChart(labels, []app.ChartSeries{
+	page.Charts["pl"] = app.LabelChart(app.BarChart(labels, []app.ChartSeries{
 		{Label: "Income", Class: "fin-chart__bar--income", Values: income},
 		{Label: "Expenses", Class: "fin-chart__bar--expense", Values: expenses},
-	}, "$")
+	}, ""), "Income and expenses by month in so'm. Exact figures are on the P&L page.")
 	// Cash line: actual month ends, then the forecast (dashed).
 	cashLabels := append([]string{}, labels...)
 	dashedFrom := len(cash) - 1
@@ -147,7 +147,8 @@ func (s *Server) financeDashboard(w http.ResponseWriter, r *http.Request) {
 		cashLabels = append(cashLabels, app.ShortMonth(month.Month))
 		cash = append(cash, month.Closing)
 	}
-	page.Charts["cash"] = app.LineChart(cashLabels, cash, dashedFrom, "", 640)
+	page.Charts["cash"] = app.LabelChart(app.LineChart(cashLabels, cash, dashedFrom, "", 640),
+		"Cash at the end of each month in so'm, with the forecast months after the current one.")
 	s.renderer.Render(w, http.StatusOK, "finance_dashboard", data)
 }
 
@@ -168,13 +169,51 @@ func (s *Server) financeTransactions(w http.ResponseWriter, r *http.Request) {
 		Query:          strings.TrimSpace(query.Get("q")),
 	}
 	if !page.Filter.Active() && query.Get("all") == "" {
-		page.Filter.Month = app.MonthKey(page.Today)
+		page.Filter.Month = latestLedgerMonth(page.Data, page.Today)
 	}
 	page.Ledger = page.Data.Ledger(page.Filter)
+	if len(page.Ledger.Rows) > ledgerPageSize && query.Get("rows") != "all" {
+		page.LedgerHidden = len(page.Ledger.Rows) - ledgerPageSize
+		page.Ledger.Rows = page.Ledger.Rows[:ledgerPageSize]
+		all := r.URL.Query()
+		all.Set("rows", "all")
+		page.LedgerAllURL = "/admin/finance/transactions?" + all.Encode()
+	}
+	if len(page.Ledger.Rows) == 0 && page.Filter.Month != "" {
+		for _, month := range page.Ledger.Months {
+			if month != page.Filter.Month {
+				page.LedgerFallback = month
+				break
+			}
+		}
+	}
 	page.Cash = page.Data.CashPosition()
 	page.CategoryGroups = page.Data.CategoryGroups(true)
 	page.ActiveContracts = page.Data.ActiveContracts()
 	s.renderer.Render(w, http.StatusOK, "finance_transactions", data)
+}
+
+// ledgerPageSize caps how many ledger rows render before "Show all".
+const ledgerPageSize = 100
+
+// latestLedgerMonth opens the ledger on the current month, or on the latest
+// month that has transactions when the current one is still empty.
+func latestLedgerMonth(data *app.FinData, today time.Time) string {
+	current := app.MonthKey(today)
+	latest := ""
+	for _, txn := range data.Transactions {
+		key := app.MonthKey(txn.Date)
+		if key == current {
+			return current
+		}
+		if key > latest && key < current {
+			latest = key
+		}
+	}
+	if latest == "" {
+		return current
+	}
+	return latest
 }
 
 func (s *Server) parseFinTxn(ctx context.Context, r *http.Request, fin *app.FinData) (app.FinTxnInput, error) {
@@ -401,7 +440,7 @@ func notFoundMessage(err error) error {
 // Contracts and work done
 
 func (s *Server) financeContracts(w http.ResponseWriter, r *http.Request) {
-	data, page, ok := s.finPage(w, r, "Contracts", "contracts")
+	data, page, ok := s.finPage(w, r, "Schools & work done", "contracts")
 	if !ok {
 		return
 	}
@@ -757,9 +796,9 @@ func (s *Server) financePL(w http.ResponseWriter, r *http.Request) {
 	if year, err := strconv.Atoi(r.URL.Query().Get("year")); err == nil && year > 2000 && year < 2100 {
 		page.Year = year
 	}
-	page.Currency = "USD"
-	if r.URL.Query().Get("currency") == "UZS" {
-		page.Currency = "UZS"
+	page.Currency = "UZS"
+	if r.URL.Query().Get("currency") == "USD" {
+		page.Currency = "USD"
 	}
 	page.Years = page.Data.Years()
 	page.PL = page.Data.PL(page.Year, page.Currency)
@@ -791,7 +830,8 @@ func (s *Server) financeForecast(w http.ResponseWriter, r *http.Request) {
 		labels = append(labels, app.ShortMonth(month.Month))
 		values = append(values, month.Closing)
 	}
-	page.Charts["forecast"] = app.LineChart(labels, values, 0, "", 1240)
+	page.Charts["forecast"] = app.LabelChart(app.LineChart(labels, values, 0, "", 1240),
+		"Expected cash at the end of each month in so'm. Figures are in the table below.")
 	s.renderer.Render(w, http.StatusOK, "finance_forecast", data)
 }
 
