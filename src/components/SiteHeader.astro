@@ -1,98 +1,78 @@
 ---
 import type { Messages } from '../i18n/types';
-import { whatsappUrl } from '../i18n/contact';
+import { emailUrl } from '../i18n/contact';
 import { PARTNERS } from '../data/partners';
 
 interface Props {
 	messages: Messages;
-	whatsappPrefill: string;
+	/** Start transparent over the hero sky; becomes solid once the page scrolls. */
+	overHero?: boolean;
 }
 
-const { messages, whatsappPrefill } = Astro.props;
-const wa = whatsappUrl(whatsappPrefill);
-
+const { messages, overHero = false } = Astro.props;
 const homePath = messages.lang === 'uz' ? '/uz' : '/';
 const otherHome = messages.lang === 'uz' ? '/' : '/uz';
-const otherLabel =
-	messages.lang === 'uz' ? messages.nav.switchToEn : messages.nav.switchToUz;
+const otherLang = messages.lang === 'uz' ? 'en' : 'uz';
+const otherLabel = messages.lang === 'uz' ? messages.nav.switchToEn : messages.nav.switchToUz;
+const mail = emailUrl(messages.hero.emailSubject, messages.hero.emailBody);
 
-const navLabel = messages.lang === 'uz' ? 'Sahifa bo‘limlari' : 'Page sections';
-
-// One list for both the desktop row and the drawer — it now fits in either.
 const links = [
+	{ href: `${homePath}#how`, label: messages.nav.how },
 	{ href: `${homePath}#services`, label: messages.nav.services },
-	{ href: `${homePath}#process`, label: messages.nav.process },
-	...(PARTNERS.length > 0
-		? [{ href: `${homePath}#partners`, label: messages.nav.partners }]
-		: []),
-	{ href: `${homePath}#engagement`, label: messages.nav.engagement },
+	...(PARTNERS.length > 0 ? [{ href: `${homePath}#partners`, label: messages.nav.partners }] : []),
+	{ href: `${homePath}#pricing`, label: messages.nav.pricing },
 	{ href: `${homePath}#faq`, label: messages.nav.faq },
 ];
 ---
 
-<header class="site-header">
-	<div class="wrap site-header__inner">
-		<a class="site-header__brand" href={homePath}>{messages.brandShort}</a>
-
-		<nav class="site-header__nav" aria-label={navLabel}>
+<header class:list={['nav', overHero && 'nav--over']} data-nav>
+	<div class="wrap nav__inner">
+		<a class="nav__brand" href={homePath}>
+			<span class="nav__mark" aria-hidden="true"><img src="/logo.png" alt="" width="24" height="24" /></span>
+			{messages.brandShort}
+		</a>
+		<nav class="nav__links" aria-label={messages.nav.sections}>
 			{links.map((link) => <a href={link.href}>{link.label}</a>)}
 		</nav>
-
-		<div class="site-header__actions">
-			<a
-				class="site-header__lang"
-				href={otherHome}
-				hreflang={messages.lang === 'uz' ? 'en' : 'uz'}
-				lang={messages.lang === 'uz' ? 'en' : 'uz'}
-			>
-				{otherLabel}
-			</a>
-			<a class="btn btn--primary site-header__cta" href={wa} rel="noopener noreferrer" target="_blank">
-				{messages.nav.contact}
-			</a>
-			<details class="site-header__menu" id="site-nav-menu">
-				<summary
-					class="site-header__menu-btn"
-					aria-label={messages.nav.menuOpen}
-					aria-expanded="false"
-				>
-					<span class="site-header__burger" aria-hidden="true">
-						<span></span>
-						<span></span>
-					</span>
-					<span class="site-header__menu-label">{messages.nav.menu}</span>
-				</summary>
-				<div class="site-header__drawer">
-					<nav aria-label={navLabel}>
-						{links.map((link) => <a href={link.href}>{link.label}</a>)}
-						<a
-							class="site-header__drawer-lang"
-							href={otherHome}
-							hreflang={messages.lang === 'uz' ? 'en' : 'uz'}
-							lang={messages.lang === 'uz' ? 'en' : 'uz'}
-						>
-							{otherLabel}
-						</a>
-						<a class="site-header__drawer-cta" href={wa} rel="noopener noreferrer" target="_blank">
-							{messages.nav.contact}
-						</a>
-					</nav>
-				</div>
-			</details>
+		<div class="nav__end">
+			<a class="nav__lang" href={otherHome} hreflang={otherLang} lang={otherLang}>{otherLabel}</a>
+			<a class="btn btn--small nav__cta" href={mail}>{messages.nav.contact}</a>
+			<button class="nav__menu" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label={messages.nav.menuOpen} data-menu-label-open={messages.nav.menuOpen} data-menu-label-close={messages.nav.menuClose}>
+				<span></span><span></span>
+			</button>
 		</div>
+	</div>
+	<div class="nav__drawer" id="nav-drawer" hidden>
+		<nav class="wrap" aria-label={messages.nav.sections}>
+			{links.map((link) => <a href={link.href}>{link.label}</a>)}
+			<a href={otherHome} hreflang={otherLang} lang={otherLang}>{otherLabel}</a>
+			<a class="btn btn--primary" href={mail}>{messages.nav.contact}</a>
+		</nav>
 	</div>
 </header>
 <script>
-	const menuEl = document.getElementById('site-nav-menu');
-	const summary = menuEl?.querySelector('summary');
-	if (menuEl instanceof HTMLDetailsElement && summary) {
-		menuEl.addEventListener('toggle', () => {
-			summary.setAttribute('aria-expanded', menuEl.open ? 'true' : 'false');
-		});
-		menuEl.querySelectorAll('.site-header__drawer a').forEach((link) => {
-			link.addEventListener('click', () => {
-				menuEl.open = false;
-			});
+	const nav = document.querySelector<HTMLElement>('[data-nav]');
+	const menu = nav?.querySelector<HTMLButtonElement>('.nav__menu');
+	const drawer = nav?.querySelector<HTMLElement>('.nav__drawer');
+	if (nav) {
+		const onScroll = () => nav.toggleAttribute('data-scrolled', window.scrollY > 24);
+		onScroll();
+		window.addEventListener('scroll', onScroll, { passive: true });
+	}
+	if (nav && menu && drawer) {
+		const setOpen = (open: boolean) => {
+			drawer.hidden = !open;
+			nav.toggleAttribute('data-open', open);
+			menu.setAttribute('aria-expanded', String(open));
+			menu.setAttribute('aria-label', (open ? menu.dataset.menuLabelClose : menu.dataset.menuLabelOpen) ?? '');
+		};
+		menu.addEventListener('click', () => setOpen(drawer.hidden));
+		drawer.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && !drawer.hidden) {
+				setOpen(false);
+				menu.focus();
+			}
 		});
 	}
 </script>

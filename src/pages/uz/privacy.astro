@@ -10,11 +10,11 @@ import { uz } from '../../i18n/uz';
 	title={`${uz.privacy.title} · ${uz.brandShort}`}
 	description={uz.metaDescription}
 >
-	<SiteHeader messages={uz} whatsappPrefill={uz.hero.whatsappPrefill} />
+	<SiteHeader messages={uz} />
 	<main id="main" class="wrap privacy-page">
-		<h1 class="heading-lg">{uz.privacy.title}</h1>
+		<h1 class="title">{uz.privacy.title}</h1>
 		<p>{uz.privacy.body}</p>
 		<p><a href="/uz">{uz.privacy.back}</a></p>
 	</main>
-	<SiteFooter messages={uz} heroPrefill={uz.hero.whatsappPrefill} />
+	<SiteFooter messages={uz} />
 </BaseLayout>
